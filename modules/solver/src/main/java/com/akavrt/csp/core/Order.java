@@ -9,10 +9,18 @@ package com.akavrt.csp.core;
 public class Order extends BaseStrip {
     private static final String FORMAT_TEMPLATE = "Order '%s':\n    W = %.2f\n    L = %.2f";
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public Order(int id, double length, double width) {
+        super(id, length, width);
+    }
+
     /**
      * {@inheritDoc}
      *
-     * @return String representation of the order with custom formatting
+     * @return String representation of the order with custom formatting.
      */
     @Override
     public String toString() {

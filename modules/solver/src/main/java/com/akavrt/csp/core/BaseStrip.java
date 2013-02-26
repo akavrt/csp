@@ -12,37 +12,24 @@ public abstract class BaseStrip implements Strip {
     private double length;
 
     /**
+     * <p>Strip parameters should be set only when an instance is created.</p>
+     *
+     * @param id The identifier for the strip.
+     * @param length The width of the strip, in abstract units.
+     * @param width The width of the strip, in abstract units.
+     */
+    public BaseStrip(int id, double length, double width) {
+        this.id = id;
+        this.length = length;
+        this.width = width;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public int getId() {
         return id;
-    }
-
-    /**
-     * <p>Set identifier for strip.</p>
-     *
-     * @param id The identifier for the strip.
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getWidth() {
-        return width;
-    }
-
-    /**
-     * <p>Set width for strip.</p>
-     *
-     * @param width The width of the strip, in abstract units
-     */
-    public void setWidth(double width) {
-        this.width = width;
     }
 
     /**
@@ -54,12 +41,10 @@ public abstract class BaseStrip implements Strip {
     }
 
     /**
-     * <p>Set length for strip.</p>
-     *
-     * @param length The length of the strip, in abstract units
+     * {@inheritDoc}
      */
-    public void setLength(double length) {
-        this.length = length;
+    @Override
+    public double getWidth() {
+        return width;
     }
-
 }

@@ -1,5 +1,7 @@
 package com.akavrt.csp.core;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 
 /**
@@ -17,75 +19,121 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Problem {
-    private List<Order> orders;
-    private List<Roll> rolls;
+    private ImmutableList<Order> orders;
+    private ImmutableList<Roll> rolls;
     private int allowedCutsNumber;
 
     /**
-     * <p>List of orders.</p>
+     * <p>Universal constructor which can be used to create problems with constraint imposed on
+     * maximum number of cuts allowed within one pattern.</p>
      *
-     * @return the list of orders or null if no orders was previously set
+     * @param orders            The list of orders.
+     * @param rolls             The list of rolls.
+     * @param allowedCutsNumber The maximum number of cuts allowed within one pattern or zero
+     *                          if constraint isn't used.
+     */
+    public Problem(List<Order> orders, List<Roll> rolls, int allowedCutsNumber) {
+        this.orders = ImmutableList.copyOf(orders);
+        this.rolls = ImmutableList.copyOf(rolls);
+        this.allowedCutsNumber = allowedCutsNumber;
+    }
+
+    /**
+     * <p>Constructor for creation of problems with no additional constraints.</p>
+     *
+     * @param orders The list of orders.
+     * @param rolls  The list of rolls.
+     */
+    public Problem(List<Order> orders, List<Roll> rolls) {
+        this(orders, rolls, 0);
+    }
+
+    /**
+     * <p>Immutable list of orders, add operation is not supported.</p>
+     *
+     * @return The list of orders or null if no orders was previously set.
      */
     public List<Order> getOrders() {
         return orders;
     }
 
     /**
-     * <p>Set the list of orders.</p>
+     * <p>Immutable list of rolls presenting stock, add operation is not supported.</p>
      *
-     * @param orders The list of orders
-     */
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
-    /**
-     * <p>List of rolls presenting stock.</p>
-     *
-     * @return the list of rolls or null if no rolls was previously set
+     * @return The list of rolls or null if no rolls was previously set.
      */
     public List<Roll> getRolls() {
         return rolls;
     }
 
     /**
-     * <p>Set the stock for this problem defined as a list of rolls.</p>
-     *
-     * @param rolls The list of rolls
-     */
-    public void setRolls(List<Roll> rolls) {
-        this.rolls = rolls;
-    }
-
-    /**
      * <p>Inclusive upper bound for total number of cuts allowed within one pattern.
      * Zero is treated as unconstrained number of cuts.</p>
      *
-     * @return the maximum number of cuts allowed within one pattern or zero if no constraint was
-     *         set
+     * @return The maximum number of cuts allowed within one pattern or zero if no constraint was
+     *         set.
      */
     public int getAllowedCutsNumber() {
         return allowedCutsNumber;
     }
 
     /**
-     * <p>Set the upper bound for total number of cuts allowed within one pattern.
-     * Use zero if constraint isn't used.</p>
-     *
-     * @param allowedCutsNumber the maximum number of cuts allowed within one pattern or zero if
-     *                          constraint isn't used
-     */
-    public void setAllowedCutsNumber(int allowedCutsNumber) {
-        this.allowedCutsNumber = allowedCutsNumber;
-    }
-
-    /**
      * <p>Check whether constraint for total number of cuts allowed within one pattern is
      * active.</p>
      *
-     * @return true if constraint is active, false otherwise
+     * @return true if constraint is active, false otherwise.
      */
     public boolean isCutsNumberResctricted() {
         return allowedCutsNumber > 0;
+    }
+
+    // TODO extend this builder to support real materials with physical properties like thickness, density, etc.
+    public static class Builder {
+        private List<Order> orders;
+        private List<Roll> rolls;
+        private int allowedCutsNumber;
+
+        /**
+         * <p>Set the list of orders.</p>
+         *
+         * @param orders The list of orders.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder setOrders(List<Order> orders) {
+            this.orders = orders;
+            return this;
+        }
+
+        /**
+         * <p>Set the stock defined as a list of rolls.</p>
+         *
+         * @param rolls The list of rolls.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder setRolls(List<Roll> rolls) {
+            this.rolls = rolls;
+            return this;
+        }
+
+        /**
+         * <p>Set the upper bound for total number of cuts allowed within one pattern.
+         * Use zero if constraint isn't used.</p>
+         *
+         * @param allowedCutsNumber The maximum number of cuts allowed within one pattern or zero
+         *                          if constraint isn't used.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder setAllowedCutsNumber(int allowedCutsNumber) {
+            this.allowedCutsNumber = allowedCutsNumber;
+            return this;
+        }
+
+        /**
+         * <p>Creates a Problem with the arguments supplied to this builder.<p/>
+         */
+        public Problem build() {
+            return new Problem(orders, rolls, allowedCutsNumber);
+        }
+
     }
 }

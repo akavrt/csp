@@ -16,21 +16,21 @@ public interface Strip {
      * have several rolls with the same size). Uniqueness, if needed, should be managed by the
      * client code.</p>
      *
-     * @return the int value used as identifier
+     * @return The int value used as identifier.
      */
     int getId();
 
     /**
-     * <p>Width of the strip measured in abstract units.</p>
-     *
-     * @return the width of the strip
-     */
-    double getWidth();
-
-    /**
      * <p>Length of the strip measured in abstract units.</p>
      *
-     * @return the length of the strip
+     * @return The length of the strip.
      */
     double getLength();
+
+    /**
+     * <p>Width of the strip measured in abstract units.</p>
+     *
+     * @return The width of the strip.
+     */
+    double getWidth();
 }
