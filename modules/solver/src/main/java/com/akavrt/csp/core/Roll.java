@@ -86,6 +86,16 @@ public class Roll extends BaseStrip {
     }
 
     /**
+     * <p>Usable area of the roll with no defects in material both across and along it.
+     * Measured in abstract square units.</p>
+     *
+     * @return The usable area of the roll.
+     */
+    public double getUsableArea() {
+        return getUsableLength() * getUsableWidth();
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return String representation of the roll with custom formatting.
@@ -191,7 +201,7 @@ public class Roll extends BaseStrip {
         }
 
         /**
-         * <p>Creates a Roll with the parameters supplied to this builder.<p/>
+         * <p>Creates a Roll with the params supplied to this builder.<p/>
          */
         public Roll build() {
             Roll roll = new Roll(id, length, width);

@@ -12,7 +12,7 @@ public abstract class BaseStrip implements Strip {
     private double length;
 
     /**
-     * <p>Strip parameters should be set only when an instance is created.</p>
+     * <p>Strip params should be set only when an instance is created.</p>
      *
      * @param id The identifier for the strip.
      * @param length The width of the strip, in abstract units.

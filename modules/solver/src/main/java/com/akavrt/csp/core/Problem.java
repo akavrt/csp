@@ -87,7 +87,8 @@ public class Problem {
         return allowedCutsNumber > 0;
     }
 
-    // TODO extend this builder to support real materials with physical properties like thickness, density, etc.
+    // TODO extend this builder to support real materials with physical properties like
+    // thickness, density, etc.
     public static class Builder {
         private List<Order> orders;
         private List<Roll> rolls;

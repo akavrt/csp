@@ -3,7 +3,7 @@ package com.akavrt.csp.core;
 /**
  * <p>In roll trimming both stock material and orders are modeled as rectangular strips of known
  * size. Algorithm takes into account only width and length, material thickness can be ignored on
- * this level of detalisation.</p>
+ * this level of specification.</p>
  *
  * <p>Classes which will be developed to represent rolls and orders must implement this
  * interface.<p/>
