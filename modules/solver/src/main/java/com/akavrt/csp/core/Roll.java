@@ -96,6 +96,18 @@ public class Roll extends BaseStrip {
     }
 
     /**
+     * <p>Trim along the length and across the width of the roll was introduced to take into
+     * account rough edges of the material. At the same time, there is no sense in using rolls
+     * without usable length or width. If roll with such characteristics is encountered, it should
+     * be ignored or deleted at the early stages of the optimization routine.</p>
+     *
+     * @return true if roll is valid, false otherwise.
+     */
+    public boolean isValid() {
+        return getUsableLength() > 0 && getUsableWidth() > 0;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return String representation of the roll with custom formatting.
@@ -120,7 +132,6 @@ public class Roll extends BaseStrip {
          * <p>Set identifier for the roll.</p>
          *
          * @param id The identifier for the roll.
-         *
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setId(int id) {
@@ -132,7 +143,6 @@ public class Roll extends BaseStrip {
          * <p>Set length for the roll.</p>
          *
          * @param length The length of the roll, in abstract units.
-         *
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setLength(double length) {
@@ -144,7 +154,6 @@ public class Roll extends BaseStrip {
          * <p>Set unusable length of the start edge of the roll.</p>
          *
          * @param trimLength The unusable length of the start edge.
-         *
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setStartTrimLength(double trimLength) {
@@ -156,7 +165,6 @@ public class Roll extends BaseStrip {
          * <p>Set width for the roll.</p>
          *
          * @param width The width of the roll, in abstract units.
-         *
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setWidth(double width) {
@@ -168,7 +176,6 @@ public class Roll extends BaseStrip {
          * <p>Set unusable length of the end edge of the roll.</p>
          *
          * @param trimLength The unusable length of the end edge.
-         *
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setEndTrimLength(double trimLength) {
@@ -180,7 +187,6 @@ public class Roll extends BaseStrip {
          * <p>Set unusable width of the left side of the roll.</p>
          *
          * @param trimWidth The unusable width of the left side.
-         *
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setLeftTrimWidth(double trimWidth) {
@@ -192,7 +198,6 @@ public class Roll extends BaseStrip {
          * <p>Set unusable width of the right side of the roll.</p>
          *
          * @param trimWidth The unusable width of the left side.
-         *
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setRightTrimWidth(double trimWidth) {

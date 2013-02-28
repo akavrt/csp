@@ -2,6 +2,8 @@ package com.akavrt.csp.core;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -83,7 +85,7 @@ public class Problem {
      *
      * @return true if constraint is active, false otherwise.
      */
-    public boolean isCutsNumberResctricted() {
+    public boolean isCutsNumberRestricted() {
         return allowedCutsNumber > 0;
     }
 
@@ -92,6 +94,8 @@ public class Problem {
     public static class Builder {
         private List<Order> orders;
         private List<Roll> rolls;
+        private boolean sortOrders;
+        private boolean sortRolls;
         private int allowedCutsNumber;
 
         /**
@@ -130,9 +134,49 @@ public class Problem {
         }
 
         /**
+         * <p>Sort orders in ascending order of width.</p>
+         *
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder rearrangeOrders() {
+            sortOrders = true;
+            return this;
+        }
+
+        /**
+         * <p>Sort rolls in ascending order of width.</p>
+         *
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder rearrangeRolls() {
+            sortRolls = true;
+            return this;
+        }
+
+        /**
          * <p>Creates a Problem with the arguments supplied to this builder.<p/>
          */
         public Problem build() {
+            if (sortOrders) {
+                Collections.sort(orders, new Comparator<Order>() {
+                    @Override
+                    public int compare(Order lhs, Order rhs) {
+                        return lhs.getWidth() < rhs.getWidth() ? -1 :
+                                (lhs.getWidth() > rhs.getWidth() ? 1 : 0);
+                    }
+                });
+            }
+
+            if (sortRolls) {
+                Collections.sort(rolls, new Comparator<Roll>() {
+                    @Override
+                    public int compare(Roll lhs, Roll rhs) {
+                        return lhs.getUsableWidth() < rhs.getUsableWidth() ? -1 :
+                                (lhs.getUsableWidth() > rhs.getUsableWidth() ? 1 : 0);
+                    }
+                });
+            }
+
             return new Problem(orders, rolls, allowedCutsNumber);
         }
 

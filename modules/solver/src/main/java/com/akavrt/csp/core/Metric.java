@@ -15,7 +15,7 @@ public interface Metric {
      * decide what objective function and of which structure should be used.</p>
      *
      * @param solution The solution to evaluate.
-     * @return The evaluation value of the objective function.
+     * @return The evaluated value of the objective function.
      */
     double evaluate(Solution solution);
 }

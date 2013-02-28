@@ -22,6 +22,15 @@ public class Solution {
     }
 
     /**
+     * <p>Creates an instance of Solution with array of patterns provided as a parameter.</p>.
+     *
+     * @param patterns The list of patters assigned to the solution.
+     */
+    public Solution(List<Pattern> patterns) {
+        this.patterns = patterns;
+    }
+
+    /**
      * <p>Returns a list of patterns used in cutting plan.</p>
      *
      * @return The list of patterns.

@@ -20,10 +20,10 @@ public class Pattern {
     /**
      * <p>Creates an empty pattern filled with zeros.</p>
      *
-     * @param ordersQuanity The number of orders defined within problem.
+     * @param ordersQuantity The number of orders defined within problem.
      */
-    public Pattern(int ordersQuanity) {
-        multipliers = new int[ordersQuanity];
+    public Pattern(int ordersQuantity) {
+        multipliers = new int[ordersQuantity];
         Arrays.fill(multipliers, 0);
     }
 
