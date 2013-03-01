@@ -1,5 +1,6 @@
-package com.akavrt.csp.core;
+package com.akavrt.csp.metrics;
 
+import com.akavrt.csp.core.*;
 import com.akavrt.csp.params.ObjectiveParameters;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +12,8 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * User: akavrt
- * Date: 01.03.13
- * Time: 16:05
+ * Date: 02.03.13
+ * Time: 01:52
  */
 public class ScalarMetricTest {
     private static final double DELTA = 1e-15;
@@ -31,34 +32,18 @@ public class ScalarMetricTest {
 
         // preparing orders
         orders = new ArrayList<Order>();
-        Order order;
-
-        order = new Order(1, 500, 50);
-        orders.add(order);
-
-        order = new Order(2, 400, 40);
-        orders.add(order);
-
-        order = new Order(3, 300, 30);
-        orders.add(order);
+        orders.add(new Order("order1", 500, 50));
+        orders.add(new Order("order2", 400, 40));
+        orders.add(new Order("order3", 300, 30));
 
         // preparing rolls
         List<Roll> rolls = new ArrayList<Roll>();
-        Roll.Builder builder;
+        roll1 = new Roll("roll1", 300, 200);
+        roll2 = new Roll("roll2", 500, 300);
+        roll3 = new Roll("roll3", 100, 40);
 
-        builder = new Roll.Builder();
-        builder.setId(1).setLength(300).setWidth(200);
-        roll1 = builder.build();
         rolls.add(roll1);
-
-        builder = new Roll.Builder();
-        builder.setId(2).setLength(500).setWidth(300);
-        roll2 = builder.build();
         rolls.add(roll2);
-
-        builder = new Roll.Builder();
-        builder.setId(3).setLength(100).setWidth(40);
-        roll3 = builder.build();
         rolls.add(roll3);
 
         problem = new Problem(orders, rolls, allowedCutsNumber);
@@ -151,7 +136,7 @@ public class ScalarMetricTest {
     }
 
     @Test
-    public void solutionWithDifferentUniquePattern() {
+    public void solutionWithDifferentUniquePatterns() {
         Solution solution = new Solution();
         Pattern pattern;
 
@@ -165,4 +150,5 @@ public class ScalarMetricTest {
 
         assertEquals(1, evaluator.getPatternsRatio(solution), DELTA);
     }
+
 }

@@ -101,7 +101,7 @@ public class Pattern {
             return 0;
         }
 
-        return roll.getUsableWidth() - getWidth(orders);
+        return roll.getWidth() - getWidth(orders);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Pattern {
             return 0;
         }
 
-        return (roll.getUsableWidth() - getWidth(orders)) * roll.getUsableLength();
+        return (roll.getWidth() - getWidth(orders)) * roll.getLength();
     }
 
     private int getTotalCutsNumber() {
@@ -139,7 +139,7 @@ public class Pattern {
      */
     public boolean isValid(List<Order> orders, int allowedCutsNumber) {
         return getTotalCutsNumber() <= allowedCutsNumber &&
-                (roll == null || getWidth(orders) <= roll.getUsableWidth());
+                (roll == null || getWidth(orders) <= roll.getWidth());
     }
 
     /**

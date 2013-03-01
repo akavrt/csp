@@ -29,29 +29,17 @@ public class SolutionTest {
 
         // preparing orders
         orders = new ArrayList<Order>();
-        Order order;
-
-        order = new Order(1, 500, 50);
-        orders.add(order);
-
-        order = new Order(2, 400, 40);
-        orders.add(order);
-
-        order = new Order(3, 300, 30);
-        orders.add(order);
+        orders.add(new Order("order1", 500, 50));
+        orders.add(new Order("order2", 400, 40));
+        orders.add(new Order("order3", 300, 30));
 
         // preparing rolls
         List<Roll> rolls = new ArrayList<Roll>();
-        Roll.Builder builder;
 
-        builder = new Roll.Builder();
-        builder.setId(1).setLength(300).setWidth(200);
-        roll1 = builder.build();
+        roll1 = new Roll("roll1", 300, 200);
+        roll2 = new Roll("roll2", 500, 300);
+
         rolls.add(roll1);
-
-        builder = new Roll.Builder();
-        builder.setId(2).setLength(500).setWidth(300);
-        roll2 = builder.build();
         rolls.add(roll2);
 
         problem = new Problem(orders, rolls, allowedCutsNumber);

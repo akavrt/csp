@@ -5,32 +5,52 @@ package com.akavrt.csp.core;
  * size. Algorithm takes into account only width and length, material thickness can be ignored on
  * this level of specification.</p>
  *
- * <p>Classes which will be developed to represent rolls and orders must implement this
- * interface.<p/>
- *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public interface Strip {
+public abstract class Strip {
+
+    private String id;
+    private double width;
+    private double length;
+
     /**
-     * <p>Integer identifier is used to differentiate strips from each other (for example, we can
-     * have several rolls with the same size). Uniqueness, if needed, should be managed by the
-     * client code.</p>
+     * <p>Strip params should be set only when an instance of class is created.</p>
      *
-     * @return The int value used as identifier.
+     * @param id The identifier for the strip.
+     * @param length The width of the strip, in abstract units.
+     * @param width The width of the strip, in abstract units.
      */
-    int getId();
+    public Strip(String id, double length, double width) {
+        this.id = id;
+        this.length = length;
+        this.width = width;
+    }
+
+    /**
+     * <p>User-defined string identifier is used to differentiate strips from each other.
+     * Uniqueness, if needed, should be insured inside the client code.</p>
+     *
+     * @return The user defined identifier of the strip.
+     */
+    public String getId() {
+        return id;
+    }
 
     /**
      * <p>Length of the strip measured in abstract units.</p>
      *
      * @return The length of the strip.
      */
-    double getLength();
+    public double getLength() {
+        return length;
+    }
 
     /**
      * <p>Width of the strip measured in abstract units.</p>
      *
      * @return The width of the strip.
      */
-    double getWidth();
+    public double getWidth() {
+        return width;
+    }
 }

@@ -1,110 +1,85 @@
 package com.akavrt.csp.core;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * <p>This class represents a single unit of stock material.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class Roll extends BaseStrip {
+public class Roll extends Strip {
     private static final String FORMAT_TEMPLATE = "Roll '%s':\n    W = %.2f\n    L = %.2f";
-    // edge trim
-    private double startTrimLength;
-    private double endTrimLength;
-    // side trim
-    private double leftTrimWidth;
-    private double rightTrimWidth;
+    private int internalId;
 
     /**
-     * {@inheritDoc}
+     * <p>Creates roll with predefined identifier, length and width.</p>
+     *
+     * @param id     Unique identifier of the roll.
+     * @param length Length of the roll, measured in abstract units.
+     * @param width  Width of the roll, measured in abstract units.
      */
-    public Roll(int id, double length, double width) {
-        super(id, length, width);
+    public Roll(String id, double length, double width) {
+        this(id, 1, length, width);
     }
 
     /**
-     * <p>Length of the start edge of the roll that can be used for production due to defects in
-     * material. Measured in abstract units.</p>
+     * <p>Creates roll with predefined identifier, length and width.</p>
      *
-     * @return The unusable length of the start edge.
+     * <p>Sometimes when defining a problem it's handy to use brief notation and combine rolls with
+     * same size in groups. For example, if we have 5 rolls of the same size, we can enumerate
+     * these rolls explicitly using id's like "roll1", "roll2", ..., "roll5". This is cumbersome
+     * and can lead to a lengthy problem definitions.</p>
+     *
+     * <p>A better approach would be something like this: id = "roll1", quantity = 5, where "roll1"
+     * (let's call it groupId) corresponds not to a single roll but rather to 5 rolls with the same
+     * size. To differentiate these rolls we should introduce new additional identifier (let's call
+     * it rollId) applied to a lower level (uniqueness have to be insured only within group of
+     * rolls). Having groupId and rollId combined in any suitable way we can obtain internal
+     * identifier which will be unique across all of the rolls defined within single problem.</p>
+     *
+     * @param groupId Unique String identifier of the group of rolls.
+     * @param rollId  Unique numeric identifier of the roll within group of rolls.
+     * @param length  Length of the roll, measured in abstract units.
+     * @param width   Width of the roll, measured in abstract units.
      */
-    public double getStartTrimLength() {
-        return startTrimLength;
+    public Roll(String groupId, int rollId, double length, double width) {
+        super(groupId, length, width);
+
+        internalId = calculateInternalId(rollId);
+    }
+
+    private int calculateInternalId(int rollId) {
+        return new HashCodeBuilder().append(getId()).append(rollId).toHashCode();
     }
 
     /**
-     * <p>Length of the end edge of the roll that can be used for production due to defects in
-     * material. Measured in abstract units.</p>
+     * <p>Unique internal identifier is used for validity checks and inside the optimization
+     * routine. Calculated based on id of the roll and on length and width of the strip.</p>
      *
-     * @return The unusable length of the end edge.
+     * @return The unique internal identifier of the roll.
      */
-    public double getEndTrimLength() {
-        return endTrimLength;
+    public int getInternalId() {
+        return internalId;
     }
 
     /**
-     * <p>Width of the left side of the roll that can be used for production due to defects in
-     * material. Measured in abstract units.</p>
-     *
-     * @return The unusable width of the left side.
-     */
-    public double getLeftTrimWidth() {
-        return leftTrimWidth;
-    }
-
-    /**
-     * <p>Width of the right side of the roll that can be used for production due to defects in
-     * material. Measured in abstract units.</p>
-     *
-     * @return The unusable width of the right side.
-     */
-    public double getRightTrimWidth() {
-        return rightTrimWidth;
-    }
-
-    /**
-     * <p>Usable length of the roll with no defects in material along it.
-     * Measured in abstract units.</p>
-     *
-     * <p>Algorithm treats it as the real length of the roll during the optimization phase .</p>
-     *
-     * @return The usable length of the roll.
-     */
-    public double getUsableLength() {
-        return getLength() - getStartTrimLength() - getEndTrimLength();
-    }
-
-    /**
-     * <p>Usable width of the roll with no defects in material across it.
-     * Measured in abstract units.</p>
-     *
-     * <p>Algorithm treats it as the real width of the roll during the optimization phase.</p>
-     *
-     * @return The usable width of the roll.
-     */
-    public double getUsableWidth() {
-        return getWidth() - getLeftTrimWidth() - getRightTrimWidth();
-    }
-
-    /**
-     * <p>Usable area of the roll with no defects in material both across and along it.
-     * Measured in abstract square units.</p>
+     * <p>Area of the roll. Measured in abstract square units.</p>
      *
      * @return The usable area of the roll.
      */
-    public double getUsableArea() {
-        return getUsableLength() * getUsableWidth();
+    public double getArea() {
+        return getLength() * getWidth();
     }
 
     /**
-     * <p>Trim along the length and across the width of the roll was introduced to take into
-     * account rough edges of the material. At the same time, there is no sense in using rolls
-     * without usable length or width. If roll with such characteristics is encountered, it should
-     * be ignored or deleted at the early stages of the optimization routine.</p>
+     * <p>There is no sense in using rolls without usable length or width. If roll with such
+     * characteristics is encountered, it should be ignored or deleted at the early stages of the
+     * optimization routine.</p>
      *
      * @return true if roll is valid, false otherwise.
      */
     public boolean isValid() {
-        return getUsableLength() > 0 && getUsableWidth() > 0;
+        return getLength() > 0 && getWidth() > 0;
     }
 
     /**
@@ -114,109 +89,6 @@ public class Roll extends BaseStrip {
      */
     @Override
     public String toString() {
-        return String.format(FORMAT_TEMPLATE, getId(), getUsableWidth(), getUsableLength());
-    }
-
-    public static class Builder {
-        private int id;
-        private double length;
-        private double width;
-        // edge trim
-        private double startTrimLength;
-        private double endTrimLength;
-        // side trim
-        private double leftTrimWidth;
-        private double rightTrimWidth;
-
-        /**
-         * <p>Set identifier for the roll.</p>
-         *
-         * @param id The identifier for the roll.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         */
-        public Builder setId(int id) {
-            this.id = id;
-            return this;
-        }
-
-        /**
-         * <p>Set length for the roll.</p>
-         *
-         * @param length The length of the roll, in abstract units.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         */
-        public Builder setLength(double length) {
-            this.length = length;
-            return this;
-        }
-
-        /**
-         * <p>Set unusable length of the start edge of the roll.</p>
-         *
-         * @param trimLength The unusable length of the start edge.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         */
-        public Builder setStartTrimLength(double trimLength) {
-            this.startTrimLength = trimLength;
-            return this;
-        }
-
-        /**
-         * <p>Set width for the roll.</p>
-         *
-         * @param width The width of the roll, in abstract units.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         */
-        public Builder setWidth(double width) {
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * <p>Set unusable length of the end edge of the roll.</p>
-         *
-         * @param trimLength The unusable length of the end edge.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         */
-        public Builder setEndTrimLength(double trimLength) {
-            this.endTrimLength = trimLength;
-            return this;
-        }
-
-        /**
-         * <p>Set unusable width of the left side of the roll.</p>
-         *
-         * @param trimWidth The unusable width of the left side.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         */
-        public Builder setLeftTrimWidth(double trimWidth) {
-            this.leftTrimWidth = trimWidth;
-            return this;
-        }
-
-        /**
-         * <p>Set unusable width of the right side of the roll.</p>
-         *
-         * @param trimWidth The unusable width of the left side.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         */
-        public Builder setRightTrimWidth(double trimWidth) {
-            this.rightTrimWidth = trimWidth;
-            return this;
-        }
-
-        /**
-         * <p>Creates a Roll with the params supplied to this builder.<p/>
-         */
-        public Roll build() {
-            Roll roll = new Roll(id, length, width);
-            roll.startTrimLength = startTrimLength;
-            roll.endTrimLength = endTrimLength;
-            roll.leftTrimWidth = leftTrimWidth;
-            roll.rightTrimWidth = rightTrimWidth;
-
-            return roll;
-        }
-
+        return String.format(FORMAT_TEMPLATE, getId(), getWidth(), getLength());
     }
 }

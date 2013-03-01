@@ -115,7 +115,7 @@ public class Solution {
         for (Pattern pattern : patterns) {
             if (pattern.isActive()) {
                 productionLength += pattern.getMultipliers()[index] * pattern.getRoll()
-                        .getUsableLength();
+                                                                             .getLength();
             }
         }
 
@@ -135,7 +135,7 @@ public class Solution {
         // exit on the first invalid pattern
         for (int i = 0; i < patterns.size() && isPatternValid; i++) {
             isPatternValid = patterns.get(i).isValid(problem.getOrders(),
-                    problem.getAllowedCutsNumber());
+                                                     problem.getAllowedCutsNumber());
         }
 
         return isPatternValid;
@@ -151,7 +151,7 @@ public class Solution {
         Set<Integer> rollIds = new HashSet<Integer>();
         boolean isRepeatedRollFound = false;
         for (Pattern pattern : patterns) {
-            if (pattern.isActive() && !rollIds.add(pattern.getRoll().getId())) {
+            if (pattern.isActive() && !rollIds.add(pattern.getRoll().getInternalId())) {
                 // we can't use same roll twice
                 isRepeatedRollFound = true;
                 break;

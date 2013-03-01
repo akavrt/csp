@@ -3,6 +3,7 @@ package com.akavrt.csp.core;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * User: akavrt
@@ -14,7 +15,7 @@ public class OrderTest {
 
     @Test
     public void orderCreation() {
-        int id = 1;
+        String id = "order1";
         double length = 500;
         double width = 50;
 
@@ -24,4 +25,5 @@ public class OrderTest {
         assertEquals(length, order.getLength(), DELTA);
         assertEquals(width, order.getWidth(), DELTA);
     }
+
 }

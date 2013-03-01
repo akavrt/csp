@@ -24,32 +24,15 @@ public class ProblemTest {
     public void setUpProblem() {
         // preparing orders
         problemOrders = new ArrayList<Order>();
-        Order order;
-
-        order = new Order(1, 500, 50);
-        problemOrders.add(order);
-
-        order = new Order(2, 400, 40);
-        problemOrders.add(order);
-
-        order = new Order(3, 300, 30);
-        problemOrders.add(order);
+        problemOrders.add(new Order("order1", 500, 50));
+        problemOrders.add(new Order("order2", 400, 40));
+        problemOrders.add(new Order("order3", 300, 30));
 
         // preparing rolls
         problemRolls = new ArrayList<Roll>();
-        Roll.Builder builder;
-
-        builder = new Roll.Builder();
-        builder.setId(1).setLength(100).setWidth(30);
-        problemRolls.add(builder.build());
-
-        builder = new Roll.Builder();
-        builder.setId(2).setLength(90).setWidth(25).setStartTrimLength(5).setEndTrimLength(5);
-        problemRolls.add(builder.build());
-
-        builder = new Roll.Builder();
-        builder.setId(3).setLength(80).setWidth(20).setLeftTrimWidth(2).setRightTrimWidth(5);
-        problemRolls.add(builder.build());
+        problemRolls.add(new Roll("roll1", 100, 30));
+        problemRolls.add(new Roll("roll2", 90, 25));
+        problemRolls.add(new Roll("roll3", 80, 20));
 
         problem = new Problem(problemOrders, problemRolls);
     }
@@ -58,14 +41,14 @@ public class ProblemTest {
     public void addOrder() {
         // orders are immutable
         List<Order> orders = problem.getOrders();
-        orders.add(new Order(4, 600, 60));
+        orders.add(new Order("order4", 600, 60));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void addRoll() {
         // rolls are immutable
         List<Roll> rolls = problem.getRolls();
-        rolls.add(new Roll(4, 70, 15));
+        rolls.add(new Roll("roll4", 70, 15));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -85,10 +68,10 @@ public class ProblemTest {
     @Test
     public void unsorted() {
         Order order = problem.getOrders().get(0);
-        assertEquals(1, order.getId());
+        assertEquals("order1", order.getId());
 
         Roll roll = problem.getRolls().get(0);
-        assertEquals(1, roll.getId());
+        assertEquals("roll1", roll.getId());
     }
 
     @Test
@@ -101,10 +84,10 @@ public class ProblemTest {
         Problem rearranged = builder.build();
 
         Order order = rearranged.getOrders().get(0);
-        assertEquals(3, order.getId());
+        assertEquals("order3", order.getId());
 
         Roll roll = rearranged.getRolls().get(0);
-        assertEquals(3, roll.getId());
+        assertEquals("roll3", roll.getId());
     }
 
     @Test

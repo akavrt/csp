@@ -1,5 +1,6 @@
-package com.akavrt.csp.core;
+package com.akavrt.csp.metrics;
 
+import com.akavrt.csp.core.*;
 import com.akavrt.csp.params.ObjectiveParameters;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class ScalarMetric implements Metric {
         for (Pattern pattern : solution.getPatterns()) {
             if (pattern.isActive()) {
                 trimArea += pattern.getTrimArea(problem.getOrders());
-                totalArea += pattern.getRoll().getUsableArea();
+                totalArea += pattern.getRoll().getArea();
             }
         }
 

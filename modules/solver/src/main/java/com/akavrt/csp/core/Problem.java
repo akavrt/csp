@@ -171,8 +171,8 @@ public class Problem {
                 Collections.sort(rolls, new Comparator<Roll>() {
                     @Override
                     public int compare(Roll lhs, Roll rhs) {
-                        return lhs.getUsableWidth() < rhs.getUsableWidth() ? -1 :
-                                (lhs.getUsableWidth() > rhs.getUsableWidth() ? 1 : 0);
+                        return lhs.getWidth() < rhs.getWidth() ? -1 :
+                                (lhs.getWidth() > rhs.getWidth() ? 1 : 0);
                     }
                 });
             }

@@ -27,21 +27,17 @@ public class PatternTest {
         orders = new ArrayList<Order>();
         Order order;
 
-        order = new Order(1, 500, 50);
+        order = new Order("order1", 500, 50);
         orders.add(order);
 
-        order = new Order(2, 400, 40);
+        order = new Order("order2", 400, 40);
         orders.add(order);
 
-        order = new Order(3, 300, 30);
+        order = new Order("order3", 300, 30);
         orders.add(order);
 
         // preparing roll
-        Roll.Builder builder;
-
-        builder = new Roll.Builder();
-        builder.setId(1).setLength(300).setWidth(200);
-        roll = builder.build();
+        roll = new Roll("roll1", 300, 200);
     }
 
     @Test
