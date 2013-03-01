@@ -31,6 +31,15 @@ public class Solution {
     }
 
     /**
+     * <p>Add new pattern to the solution.</p>
+     *
+     * @param pattern The new pattern added to the solution.
+     */
+    public void addPattern(Pattern pattern) {
+        patterns.add(pattern);
+    }
+
+    /**
      * <p>Returns a list of patterns used in cutting plan.</p>
      *
      * @return The list of patterns.

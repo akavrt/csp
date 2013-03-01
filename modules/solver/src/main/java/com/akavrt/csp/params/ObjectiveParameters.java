@@ -5,7 +5,7 @@ package com.akavrt.csp.params;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class ObjectiveFunctionParameters {
+public class ObjectiveParameters {
     private double trimFactor;
     private double patternsFactor;
     private double productionFactor;
@@ -54,8 +54,8 @@ public class ObjectiveFunctionParameters {
             return this;
         }
 
-        public ObjectiveFunctionParameters build() {
-            ObjectiveFunctionParameters params = new ObjectiveFunctionParameters();
+        public ObjectiveParameters build() {
+            ObjectiveParameters params = new ObjectiveParameters();
             params.trimFactor = trimFactor;
             params.patternsFactor = patternsFactor;
             params.productionFactor = productionFactor;
