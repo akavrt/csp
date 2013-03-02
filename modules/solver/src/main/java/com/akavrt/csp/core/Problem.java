@@ -2,6 +2,7 @@ package com.akavrt.csp.core;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -99,13 +100,36 @@ public class Problem {
         private int allowedCutsNumber;
 
         /**
+         * <p>Creates an instance of builder with empty properly initialized list of orders and
+         * list
+         * of rolls.</p>
+         */
+        public Builder() {
+            orders = new ArrayList<Order>();
+            rolls = new ArrayList<Roll>();
+        }
+
+        /**
          * <p>Set the list of orders.</p>
          *
          * @param orders The list of orders.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setOrders(List<Order> orders) {
-            this.orders = orders;
+            this.orders.clear();
+            this.orders.addAll(orders);
+
+            return this;
+        }
+
+        /**
+         * <p>Add order to the list of orders.</p>
+         *
+         * @param order The added order.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder addOrder(Order order) {
+            orders.add(order);
             return this;
         }
 
@@ -116,7 +140,38 @@ public class Problem {
          * @return This Builder object to allow for chaining of calls to set methods.
          */
         public Builder setRolls(List<Roll> rolls) {
-            this.rolls = rolls;
+            this.rolls.clear();
+            this.rolls.addAll(rolls);
+
+            return this;
+        }
+
+        /**
+         * <p>Add roll to the list of rolls.</p>
+         *
+         * @param roll The added roll.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder addRoll(Roll roll) {
+            rolls.add(roll);
+            return this;
+        }
+
+        /**
+         * <p>Add a group of rolls with the same size.</p>
+         *
+         * <p>A predefined number of copies of reference roll will be created and added to the
+         * problem. The number of added rolls is equal to the size of the group.</p>
+         *
+         * @param roll     The reference roll.
+         * @param quantity Size of the group.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder addRolls(Roll roll, int quantity) {
+            for (int i = 1; i <= quantity; i++) {
+                Roll copy = new Roll(roll.getId(), i, roll.getLength(), roll.getWidth());
+                rolls.add(copy);
+            }
             return this;
         }
 

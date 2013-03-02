@@ -101,4 +101,44 @@ public class ProblemTest {
         Problem constrained = builder.build();
         assertTrue(constrained.isCutsNumberRestricted());
     }
+
+    @Test
+    public void extendedBuilderCapabilities() {
+        Roll singleRoll = new Roll("roll1", 500, 300);
+        Roll groupedRoll = new Roll("roll2", 400, 200);
+
+        Order order = new Order("order4", 600, 60);
+
+        Problem.Builder builder = new Problem.Builder();
+        builder.addRoll(singleRoll).addRolls(groupedRoll, 5);
+        builder.setOrders(problemOrders);
+        builder.addOrder(order);
+
+        Problem tested = builder.build();
+
+        assertEquals(6, tested.getRolls().size());
+        assertEquals(problemOrders.size() + 1, tested.getOrders().size());
+    }
+
+    @Test
+    public void chaining() {
+        Order order = new Order("order4", 600, 60);
+
+        Problem.Builder builder = new Problem.Builder();
+        builder.setRolls(problemRolls);
+        builder.setOrders(problemOrders).addOrder(order);
+
+        Problem tested = builder.build();
+
+        assertEquals(problemOrders.size() + 1, tested.getOrders().size());
+
+        builder = new Problem.Builder();
+        builder.setRolls(problemRolls);
+        builder.addOrder(order).setOrders(problemOrders);
+
+        tested = builder.build();
+
+        assertEquals(problemOrders.size(), tested.getOrders().size());
+
+    }
 }
