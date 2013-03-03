@@ -1,5 +1,6 @@
 package com.akavrt.csp.core;
 
+import com.akavrt.csp.metadata.ProblemMetadata;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class Problem {
     private ImmutableList<Order> orders;
     private ImmutableList<Roll> rolls;
     private int allowedCutsNumber;
+    private ProblemMetadata metadata;
 
     /**
      * <p>Universal constructor which can be used to create problems with constraint imposed on
@@ -90,6 +92,24 @@ public class Problem {
         return allowedCutsNumber > 0;
     }
 
+    /**
+     * <p>Provides extended description of the problem.</p>
+     *
+     * @return Additional information about the problem.
+     */
+    public ProblemMetadata getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * <p>Set additional information about the problem.</p>
+     *
+     * @param metadata Additional information about the problem.
+     */
+    public void setMetadata(ProblemMetadata metadata) {
+        this.metadata = metadata;
+    }
+
     // TODO extend this builder to support real materials with physical properties like
     // thickness, density, etc.
     public static class Builder {
@@ -98,6 +118,7 @@ public class Problem {
         private boolean sortOrders;
         private boolean sortRolls;
         private int allowedCutsNumber;
+        private ProblemMetadata metadata;
 
         /**
          * <p>Creates an instance of builder with empty properly initialized list of orders and
@@ -189,6 +210,17 @@ public class Problem {
         }
 
         /**
+         * <p>Set additional information about the problem.</p>
+         *
+         * @param metadata Additional information about the problem.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        public Builder setMetadata(ProblemMetadata metadata) {
+            this.metadata = metadata;
+            return this;
+        }
+
+        /**
          * <p>Sort orders in ascending order of width.</p>
          *
          * @return This Builder object to allow for chaining of calls to set methods.
@@ -232,7 +264,10 @@ public class Problem {
                 });
             }
 
-            return new Problem(orders, rolls, allowedCutsNumber);
+            Problem problem = new Problem(orders, rolls, allowedCutsNumber);
+            problem.setMetadata(metadata);
+
+            return problem;
         }
 
     }

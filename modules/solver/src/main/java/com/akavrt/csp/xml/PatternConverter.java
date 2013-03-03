@@ -2,8 +2,12 @@ package com.akavrt.csp.xml;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Pattern;
+import com.google.common.collect.Lists;
 import org.jdom2.Element;
 
+import javax.swing.text.DefaultEditorKit;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,23 +38,38 @@ public class PatternConverter implements XmlConverter<Pattern> {
         Element cutsElm = new Element(PatternTags.CUTS);
         patternElm.addContent(cutsElm);
         int[] multipliers = pattern.getMultipliers();
+        List<Cut> cuts = Lists.newArrayList();
         for (int i = 0; i < multipliers.length; i++) {
-            Element cutElm = prepareCut(i, multipliers[i]);
+            Cut cut = new Cut(multipliers[i], orders.get(i).getId());
+            cuts.add(cut);
+        }
+
+        // sort cuts using user-defined order id's
+        // same order is used as in <problem /> section, see ProblemConverter
+        Collections.sort(cuts, new Comparator<Cut>() {
+            @Override
+            public int compare(Cut lhs, Cut rhs) {
+                return lhs.getOrderId().compareTo(rhs.getOrderId());
+            }
+        });
+
+        for (Cut cut : cuts) {
+            Element cutElm = prepareCut(cut);
             cutsElm.addContent(cutElm);
         }
 
         return patternElm;
     }
 
-    private Element prepareCut(int index, int quantity) {
+    private Element prepareCut(Cut cut) {
         Element cutElm = new Element(PatternTags.CUT);
-        cutElm.setAttribute(PatternTags.QUANTITY, Integer.toString(quantity));
+        cutElm.setAttribute(PatternTags.QUANTITY, Integer.toString(cut.getQuantity()));
 
         Element orderElm = new Element(PatternTags.ORDER);
         cutElm.addContent(orderElm);
 
         Element refElm = new Element(PatternTags.REF);
-        refElm.setAttribute(PatternTags.ID, orders.get(index).getId());
+        refElm.setAttribute(PatternTags.ID, cut.getOrderId());
         orderElm.addContent(refElm);
 
         return cutElm;
@@ -65,5 +84,24 @@ public class PatternConverter implements XmlConverter<Pattern> {
         String CUT = "cut";
         String QUANTITY = "quantity";
         String ORDER = "order";
+    }
+
+    private static class Cut {
+        private final int quantity;
+        private final String orderId;
+
+        public Cut(int quantity, String orderId) {
+            this.quantity = quantity;
+            this.orderId = orderId;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public String getOrderId() {
+            return orderId;
+        }
+
     }
 }
