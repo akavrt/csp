@@ -43,7 +43,7 @@ public class ScalarMetric implements Metric {
 
         for (Pattern pattern : solution.getPatterns()) {
             if (pattern.isActive()) {
-                trimArea += pattern.getTrimArea(problem.getOrders());
+                trimArea += pattern.getTrimArea();
                 totalArea += pattern.getRoll().getArea();
             }
         }
@@ -90,10 +90,10 @@ public class ScalarMetric implements Metric {
         double totalProductDeviation = 0;
 
         List<Order> orders = problem.getOrders();
-        for (int i = 0; i < orders.size(); i++) {
-            double productDeviation = Math.abs(orders.get(i).getLength() -
-                    solution.getProductionLengthForOrder(i));
-            totalProductDeviation += productDeviation / orders.get(i).getLength();
+        for (Order order : orders) {
+            double productDeviation = Math.abs(order.getLength() -
+                                                       solution.getProductionLengthForOrder(order));
+            totalProductDeviation += productDeviation / order.getLength();
         }
 
         return totalProductDeviation / orders.size();

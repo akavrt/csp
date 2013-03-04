@@ -1,7 +1,9 @@
 package com.akavrt.csp.core;
 
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import java.util.*;
 
 /**
  * <p>A cutting pattern is modeled as a simple array of integer multiplies. Number of of elements
@@ -12,44 +14,66 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Pattern {
-    // TODO now this class is almost useless but in future we will use it mostly as a helper
-    // filled with a plenty of utility methods
-    private int[] multipliers;
+    private Map<Integer, MultiCut> cuts;
     private Roll roll;
 
     /**
-     * <p>Creates an empty pattern filled with zeros.</p>
-     *
-     * @param ordersQuantity The number of orders defined within problem.
+     * <p>Creates an empty pattern.</p>
      */
-    public Pattern(int ordersQuantity) {
-        multipliers = new int[ordersQuantity];
-        Arrays.fill(multipliers, 0);
+    public Pattern(List<Order> orders) {
+        // list of orders can be immutable:
+        // let's create a copy and sort orders in ascending order of width
+        List<Order> sorted = Lists.newArrayList(orders);
+        Collections.sort(sorted, new Comparator<Order>() {
+            @Override
+            public int compare(Order lhs, Order rhs) {
+                return lhs.getWidth() < rhs.getWidth() ? -1 :
+                        (lhs.getWidth() > rhs.getWidth() ? 1 : 0);
+            }
+        });
+
+        cuts = Maps.newLinkedHashMap();
+        for (Order order : sorted) {
+            cuts.put(order.getInternalId(), new MultiCut(order));
+        }
     }
 
-    /**
-     * <p>Creates pattern with multipliers provided as a parameter.</p>
-     *
-     * @param multipliers The array of integer multipliers.
-     */
-    public Pattern(int[] multipliers) {
-        this.multipliers = multipliers;
+    private boolean updateCut(Order order, int quantity, boolean isAddition) {
+        if (order == null) {
+            return false;
+        }
+
+        // orders with unknown id should be ignored
+        MultiCut cut = cuts.get(order.getInternalId());
+        if (cut != null) {
+            if (isAddition) {
+                cut.addQuantity(quantity);
+            } else {
+                cut.setQuantity(quantity);
+            }
+        }
+
+        return cut != null;
     }
 
-    /**
-     * <p>Returns array of integer multipliers.</p>
-     */
-    public int[] getMultipliers() {
-        return multipliers;
+    public boolean addCut(Order order, int quantity) {
+        return updateCut(order, quantity, true);
     }
 
-    /**
-     * <p>Set array of multipliers for pattern.</p>
-     *
-     * @param multipliers The array of integer multipliers.
-     */
-    public void setMultipliers(int[] multipliers) {
-        this.multipliers = multipliers;
+    public boolean setCut(Order order, int quantity) {
+        return updateCut(order, quantity, false);
+    }
+
+    public List<MultiCut> getCuts() {
+        return Lists.newArrayList(cuts.values());
+    }
+
+    public void setCuts(List<MultiCut> cuts) {
+        for (MultiCut cut : cuts) {
+            if (cut != null) {
+                setCut(cut.getOrder(), cut.getQuantity());
+            }
+        }
     }
 
     /**
@@ -74,16 +98,13 @@ public class Pattern {
      * <p>Total width of the roll being used to cut orders when pattern is applied to it.
      * Measured in abstract units.</p>
      *
-     * @param orders The orders needed to evaluate pattern width.
      * @return The total width of the orders being cut from the roll according to the pattern.
      */
-    public double getWidth(List<Order> orders) {
-        // TODO add check whether size of the orders is equal to the length of multiplier's array
-        // or not
+    public double getWidth() {
         double width = 0;
 
-        for (int i = 0; i < orders.size(); i++) {
-            width += orders.get(i).getWidth() * multipliers[i];
+        for (MultiCut cut : cuts.values()) {
+            width += cut.getWidth();
         }
 
         return width;
@@ -93,37 +114,54 @@ public class Pattern {
      * <p>Wasted width of the roll which will be left unused after cutting. Measured in abstract
      * units.</p>
      *
-     * @param orders The orders needed to evaluate pattern width.
      * @return The unused width of the roll.
      */
-    public double getTrim(List<Order> orders) {
+    public double getTrim() {
         if (roll == null) {
             return 0;
         }
 
-        return roll.getWidth() - getWidth(orders);
+        return roll.getWidth() - getWidth();
     }
 
     /**
      * <p>Wasted area of the roll which will be left unused after cutting.
      * Measured in abstract square units.</p>
      *
-     * @param orders The orders needed to evaluate pattern width.
      * @return The unused area of the roll.
      */
-    public double getTrimArea(List<Order> orders) {
+    public double getTrimArea() {
         if (roll == null) {
             return 0;
         }
 
-        return (roll.getWidth() - getWidth(orders)) * roll.getLength();
+        return (roll.getWidth() - getWidth()) * roll.getLength();
+    }
+
+    /**
+     * <p>Calculate the length of the finished product we will get for specific order after
+     * executing pattern. Measured in abstract units.</p>
+     *
+     * @param order The order in question.
+     * @return The length of produced strip.
+     */
+    public double getProductionLengthForOrder(Order order) {
+        double productionLength = 0;
+
+        // orders with unknown id should be ignored
+        MultiCut cut = cuts.get(order.getInternalId());
+        if (cut != null && roll != null) {
+            productionLength = roll.getLength() * cut.getQuantity();
+        }
+
+        return productionLength;
     }
 
     private int getTotalCutsNumber() {
         int totalCuts = 0;
 
-        for (int i = 0; i < multipliers.length; i++) {
-            totalCuts += multipliers[i];
+        for (MultiCut cut : cuts.values()) {
+            totalCuts += cut.getQuantity();
         }
 
         return totalCuts;
@@ -133,13 +171,12 @@ public class Pattern {
      * <p>Check whether cutting pattern is valid or not. Invalid patterns can't be cut from rolls
      * due to exceeded width or technical limitation.</p>
      *
-     * @param orders            The orders needed to evaluate pattern width.
      * @param allowedCutsNumber The maximum number of cuts allowed within pattern.
      * @return true if pattern is valid, false otherwise.
      */
-    public boolean isValid(List<Order> orders, int allowedCutsNumber) {
+    public boolean isValid(int allowedCutsNumber) {
         return getTotalCutsNumber() <= allowedCutsNumber &&
-                (roll == null || getWidth(orders) <= roll.getWidth());
+                (roll == null || getWidth() <= roll.getWidth());
     }
 
     /**
@@ -157,7 +194,13 @@ public class Pattern {
      *
      * @return The content-based hash code for array of multipliers.
      */
-    public int getMultipliersHashCode() {
+    public int getCutsHashCode() {
+        int multipliers[] = new int[cuts.size()];
+        int i = 0;
+        for (MultiCut cut : cuts.values()) {
+            multipliers[i++] = cut.getQuantity();
+        }
+
         return Arrays.hashCode(multipliers);
     }
 

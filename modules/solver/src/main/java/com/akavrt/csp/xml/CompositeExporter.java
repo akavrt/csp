@@ -17,14 +17,13 @@ import java.util.Locale;
  * Date: 03.03.13
  * Time: 01:37
  */
-public class CompositeConverter {
+public class CompositeExporter {
     private final static String SOLUTION_ID_TEMPLATE = "solution%d";
-    private final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
-
+    public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
     private Problem problem;
     private List<Solution> solutions;
 
-    public CompositeConverter() {
+    public CompositeExporter() {
         solutions = Lists.newArrayList();
     }
 
@@ -49,48 +48,42 @@ public class CompositeConverter {
         solutions.add(solution);
     }
 
-    public Document convert() {
-        Element cspElm = new Element(CompositeTags.CSP);
-
-        if (problem.getMetadata() != null) {
-            Element metadataElm = prepareMetadata(problem.getMetadata());
-            cspElm.addContent(metadataElm);
-        }
+    public Document export() {
+        Element cspElm = new Element(ExporterTags.CSP);
 
         if (problem != null) {
-            Element problemElm = new ProblemConverter().convert(problem);
+            // preparing metadata
+            if (problem.getMetadata() != null) {
+                Element metadataElm = prepareMetadata(problem.getMetadata());
+                cspElm.addContent(metadataElm);
+            }
+
+            // preparing lists of orders and rolls
+            Element problemElm = new ProblemConverter().export(problem);
             cspElm.addContent(problemElm);
         }
 
+        // preparing solutions
         if (solutions != null && solutions.size() > 0) {
-            Element solutionsElm = new Element(CompositeTags.SOLUTIONS);
+            Element solutionsElm = prepareSolutions();
             cspElm.addContent(solutionsElm);
-
-            SolutionConverter converter = new SolutionConverter(problem.getOrders());
-            for (int i = 0; i < solutions.size(); i++) {
-                String solutionId = String.format(SOLUTION_ID_TEMPLATE, i + 1);
-
-                Element solutionElm = converter.convert(solutions.get(i));
-                solutionElm.setAttribute(CompositeTags.ID, solutionId);
-                solutionsElm.addContent(solutionElm);
-            }
         }
 
         return new Document(cspElm);
     }
 
     private Element prepareMetadata(ProblemMetadata metadata) {
-        Element metadataElm = new Element(CompositeTags.METADATA);
+        Element metadataElm = new Element(ExporterTags.METADATA);
 
-        Element nameElm = new Element(CompositeTags.NAME);
+        Element nameElm = new Element(ExporterTags.NAME);
         nameElm.setText(metadata.getName());
         metadataElm.addContent(nameElm);
 
-        Element authorElm = new Element(CompositeTags.AUTHOR);
+        Element authorElm = new Element(ExporterTags.AUTHOR);
         authorElm.setText(metadata.getAuthor());
         metadataElm.addContent(authorElm);
 
-        Element descriptionElm = new Element(CompositeTags.DESCRIPTION);
+        Element descriptionElm = new Element(ExporterTags.DESCRIPTION);
         descriptionElm.setText(metadata.getDescription());
         metadataElm.addContent(descriptionElm);
 
@@ -98,7 +91,7 @@ public class CompositeConverter {
             DateFormat df = new SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.ENGLISH);
             String formatted = df.format(metadata.getDate());
 
-            Element dateElm = new Element(CompositeTags.DATE);
+            Element dateElm = new Element(ExporterTags.DATE);
             dateElm.setText(formatted);
             metadataElm.addContent(dateElm);
         }
@@ -106,7 +99,22 @@ public class CompositeConverter {
         return metadataElm;
     }
 
-    public interface CompositeTags {
+    private Element prepareSolutions() {
+        Element solutionsElm = new Element(ExporterTags.SOLUTIONS);
+
+        SolutionConverter converter = new SolutionConverter(problem);
+        for (int i = 0; i < solutions.size(); i++) {
+            String solutionId = String.format(SOLUTION_ID_TEMPLATE, i + 1);
+
+            Element solutionElm = converter.export(solutions.get(i));
+            solutionElm.setAttribute(ExporterTags.ID, solutionId);
+            solutionsElm.addContent(solutionElm);
+        }
+
+        return solutionsElm;
+    }
+
+    public interface ExporterTags {
         String CSP = "csp";
         String METADATA = "metadata";
         String NAME = "name";

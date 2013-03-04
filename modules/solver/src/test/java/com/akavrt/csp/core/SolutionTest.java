@@ -1,6 +1,7 @@
 package com.akavrt.csp.core;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -54,11 +55,17 @@ public class SolutionTest {
         List<Pattern> patterns = new ArrayList<Pattern>();
 
         Pattern pattern;
-        pattern = new Pattern(new int[]{0, 0, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 0);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
@@ -78,19 +85,25 @@ public class SolutionTest {
         Pattern pattern;
 
         // 1 * 50 + 1 * 40 + 1 * 30 = 120
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
-        double trimArea1 = pattern.getTrimArea(orders);
+        double trimArea1 = pattern.getTrimArea();
 
         // 2 * 50 + 2 * 40 + 2 * 30 = 240
-        pattern = new Pattern(new int[]{2, 2, 2});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 2);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 2);
         pattern.setRoll(roll2);
         patterns.add(pattern);
-        double trimArea2 = pattern.getTrimArea(orders);
+        double trimArea2 = pattern.getTrimArea();
 
         Solution solution = new Solution(patterns);
-        assertEquals(trimArea1 + trimArea2, solution.getTrimArea(orders), DELTA);
+        assertEquals(trimArea1 + trimArea2, solution.getTrimArea(), DELTA);
     }
 
     @Test
@@ -101,11 +114,17 @@ public class SolutionTest {
         Solution solution;
 
         // two different patterns is used
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{2, 2, 2});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 2);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 2);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
@@ -115,11 +134,17 @@ public class SolutionTest {
         // same pattern added twice
         patterns.clear();
 
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
@@ -135,44 +160,62 @@ public class SolutionTest {
         Solution solution;
 
         // the third order isn't produced
-        pattern = new Pattern(new int[]{1, 1, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{2, 2, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 2);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
         solution = new Solution(patterns);
-        assertEquals(0, solution.getProductionLengthForOrder(2), DELTA);
+        assertEquals(0, solution.getProductionLengthForOrder(orders.get(2)), DELTA);
         assertFalse(solution.isOrdersFulfilled(orders));
 
         // the first order is produced in insufficient length
         patterns.clear();
-        pattern = new Pattern(new int[]{1, 1, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{0, 2, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
         solution = new Solution(patterns);
-        assertEquals(300, solution.getProductionLengthForOrder(0), DELTA);
+        assertEquals(300, solution.getProductionLengthForOrder(orders.get(0)), DELTA);
         assertFalse(solution.isOrdersFulfilled(orders));
 
         // the first order is produced with exact length
         patterns.clear();
-        pattern = new Pattern(new int[]{0, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{1, 2, 2});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 2);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
         solution = new Solution(patterns);
-        assertEquals(500, solution.getProductionLengthForOrder(0), DELTA);
+        assertEquals(500, solution.getProductionLengthForOrder(orders.get(0)), DELTA);
         assertTrue(solution.isOrdersFulfilled(orders));
     }
 
@@ -184,11 +227,17 @@ public class SolutionTest {
         Solution solution;
 
         // valid solution
-        pattern = new Pattern(new int[]{0, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{1, 2, 2});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 2);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
@@ -197,11 +246,18 @@ public class SolutionTest {
 
         // patterns validity is broken
         patterns.clear();
-        pattern = new Pattern(new int[]{0, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{4, 4, 4}); // too much cuts: 12 > 10
+        // too much cuts: 12 > 10
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 4);
+        pattern.addCut(orders.get(1), 4);
+        pattern.addCut(orders.get(2), 4);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
@@ -210,11 +266,17 @@ public class SolutionTest {
 
         // same roll used twice
         patterns.clear();
-        pattern = new Pattern(new int[]{2, 2, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 2);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        pattern = new Pattern(new int[]{1, 2, 2});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 2);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 

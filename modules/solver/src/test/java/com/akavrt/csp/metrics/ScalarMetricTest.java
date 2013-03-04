@@ -75,12 +75,18 @@ public class ScalarMetricTest {
         Pattern pattern;
 
         // 2 *  50 + 1 * 40 + 2 * 30 = 200
-        pattern = new Pattern(new int[]{2, 1, 2});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 2);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 2);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
         // 3 * 50 + 0 * 40 + 5 * 30 = 300
-        pattern = new Pattern(new int[]{3, 0, 5});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 3);
+        pattern.addCut(orders.get(1), 0);
+        pattern.addCut(orders.get(2), 5);
         pattern.setRoll(roll2);
         solution.addPattern(pattern);
 
@@ -92,15 +98,24 @@ public class ScalarMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(new int[]{0, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(new int[]{1, 0, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 0);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll2);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(new int[]{0, 1, 0});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll3);
         solution.addPattern(pattern);
 
@@ -112,7 +127,10 @@ public class ScalarMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
@@ -124,11 +142,17 @@ public class ScalarMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll2);
         solution.addPattern(pattern);
 
@@ -140,15 +164,20 @@ public class ScalarMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(new int[]{1, 1, 1});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(new int[]{2, 2, 2});
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 2);
+        pattern.addCut(orders.get(1), 2);
+        pattern.addCut(orders.get(2), 2);
         pattern.setRoll(roll2);
         solution.addPattern(pattern);
 
         assertEquals(1, evaluator.getPatternsRatio(solution), DELTA);
     }
-
 }

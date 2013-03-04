@@ -68,15 +68,12 @@ public class Solution {
      * <p>Calculate total wasted area for cutting plan as a whole. Measured in abstract square
      * units.</p>
      *
-     * @param orders The orders needed to evaluate pattern width.
      * @return The wasted area for cutting plan.
      */
-    public double getTrimArea(List<Order> orders) {
+    public double getTrimArea() {
         double trimArea = 0;
         for (Pattern pattern : patterns) {
-            if (pattern.isActive()) {
-                trimArea += pattern.getTrimArea(orders);
-            }
+            trimArea += pattern.getTrimArea();
         }
 
         return trimArea;
@@ -94,7 +91,7 @@ public class Solution {
 
         for (Pattern pattern : patterns) {
             if (pattern.isActive()) {
-                set.add(pattern.getMultipliersHashCode());
+                set.add(pattern.getCutsHashCode());
             }
         }
 
@@ -105,18 +102,14 @@ public class Solution {
      * <p>Calculate the length of the finished product we will get for specific order after
      * executing cutting plan. Measured in abstract units.</p>
      *
-     * @param index The index of the order within the list of orders defined for problem under
-     *              consideration.
+     * @param order The order in question.
      * @return The length of produced strip.
      */
-    public double getProductionLengthForOrder(int index) {
+    public double getProductionLengthForOrder(Order order) {
         double productionLength = 0;
 
         for (Pattern pattern : patterns) {
-            if (pattern.isActive()) {
-                productionLength += pattern.getMultipliers()[index] * pattern.getRoll()
-                                                                             .getLength();
-            }
+            productionLength += pattern.getProductionLengthForOrder(order);
         }
 
         return productionLength;
@@ -134,8 +127,7 @@ public class Solution {
 
         // exit on the first invalid pattern
         for (int i = 0; i < patterns.size() && isPatternValid; i++) {
-            isPatternValid = patterns.get(i).isValid(problem.getOrders(),
-                                                     problem.getAllowedCutsNumber());
+            isPatternValid = patterns.get(i).isValid(problem.getAllowedCutsNumber());
         }
 
         return isPatternValid;
@@ -173,7 +165,8 @@ public class Solution {
 
         // exit on the first unfulfilled order
         for (int i = 0; i < orders.size() && isOrderFulfilled; i++) {
-            isOrderFulfilled = getProductionLengthForOrder(i) >= orders.get(i).getLength();
+            Order order = orders.get(i);
+            isOrderFulfilled = getProductionLengthForOrder(order) >= order.getLength();
         }
 
         return isOrderFulfilled;

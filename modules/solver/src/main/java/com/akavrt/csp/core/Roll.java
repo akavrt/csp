@@ -54,7 +54,7 @@ public class Roll extends Strip {
 
     /**
      * <p>Unique internal identifier is used for validity checks and inside the optimization
-     * routine. Calculated based on id of the roll and on length and width of the strip.</p>
+     * routine. Calculated based on the id of the roll.</p>
      *
      * @return The unique internal identifier of the roll.
      */
@@ -69,17 +69,6 @@ public class Roll extends Strip {
      */
     public double getArea() {
         return getLength() * getWidth();
-    }
-
-    /**
-     * <p>There is no sense in using rolls without usable length or width. If roll with such
-     * characteristics is encountered, it should be ignored or deleted at the early stages of the
-     * optimization routine.</p>
-     *
-     * @return true if roll is valid, false otherwise.
-     */
-    public boolean isValid() {
-        return getLength() > 0 && getWidth() > 0;
     }
 
     /**

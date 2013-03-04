@@ -18,11 +18,14 @@ import java.util.Map;
  * Time: 23:50
  */
 public class ProblemConverter implements XmlConverter<Problem> {
+    private final static String ORDER_ID_TEMPLATE = "order%d";
+    private final static String ROLL_ID_TEMPLATE = "roll%d";
 
     @Override
-    public Element convert(Problem problem) {
+    public Element export(Problem problem) {
         Element problemElm = new Element(ProblemTags.PROBLEM);
 
+        // converting constraints
         if (problem.getAllowedCutsNumber() > 0) {
             Element constraintElm = new Element(ProblemTags.CONSTRAINTS);
             problemElm.addContent(constraintElm);
@@ -32,68 +35,147 @@ public class ProblemConverter implements XmlConverter<Problem> {
             constraintElm.addContent(allowedCutsElm);
         }
 
+        // converting orders
         if (problem.getOrders() != null && problem.getOrders().size() > 0) {
-            // sort orders using user-defined id's
-            List<Order> orders = Lists.newArrayList(problem.getOrders());
-            Collections.sort(orders, new Comparator<Order>() {
-                @Override
-                public int compare(Order lhs, Order rhs) {
-                    return lhs.getId().compareTo(rhs.getId());
-                }
-            });
-
-            Element ordersElm = new Element(ProblemTags.ORDERS);
+            Element ordersElm = prepareOrders(problem);
             problemElm.addContent(ordersElm);
-            OrderConverter orderConverter = new OrderConverter();
-            for (Order order : orders) {
-                Element orderElm = orderConverter.convert(order);
-                ordersElm.addContent(orderElm);
-            }
         }
 
+        // converting rolls
         if (problem.getRolls() != null && problem.getRolls().size() > 0) {
-            // group rolls
-            List<Roll> rolls = problem.getRolls();
-            Map<String, RollGroup> groups = Maps.newHashMap();
-            for (Roll roll : rolls) {
-                String id = roll.getId();
-                RollGroup group = groups.get(id);
-                if (group == null) {
-                    // first occurrence
-                    group = new RollGroup(roll);
-                    groups.put(id, group);
-                } else {
-                    // no need to create new group
-                    group.incQuantity();
-                }
-            }
-
-            // sort rolls using user-defined id's
-            List<RollGroup> sorted = Lists.newArrayList(groups.values());
-            Collections.sort(sorted, new Comparator<RollGroup>() {
-                @Override
-                public int compare(RollGroup lhs, RollGroup rhs) {
-                    return lhs.getRoll().getId().compareTo(rhs.getRoll().getId());
-                }
-            });
-
-            Element rollsElm = new Element(ProblemTags.ROLLS);
+            Element rollsElm = prepareRolls(problem);
             problemElm.addContent(rollsElm);
-            RollConverter rollConverter = new RollConverter();
-            for (RollGroup group : sorted) {
-                Element rollElm = rollConverter.convert(group.getRoll());
-
-                int quantity = group.getQuantity();
-                if (quantity > 1) {
-                    rollElm.setAttribute(RollConverter.RollTags.QUANTITY,
-                                         Integer.toString(quantity));
-                }
-
-                rollsElm.addContent(rollElm);
-            }
         }
 
         return problemElm;
+    }
+
+    @Override
+    public Problem extract(Element rootElm) {
+        Problem.Builder builder = new Problem.Builder();
+
+        // extract constraints
+        Element constraintsElm = rootElm.getChild(ProblemTags.CONSTRAINTS);
+        if (constraintsElm != null) {
+            int allowedCuts = Utils.getIntegerFromText(constraintsElm,
+                                                       ProblemTags.ALLOWED_CUTS);
+            builder.setAllowedCutsNumber(allowedCuts);
+        }
+
+        // extract list of orders
+        Element ordersElm = rootElm.getChild(ProblemTags.ORDERS);
+        if (ordersElm != null) {
+            retrieveOrders(ordersElm, builder);
+        }
+
+        // extract list of rolls
+        Element rollsElm = rootElm.getChild(ProblemTags.ROLLS);
+        if (rollsElm != null) {
+            retrieveRolls(rollsElm, builder);
+        }
+
+        return builder.build();
+    }
+
+    private Element prepareOrders(Problem problem) {
+        // sort orders using user-defined id's
+        List<Order> orders = Lists.newArrayList(problem.getOrders());
+        Collections.sort(orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order lhs, Order rhs) {
+                return lhs.getId().compareTo(rhs.getId());
+            }
+        });
+
+        Element ordersElm = new Element(ProblemTags.ORDERS);
+        OrderConverter orderConverter = new OrderConverter();
+        for (Order order : orders) {
+            Element orderElm = orderConverter.export(order);
+            ordersElm.addContent(orderElm);
+        }
+
+        return ordersElm;
+    }
+
+    private Element prepareRolls(Problem problem) {
+        // group rolls
+        List<Roll> rolls = problem.getRolls();
+        Map<String, RollGroup> groups = Maps.newHashMap();
+        for (Roll roll : rolls) {
+            String id = roll.getId();
+            RollGroup group = groups.get(id);
+            if (group == null) {
+                // first occurrence
+                group = new RollGroup(roll);
+                groups.put(id, group);
+            } else {
+                // no need to create new group
+                group.incQuantity();
+            }
+        }
+
+        // sort rolls using user-defined id's
+        List<RollGroup> sorted = Lists.newArrayList(groups.values());
+        Collections.sort(sorted, new Comparator<RollGroup>() {
+            @Override
+            public int compare(RollGroup lhs, RollGroup rhs) {
+                return lhs.getRoll().getId().compareTo(rhs.getRoll().getId());
+            }
+        });
+
+        Element rollsElm = new Element(ProblemTags.ROLLS);
+        RollConverter rollConverter = new RollConverter();
+        for (RollGroup group : sorted) {
+            Element rollElm = rollConverter.export(group.getRoll());
+
+            int quantity = group.getQuantity();
+            if (quantity > 1) {
+                rollElm.setAttribute(ProblemTags.QUANTITY, Integer.toString(quantity));
+            }
+
+            rollsElm.addContent(rollElm);
+        }
+
+        return rollsElm;
+    }
+
+    private void retrieveOrders(Element ordersElm, Problem.Builder builder) {
+        OrderConverter converter = new OrderConverter();
+        int i = 0;
+        for (Element orderElm : ordersElm.getChildren(ProblemTags.ORDER)) {
+            Order order = converter.extract(orderElm);
+
+            if (order.isValid()) {
+                if (order.getId() == null) {
+                    String orderId = String.format(ORDER_ID_TEMPLATE, ++i);
+                    order = new Order(orderId, order.getLength(), order.getWidth());
+                }
+
+                builder.addOrder(order);
+            }
+        }
+    }
+
+    private void retrieveRolls(Element rollsElm, Problem.Builder builder) {
+        RollConverter converter = new RollConverter();
+        int i = 0;
+        for (Element rollElm : rollsElm.getChildren(ProblemTags.ROLL)) {
+            Roll roll = converter.extract(rollElm);
+
+            if (roll.isValid()) {
+                if (roll.getId() == null) {
+                    String rollId = String.format(ROLL_ID_TEMPLATE, ++i);
+                    roll = new Roll(rollId, roll.getLength(), roll.getWidth());
+                }
+
+                int quantity = Utils.getIntegerFromAttribute(rollElm, ProblemTags.QUANTITY, 1);
+                if (quantity > 1) {
+                    builder.addRolls(roll, quantity);
+                } else {
+                    builder.addRoll(roll);
+                }
+            }
+        }
     }
 
     public interface ProblemTags {
@@ -101,7 +183,10 @@ public class ProblemConverter implements XmlConverter<Problem> {
         String CONSTRAINTS = "constraints";
         String ALLOWED_CUTS = "allowed-cuts";
         String ORDERS = "orders";
+        String ORDER = "order";
+        String QUANTITY = "quantity";
         String ROLLS = "rolls";
+        String ROLL = "roll";
     }
 
     private static class RollGroup {

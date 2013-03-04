@@ -16,9 +16,9 @@ public abstract class Strip {
     /**
      * <p>Strip params should be set only when an instance of class is created.</p>
      *
-     * @param id The identifier for the strip.
+     * @param id     The identifier for the strip.
      * @param length The width of the strip, in abstract units.
-     * @param width The width of the strip, in abstract units.
+     * @param width  The width of the strip, in abstract units.
      */
     public Strip(String id, double length, double width) {
         this.id = id;
@@ -53,4 +53,17 @@ public abstract class Strip {
     public double getWidth() {
         return width;
     }
+
+    /**
+     * <p>There is no sense in using orders or rolls without usable length or width. If strip with
+     * such characteristics is encountered, it should be ignored or deleted at the early stages of
+     * the optimization routine.</p>
+     *
+     * @return true if strip is valid, false otherwise.
+     */
+    public boolean isValid() {
+        return getLength() > 0 && getWidth() > 0;
+    }
+
+
 }
