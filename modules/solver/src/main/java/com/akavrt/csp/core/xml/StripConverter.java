@@ -1,6 +1,7 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Strip;
+import com.akavrt.csp.xml.XmlConverter;
 import org.jdom2.Element;
 
 import java.text.DecimalFormat;
@@ -16,11 +17,17 @@ public abstract class StripConverter<T extends Strip> implements XmlConverter<T>
 
     public abstract String getRootTag();
     public abstract T createStrip(String id, double length, double width);
+    public abstract Element prepareMetadata(T strip);
 
     @Override
     public Element export(T strip) {
         Element rootElm = new Element(getRootTag());
-        rootElm.setAttribute(StripTags.ID, strip.getId());
+        rootElm.setAttribute(XmlTags.ID, strip.getId());
+
+        Element metadataElm = prepareMetadata(strip);
+        if (metadataElm != null) {
+            rootElm.addContent(metadataElm);
+        }
 
         Element stripElm = prepareStrip(strip);
         rootElm.addContent(stripElm);
@@ -35,11 +42,11 @@ public abstract class StripConverter<T extends Strip> implements XmlConverter<T>
         double length = 0;
         double width = 0;
 
-        String id = rootElm.getAttributeValue(StripTags.ID);
-        Element stripElm = rootElm.getChild(StripTags.STRIP);
+        String id = rootElm.getAttributeValue(XmlTags.ID);
+        Element stripElm = rootElm.getChild(XmlTags.STRIP);
         if (stripElm != null) {
-            length = Utils.getDoubleFromText(stripElm, StripTags.LENGTH);
-            width = Utils.getDoubleFromText(stripElm, StripTags.WIDTH);
+            length = Utils.getDoubleFromText(stripElm, XmlTags.LENGTH);
+            width = Utils.getDoubleFromText(stripElm, XmlTags.WIDTH);
         }
 
         if (length > 0 && width > 0) {
@@ -50,7 +57,7 @@ public abstract class StripConverter<T extends Strip> implements XmlConverter<T>
     }
 
     private Element prepareStrip(T strip) {
-        Element stripElm = new Element(StripTags.STRIP);
+        Element stripElm = new Element(XmlTags.STRIP);
 
         DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         formatSymbols.setDecimalSeparator('.');
@@ -58,19 +65,19 @@ public abstract class StripConverter<T extends Strip> implements XmlConverter<T>
         DecimalFormat format = new DecimalFormat("#.##", formatSymbols);
 
         // length of the strip
-        Element lengthElm = new Element(StripTags.LENGTH);
+        Element lengthElm = new Element(XmlTags.LENGTH);
         lengthElm.setText(format.format(strip.getLength()));
         stripElm.addContent(lengthElm);
 
         // width of the strip
-        Element widthElm = new Element(StripTags.WIDTH);
+        Element widthElm = new Element(XmlTags.WIDTH);
         widthElm.setText(format.format(strip.getWidth()));
         stripElm.addContent(widthElm);
 
         return stripElm;
     }
 
-    public interface StripTags {
+    private interface XmlTags {
         String ID = "id";
         String STRIP = "strip";
         String LENGTH = "length";

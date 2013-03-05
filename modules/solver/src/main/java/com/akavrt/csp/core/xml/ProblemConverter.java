@@ -1,8 +1,10 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.core.metadata.ProblemMetadata;
+import com.akavrt.csp.xml.XmlConverter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.jdom2.Element;
@@ -23,14 +25,20 @@ public class ProblemConverter implements XmlConverter<Problem> {
 
     @Override
     public Element export(Problem problem) {
-        Element problemElm = new Element(ProblemTags.PROBLEM);
+        Element problemElm = new Element(XmlTags.PROBLEM);
+
+        // converting metadata
+        if (problem.getMetadata() != null) {
+            Element metadataElm = problem.getMetadata().save();
+            problemElm.addContent(metadataElm);
+        }
 
         // converting constraints
         if (problem.getAllowedCutsNumber() > 0) {
-            Element constraintElm = new Element(ProblemTags.CONSTRAINTS);
+            Element constraintElm = new Element(XmlTags.CONSTRAINTS);
             problemElm.addContent(constraintElm);
 
-            Element allowedCutsElm = new Element(ProblemTags.ALLOWED_CUTS);
+            Element allowedCutsElm = new Element(XmlTags.ALLOWED_CUTS);
             allowedCutsElm.setText(Integer.toString(problem.getAllowedCutsNumber()));
             constraintElm.addContent(allowedCutsElm);
         }
@@ -54,22 +62,31 @@ public class ProblemConverter implements XmlConverter<Problem> {
     public Problem extract(Element rootElm) {
         Problem.Builder builder = new Problem.Builder();
 
+        // extract metadata
+        Element metadataElm = rootElm.getChild(XmlTags.METADATA);
+        if (metadataElm != null) {
+            ProblemMetadata metadata = new ProblemMetadata();
+            metadata.load(metadataElm);
+
+            builder.setMetadata(metadata);
+        }
+
         // extract constraints
-        Element constraintsElm = rootElm.getChild(ProblemTags.CONSTRAINTS);
+        Element constraintsElm = rootElm.getChild(XmlTags.CONSTRAINTS);
         if (constraintsElm != null) {
             int allowedCuts = Utils.getIntegerFromText(constraintsElm,
-                                                       ProblemTags.ALLOWED_CUTS);
+                                                       XmlTags.ALLOWED_CUTS);
             builder.setAllowedCutsNumber(allowedCuts);
         }
 
         // extract list of orders
-        Element ordersElm = rootElm.getChild(ProblemTags.ORDERS);
+        Element ordersElm = rootElm.getChild(XmlTags.ORDERS);
         if (ordersElm != null) {
             retrieveOrders(ordersElm, builder);
         }
 
         // extract list of rolls
-        Element rollsElm = rootElm.getChild(ProblemTags.ROLLS);
+        Element rollsElm = rootElm.getChild(XmlTags.ROLLS);
         if (rollsElm != null) {
             retrieveRolls(rollsElm, builder);
         }
@@ -87,7 +104,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
             }
         });
 
-        Element ordersElm = new Element(ProblemTags.ORDERS);
+        Element ordersElm = new Element(XmlTags.ORDERS);
         OrderConverter orderConverter = new OrderConverter();
         for (Order order : orders) {
             Element orderElm = orderConverter.export(order);
@@ -123,14 +140,14 @@ public class ProblemConverter implements XmlConverter<Problem> {
             }
         });
 
-        Element rollsElm = new Element(ProblemTags.ROLLS);
+        Element rollsElm = new Element(XmlTags.ROLLS);
         RollConverter rollConverter = new RollConverter();
         for (RollGroup group : sorted) {
             Element rollElm = rollConverter.export(group.getRoll());
 
             int quantity = group.getQuantity();
             if (quantity > 1) {
-                rollElm.setAttribute(ProblemTags.QUANTITY, Integer.toString(quantity));
+                rollElm.setAttribute(XmlTags.QUANTITY, Integer.toString(quantity));
             }
 
             rollsElm.addContent(rollElm);
@@ -142,7 +159,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
     private void retrieveOrders(Element ordersElm, Problem.Builder builder) {
         OrderConverter converter = new OrderConverter();
         int i = 0;
-        for (Element orderElm : ordersElm.getChildren(ProblemTags.ORDER)) {
+        for (Element orderElm : ordersElm.getChildren(XmlTags.ORDER)) {
             Order order = converter.extract(orderElm);
 
             if (order.isValid()) {
@@ -159,7 +176,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
     private void retrieveRolls(Element rollsElm, Problem.Builder builder) {
         RollConverter converter = new RollConverter();
         int i = 0;
-        for (Element rollElm : rollsElm.getChildren(ProblemTags.ROLL)) {
+        for (Element rollElm : rollsElm.getChildren(XmlTags.ROLL)) {
             Roll roll = converter.extract(rollElm);
 
             if (roll.isValid()) {
@@ -168,7 +185,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
                     roll = new Roll(rollId, roll.getLength(), roll.getWidth());
                 }
 
-                int quantity = Utils.getIntegerFromAttribute(rollElm, ProblemTags.QUANTITY, 1);
+                int quantity = Utils.getIntegerFromAttribute(rollElm, XmlTags.QUANTITY, 1);
                 if (quantity > 1) {
                     builder.addRolls(roll, quantity);
                 } else {
@@ -178,8 +195,9 @@ public class ProblemConverter implements XmlConverter<Problem> {
         }
     }
 
-    public interface ProblemTags {
+    private interface XmlTags {
         String PROBLEM = "problem";
+        String METADATA = "metadata";
         String CONSTRAINTS = "constraints";
         String ALLOWED_CUTS = "allowed-cuts";
         String ORDERS = "orders";

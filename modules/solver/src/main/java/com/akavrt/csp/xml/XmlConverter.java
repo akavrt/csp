@@ -11,6 +11,7 @@ import org.jdom2.Element;
 public interface XmlConverter<T> {
     // export to XML
     public Element export(T value);
+
     // extract from XML
     public T extract(Element element);
 }

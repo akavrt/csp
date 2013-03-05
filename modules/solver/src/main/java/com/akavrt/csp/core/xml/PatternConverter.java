@@ -1,6 +1,7 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.*;
+import com.akavrt.csp.xml.XmlConverter;
 import com.google.common.collect.Lists;
 import org.jdom2.Element;
 
@@ -29,7 +30,7 @@ public class PatternConverter implements XmlConverter<Pattern> {
 
     @Override
     public Element export(Pattern pattern) {
-        Element patternElm = new Element(PatternTags.PATTERN);
+        Element patternElm = new Element(XmlTags.PATTERN);
 
         // converting attached roll to a reference
         if (pattern.getRoll() != null) {
@@ -47,10 +48,10 @@ public class PatternConverter implements XmlConverter<Pattern> {
     @Override
     public Pattern extract(Element rootElm) {
         // extracting cuts
-        Element cutsElm = rootElm.getChild(PatternTags.CUTS);
+        Element cutsElm = rootElm.getChild(XmlTags.CUTS);
         List<MultiCut> cuts = Lists.newArrayList();
         if (cutsElm != null) {
-            for (Element cutElm : cutsElm.getChildren(PatternTags.CUT)) {
+            for (Element cutElm : cutsElm.getChildren(XmlTags.CUT)) {
                 MultiCut cut = cutConverter.extract(cutElm);
                 if (cut != null) {
                     cuts.add(cut);
@@ -60,7 +61,7 @@ public class PatternConverter implements XmlConverter<Pattern> {
 
         // extracting reference and trying to find referenced roll
         Roll roll = null;
-        Element rollElm = rootElm.getChild(PatternTags.ROLL);
+        Element rollElm = rootElm.getChild(XmlTags.ROLL);
         if (rollElm != null) {
             roll = retrieveRoll(rollElm);
         }
@@ -73,17 +74,17 @@ public class PatternConverter implements XmlConverter<Pattern> {
     }
 
     private Element prepareRollReference(Roll roll) {
-        Element rollElm = new Element(PatternTags.ROLL);
+        Element rollElm = new Element(XmlTags.ROLL);
 
-        Element refElm = new Element(PatternTags.REF);
-        refElm.setAttribute(PatternTags.ID, roll.getId());
+        Element refElm = new Element(XmlTags.REF);
+        refElm.setAttribute(XmlTags.ID, roll.getId());
         rollElm.addContent(refElm);
 
         return rollElm;
     }
 
     private Element prepareCuts(Pattern pattern) {
-        Element cutsElm = new Element(PatternTags.CUTS);
+        Element cutsElm = new Element(XmlTags.CUTS);
         List<MultiCut> cuts = pattern.getCuts();
 
         // sort cuts using user-defined order id's
@@ -107,9 +108,9 @@ public class PatternConverter implements XmlConverter<Pattern> {
     private Roll retrieveRoll(Element rollElm) {
         Roll roll = null;
 
-        Element refElm = rollElm.getChild(PatternTags.REF);
-        if (refElm != null && refElm.getAttributeValue(PatternTags.ID) != null) {
-            String rollId = refElm.getAttributeValue(PatternTags.ID);
+        Element refElm = rollElm.getChild(XmlTags.REF);
+        if (refElm != null && refElm.getAttributeValue(XmlTags.ID) != null) {
+            String rollId = refElm.getAttributeValue(XmlTags.ID);
             for (int i = 0; i < rolls.size(); i++) {
                 Roll rollToTest = rolls.get(i);
                 if (rollToTest.getId().equals(rollId)) {
@@ -124,7 +125,7 @@ public class PatternConverter implements XmlConverter<Pattern> {
         return roll;
     }
 
-    public interface PatternTags {
+    private interface XmlTags {
         String PATTERN = "pattern";
         String ROLL = "roll";
         String REF = "ref";

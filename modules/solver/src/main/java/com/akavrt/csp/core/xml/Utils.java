@@ -1,4 +1,4 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import org.jdom2.Element;
 

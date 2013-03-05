@@ -1,9 +1,10 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.core.xml.PatternConverter;
 import org.jdom2.Element;
 import org.junit.Before;
 import org.junit.Test;

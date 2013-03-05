@@ -1,7 +1,8 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.MultiCut;
 import com.akavrt.csp.core.Order;
+import com.akavrt.csp.xml.XmlConverter;
 import com.google.common.collect.Maps;
 import org.jdom2.Element;
 
@@ -25,14 +26,14 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
 
     @Override
     public Element export(MultiCut cut) {
-        Element cutElm = new Element(MultiCutTags.CUT);
-        cutElm.setAttribute(MultiCutTags.QUANTITY, Integer.toString(cut.getQuantity()));
+        Element cutElm = new Element(XmlCutTags.CUT);
+        cutElm.setAttribute(XmlCutTags.QUANTITY, Integer.toString(cut.getQuantity()));
 
-        Element orderElm = new Element(MultiCutTags.ORDER);
+        Element orderElm = new Element(XmlCutTags.ORDER);
         cutElm.addContent(orderElm);
 
-        Element refElm = new Element(MultiCutTags.REF);
-        refElm.setAttribute(MultiCutTags.ID, cut.getOrder().getId());
+        Element refElm = new Element(XmlCutTags.REF);
+        refElm.setAttribute(XmlCutTags.ID, cut.getOrder().getId());
         orderElm.addContent(refElm);
 
         return cutElm;
@@ -40,14 +41,14 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
 
     @Override
     public MultiCut extract(Element rootElm) {
-        int quantity = Utils.getIntegerFromAttribute(rootElm, MultiCutTags.QUANTITY, 0);
+        int quantity = Utils.getIntegerFromAttribute(rootElm, XmlCutTags.QUANTITY, 0);
 
         // extracting order reference and trying to find referenced order
         Order order = null;
-        Element orderElm = rootElm.getChild(MultiCutTags.ORDER);
-        if (orderElm != null && orderElm.getChild(MultiCutTags.REF) != null) {
-            Element refElm = orderElm.getChild(MultiCutTags.REF);
-            String orderId = refElm.getAttributeValue(MultiCutTags.ID);
+        Element orderElm = rootElm.getChild(XmlCutTags.ORDER);
+        if (orderElm != null && orderElm.getChild(XmlCutTags.REF) != null) {
+            Element refElm = orderElm.getChild(XmlCutTags.REF);
+            String orderId = refElm.getAttributeValue(XmlCutTags.ID);
 
             if (orderId != null) {
                 order = mappedOrders.get(orderId);
@@ -62,7 +63,7 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
         return cut;
     }
 
-    public interface MultiCutTags {
+    private interface XmlCutTags {
         String REF = "ref";
         String ID = "id";
         String CUT = "cut";

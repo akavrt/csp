@@ -6,10 +6,14 @@ import com.google.common.collect.Maps;
 import java.util.*;
 
 /**
- * <p>A cutting pattern is modeled as a simple array of integer multiplies. Number of of elements
- * in this array equals to the number of orders in problem under consideration. Value of the
+ * <p>A cutting pattern is modeled as a simple array of integer multiplies. Number of elements in
+ * this array equals to the number of orders in problem under consideration. Value of the
  * specific multiplier means how many times corresponding order is being cut from the roll when
  * this pattern is being applied to it.</p>
+ *
+ * <p>To make patterns more autonomous we are storing not only multipliers, but also corresponding
+ * orders, see MultiCut. This approach is more flexible and less error prone because we don't need
+ * to care about the order in which multipliers are enumerated.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
@@ -56,18 +60,46 @@ public class Pattern {
         return cut != null;
     }
 
+    /**
+     * <p>Find multiplier linked with order specified as a parameter and add to it prescribed
+     * number of cuts.<p/>
+     *
+     * @param order    The order which is used to find right multiplier.
+     * @param quantity The number of cuts which is need to be added to current value.
+     * @return true if multiplier was found and updated.
+     */
     public boolean addCut(Order order, int quantity) {
         return updateCut(order, quantity, true);
     }
 
+    /**
+     * <p>Find multiplier linked with order specified as a parameter and set it to prescribed
+     * number of cuts.<p/>
+     *
+     * @param order    The order which is used to find right multiplier.
+     * @param quantity The number of cuts which current value is need to be substituted with.
+     * @return true if multiplier was found and updated.
+     */
     public boolean setCut(Order order, int quantity) {
         return updateCut(order, quantity, false);
     }
 
+    /**
+     * <p>List of multipliers stored within the pattern, each multiplier is represented as an
+     * instance of MultiCut.</p>
+     *
+     * @return List of multipliers.
+     */
     public List<MultiCut> getCuts() {
         return Lists.newArrayList(cuts.values());
     }
 
+    /**
+     * <p>Replace current list of multipliers with new one, each multiplier is represented as an
+     * instance of MultiCut.</p>
+     *
+     * @return New list of multipliers.
+     */
     public void setCuts(List<MultiCut> cuts) {
         for (MultiCut cut : cuts) {
             if (cut != null) {
@@ -95,8 +127,8 @@ public class Pattern {
     }
 
     /**
-     * <p>Total width of the roll being used to cut orders when pattern is applied to it.
-     * Measured in abstract units.</p>
+     * <p>Total width of the roll being used to cut orders when pattern is applied to it. Measured
+     * in abstract units.</p>
      *
      * @return The total width of the orders being cut from the roll according to the pattern.
      */
@@ -125,8 +157,8 @@ public class Pattern {
     }
 
     /**
-     * <p>Wasted area of the roll which will be left unused after cutting.
-     * Measured in abstract square units.</p>
+     * <p>Wasted area of the roll which will be left unused after cutting. Measured in abstract
+     * square units.</p>
      *
      * @return The unused area of the roll.
      */

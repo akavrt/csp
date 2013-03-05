@@ -1,6 +1,6 @@
 package com.akavrt.csp.core;
 
-import com.akavrt.csp.metadata.ProblemMetadata;
+import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import java.util.List;
  * <p>In this class we are introducing these lists. Also we are adding one important constraint to
  * limit the total number of cuts in a single cutting pattern.<p/>
  *
- * <p>In previous implementation metadata was stored along with orders and stock.
- * Here we will try to strip classes from such data and keep them lightweight.<p/>
+ * <p>In previous implementation metadata was stored along with orders and stock. Here we will try
+ * to strip classes from such data and keep them lightweight.<p/>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
@@ -93,7 +93,7 @@ public class Problem {
     }
 
     /**
-     * <p>Provides extended description of the problem.</p>
+     * <p>Provide extended description of the problem.</p>
      *
      * @return Additional information about the problem.
      */
@@ -110,8 +110,6 @@ public class Problem {
         this.metadata = metadata;
     }
 
-    // TODO extend this builder to support real materials with physical properties like
-    // thickness, density, etc.
     public static class Builder {
         private List<Order> orders;
         private List<Roll> rolls;
@@ -191,6 +189,8 @@ public class Problem {
         public Builder addRolls(Roll roll, int quantity) {
             for (int i = 1; i <= quantity; i++) {
                 Roll copy = new Roll(roll.getId(), i, roll.getLength(), roll.getWidth());
+                copy.setMetadata(roll.getMetadata());
+
                 rolls.add(copy);
             }
             return this;
@@ -241,7 +241,7 @@ public class Problem {
         }
 
         /**
-         * <p>Creates a Problem with the arguments supplied to this builder.<p/>
+         * <p>Create a Problem with the arguments supplied to this builder.<p/>
          */
         public Problem build() {
             if (sortOrders) {

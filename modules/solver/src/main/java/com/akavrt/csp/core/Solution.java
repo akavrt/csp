@@ -1,5 +1,7 @@
 package com.akavrt.csp.core;
 
+import com.akavrt.csp.core.metadata.SolutionMetadata;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,16 +15,17 @@ import java.util.Set;
  */
 public class Solution {
     private List<Pattern> patterns;
+    private SolutionMetadata metadata;
 
     /**
-     * <p>Creates an instance of Solution with empty array of patterns</p>.
+     * <p>Create an instance of Solution with empty array of patterns</p>.
      */
     public Solution() {
         patterns = new ArrayList<Pattern>();
     }
 
     /**
-     * <p>Creates an instance of Solution with array of patterns provided as a parameter.</p>.
+     * <p>Create an instance of Solution with array of patterns provided as a parameter.</p>.
      *
      * @param patterns The list of patters assigned to the solution.
      */
@@ -180,5 +183,23 @@ public class Solution {
      */
     public boolean isValid(Problem problem) {
         return isPatternsValid(problem) && isRollsValid() && isOrdersFulfilled(problem.getOrders());
+    }
+
+    /**
+     * <p>Provide extended description of the solution.</p>
+     *
+     * @return Additional information about the solution.
+     */
+    public SolutionMetadata getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * <p>Set additional information about the solution.</p>
+     *
+     * @param metadata Additional information about the solution.
+     */
+    public void setMetadata(SolutionMetadata metadata) {
+        this.metadata = metadata;
     }
 }

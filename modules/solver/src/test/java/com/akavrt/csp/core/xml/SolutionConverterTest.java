@@ -1,6 +1,7 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.*;
+import com.akavrt.csp.core.xml.SolutionConverter;
 import org.jdom2.Element;
 import org.junit.Before;
 import org.junit.Test;

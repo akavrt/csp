@@ -1,5 +1,6 @@
 package com.akavrt.csp.core;
 
+import com.akavrt.csp.core.metadata.RollMetadata;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -10,9 +11,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class Roll extends Strip {
     private static final String FORMAT_TEMPLATE = "Roll '%s':\n    W = %.2f\n    L = %.2f";
     private int internalId;
+    private RollMetadata metadata;
 
     /**
-     * <p>Creates roll with predefined identifier, length and width.</p>
+     * <p>Create roll with predefined identifier, length and width.</p>
      *
      * @param id     Unique identifier of the roll.
      * @param length Length of the roll, measured in abstract units.
@@ -23,7 +25,7 @@ public class Roll extends Strip {
     }
 
     /**
-     * <p>Creates roll with predefined identifier, length and width.</p>
+     * <p>Create roll with predefined identifier, length and width.</p>
      *
      * <p>Sometimes when defining a problem it's handy to use brief notation and combine rolls with
      * same size in groups. For example, if we have 5 rolls of the same size, we can enumerate
@@ -79,5 +81,23 @@ public class Roll extends Strip {
     @Override
     public String toString() {
         return String.format(FORMAT_TEMPLATE, getId(), getWidth(), getLength());
+    }
+
+    /**
+     * <p>Provide extended description of the roll.</p>
+     *
+     * @return Additional information about the roll.
+     */
+    public RollMetadata getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * <p>Set additional information about the roll.</p>
+     *
+     * @param metadata Additional information about the roll.
+     */
+    public void setMetadata(RollMetadata metadata) {
+        this.metadata = metadata;
     }
 }

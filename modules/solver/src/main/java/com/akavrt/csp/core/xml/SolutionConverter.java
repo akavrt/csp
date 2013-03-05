@@ -1,8 +1,10 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.metadata.SolutionMetadata;
+import com.akavrt.csp.xml.XmlConverter;
 import com.google.common.collect.Lists;
 import org.jdom2.Element;
 
@@ -23,11 +25,20 @@ public class SolutionConverter implements XmlConverter<Solution> {
 
     @Override
     public Element export(Solution solution) {
-        Element solutionElm = new Element(SolutionTags.SOLUTION);
+        Element solutionElm = new Element(XmlTags.SOLUTION);
 
+        // export metadata
+        if (solution.getMetadata() != null) {
+            Element metadataElm = solution.getMetadata().save();
+            if (metadataElm != null) {
+                solutionElm.addContent(metadataElm);
+            }
+        }
+
+        // export patterns
         List<Pattern> patterns = solution.getPatterns();
         if (patterns != null && patterns.size() > 0) {
-            Element patternsElm = new Element(SolutionTags.PATTERNS);
+            Element patternsElm = new Element(XmlTags.PATTERNS);
             solutionElm.addContent(patternsElm);
 
             // converting patterns
@@ -36,7 +47,7 @@ public class SolutionConverter implements XmlConverter<Solution> {
                 String patternId = String.format(PATTERN_ID_TEMPLATE, i + 1);
 
                 Element patternElm = patternConverter.export(patterns.get(i));
-                patternElm.setAttribute(SolutionTags.ID, patternId);
+                patternElm.setAttribute(XmlTags.ID, patternId);
                 patternsElm.addContent(patternElm);
             }
         }
@@ -46,25 +57,40 @@ public class SolutionConverter implements XmlConverter<Solution> {
 
     @Override
     public Solution extract(Element rootElm) {
+        Solution solution = new Solution();
+
+        // extract metadata
+        Element metadataElm = rootElm.getChild(XmlTags.METADATA);
+        if (metadataElm != null) {
+            SolutionMetadata metadata = new SolutionMetadata();
+            metadata.load(metadataElm);
+            solution.setMetadata(metadata);
+        }
+
         // instance of PatternConverter can't be reused to extract different solutions
         // stock handling (extraction of attached rolls) must be done separately for each solution
         PatternConverter patternConverter = new PatternConverter(problem);
 
-        Element patternsElm = rootElm.getChild(SolutionTags.PATTERNS);
-        List<Pattern> patterns = Lists.newArrayList();
+        // extract patterns
+        Element patternsElm = rootElm.getChild(XmlTags.PATTERNS);
         if (patternsElm != null) {
+            List<Pattern> patterns = Lists.newArrayList();
+
             // extracting patterns one by one
-            for (Element patternElm : patternsElm.getChildren(SolutionTags.PATTERN)) {
+            for (Element patternElm : patternsElm.getChildren(XmlTags.PATTERN)) {
                 Pattern pattern = patternConverter.extract(patternElm);
                 patterns.add(pattern);
             }
+
+            solution.setPatterns(patterns);
         }
 
-        return new Solution(patterns);
+        return solution;
     }
 
-    public interface SolutionTags {
+    private interface XmlTags {
         String SOLUTION = "solution";
+        String METADATA = "metadata";
         String PATTERNS = "patterns";
         String PATTERN = "pattern";
         String ID = "id";

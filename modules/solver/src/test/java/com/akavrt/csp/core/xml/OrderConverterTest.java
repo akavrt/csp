@@ -1,6 +1,7 @@
-package com.akavrt.csp.xml;
+package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Order;
+import com.akavrt.csp.core.xml.OrderConverter;
 import org.jdom2.Element;
 import org.junit.Test;
 
