@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<csp>
+	<problem>
+		<metadata>
+			<name>Test problem</name>
+			<author>Victor Balabanov</author>
+			<date>2013-03-05 18:32</date>
+			<description>This problem is used in unit tests.</description>
+		</metadata>
+	
+		<constraints>
+			<allowed-cuts>10</allowed-cuts>
+		</constraints>
+		
+		<orders>
+			<order id="order1">
+				<strip>
+					<length>500</length>
+					<width>50</width>
+				</strip>
+			</order>
+			<order id="order2">
+				<strip>
+					<length>400</length>
+					<width>40</width>
+				</strip>
+			</order>
+			<order id="order3">
+				<strip>
+					<length>300</length>
+					<width>30</width>
+				</strip>
+			</order>
+		</orders>	
+		
+		<rolls>
+			<roll id="roll1">
+				<strip>
+					<length>300</length>
+					<width>200</width>
+				</strip>
+			</roll>
+			
+			<roll id="roll2" quantity="4">
+				<strip>
+					<length>500</length>
+					<width>300</width>
+				</strip>
+			</roll>
+		</rolls>	
+	</problem>	
+	
+	<solutions>
+
+		<solution>
+			<patterns>
+				<pattern>
+					<roll>
+						<ref id="roll1"/>
+					</roll>
+					
+					<cuts>
+						<cut quantity="1">
+							<order>
+								<ref id="order2"/>
+							</order>
+						</cut>	
+						<cut quantity="1">
+							<order>
+								<ref id="order3"/>
+							</order>
+						</cut>	
+					</cuts>
+				</pattern>
+				<pattern>
+					<roll>
+						<ref id="roll2"/>
+					</roll>
+					
+					<cuts>
+						<cut quantity="1">
+							<order>
+								<ref id="order1"/>
+							</order>
+						</cut>	
+						<cut quantity="2">
+							<order>
+								<ref id="order2"/>
+							</order>
+						</cut>	
+						<cut quantity="2">
+							<order>
+								<ref id="order3"/>
+							</order>
+						</cut>	
+					</cuts>
+				</pattern>
+			</patterns>
+			
+		</solution>
+		
+		<solution>
+			<patterns>
+				<pattern>
+					<roll>
+						<ref id="roll1"/>
+					</roll>
+					
+					<cuts>
+						<cut quantity="1">
+							<order>
+								<ref id="order1"/>
+							</order>
+						</cut>	
+						<cut quantity="1">
+							<order>
+								<ref id="order2"/>
+							</order>
+						</cut>	
+					</cuts>
+				</pattern>
+				<pattern>
+					<roll>
+						<ref id="roll2"/>
+					</roll>
+					
+					<cuts>
+						<cut quantity="2">
+							<order>
+								<ref id="order2"/>
+							</order>
+						</cut>	
+					</cuts>
+				</pattern>
+			</patterns>
+			
+		</solution>
+		
+	</solutions>
+	
+</csp>

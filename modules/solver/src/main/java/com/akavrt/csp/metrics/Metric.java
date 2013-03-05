@@ -1,4 +1,6 @@
-package com.akavrt.csp.core;
+package com.akavrt.csp.metrics;
+
+import com.akavrt.csp.core.Solution;
 
 /**
  * <p>This interface is introduced to decouple solution from evaluation of the objective function.

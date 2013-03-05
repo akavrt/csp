@@ -2,6 +2,7 @@ package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.ProblemBuilder;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.akavrt.csp.xml.XmlConverter;
@@ -60,7 +61,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
 
     @Override
     public Problem extract(Element rootElm) {
-        Problem.Builder builder = new Problem.Builder();
+        ProblemBuilder builder = new ProblemBuilder();
 
         // extract metadata
         Element metadataElm = rootElm.getChild(XmlTags.METADATA);
@@ -156,7 +157,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
         return rollsElm;
     }
 
-    private void retrieveOrders(Element ordersElm, Problem.Builder builder) {
+    private void retrieveOrders(Element ordersElm, ProblemBuilder builder) {
         OrderConverter converter = new OrderConverter();
         int i = 0;
         for (Element orderElm : ordersElm.getChildren(XmlTags.ORDER)) {
@@ -173,7 +174,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
         }
     }
 
-    private void retrieveRolls(Element rollsElm, Problem.Builder builder) {
+    private void retrieveRolls(Element rollsElm, ProblemBuilder builder) {
         RollConverter converter = new RollConverter();
         int i = 0;
         for (Element rollElm : rollsElm.getChildren(XmlTags.ROLL)) {

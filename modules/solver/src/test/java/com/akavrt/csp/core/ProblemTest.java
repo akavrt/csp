@@ -75,70 +75,17 @@ public class ProblemTest {
     }
 
     @Test
-    public void rearrange() {
-        // orders and rolls are sorted in ascending order of strip width
-        Problem.Builder builder = new Problem.Builder();
-        builder.setOrders(problemOrders).rearrangeOrders()
-               .setRolls(problemRolls).rearrangeRolls();
-
-        Problem rearranged = builder.build();
-
-        Order order = rearranged.getOrders().get(0);
-        assertEquals("order3", order.getId());
-
-        Roll roll = rearranged.getRolls().get(0);
-        assertEquals("roll3", roll.getId());
-    }
-
-    @Test
     public void constraints() {
         // constraint wasn't set
         assertFalse(problem.isCutsNumberRestricted());
 
         // constraining the number of cuts in pattern
-        Problem.Builder builder = new Problem.Builder();
-        builder.setOrders(problemOrders).setRolls(problemRolls).setAllowedCutsNumber(20);
+        ProblemBuilder builder = new ProblemBuilder();
+        builder.setOrders(problemOrders);
+        builder.setRolls(problemRolls);
+        builder.setAllowedCutsNumber(20);
         Problem constrained = builder.build();
         assertTrue(constrained.isCutsNumberRestricted());
     }
 
-    @Test
-    public void extendedBuilderCapabilities() {
-        Roll singleRoll = new Roll("roll1", 500, 300);
-        Roll groupedRoll = new Roll("roll2", 400, 200);
-
-        Order order = new Order("order4", 600, 60);
-
-        Problem.Builder builder = new Problem.Builder();
-        builder.addRoll(singleRoll).addRolls(groupedRoll, 5);
-        builder.setOrders(problemOrders);
-        builder.addOrder(order);
-
-        Problem tested = builder.build();
-
-        assertEquals(6, tested.getRolls().size());
-        assertEquals(problemOrders.size() + 1, tested.getOrders().size());
-    }
-
-    @Test
-    public void chaining() {
-        Order order = new Order("order4", 600, 60);
-
-        Problem.Builder builder = new Problem.Builder();
-        builder.setRolls(problemRolls);
-        builder.setOrders(problemOrders).addOrder(order);
-
-        Problem tested = builder.build();
-
-        assertEquals(problemOrders.size() + 1, tested.getOrders().size());
-
-        builder = new Problem.Builder();
-        builder.setRolls(problemRolls);
-        builder.addOrder(order).setOrders(problemOrders);
-
-        tested = builder.build();
-
-        assertEquals(problemOrders.size(), tested.getOrders().size());
-
-    }
 }

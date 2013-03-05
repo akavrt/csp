@@ -48,11 +48,11 @@ public class ScalarMetricTest {
 
         problem = new Problem(orders, rolls, allowedCutsNumber);
 
-        ObjectiveParameters.Builder paramsBuilder = new ObjectiveParameters
-                .Builder();
-        params = paramsBuilder.setTrimFactor(0.33)
-                              .setPatternsFactor(0.33)
-                              .setProductionFactor(0.33).build();
+        params = new ObjectiveParameters();
+        params.setTrimFactor(0.33);
+        params.setPatternsFactor(0.33);
+        params.setProductionFactor(0.33);
+
         evaluator = new ScalarMetric(problem, params);
     }
 

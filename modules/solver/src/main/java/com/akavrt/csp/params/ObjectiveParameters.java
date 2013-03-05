@@ -34,33 +34,4 @@ public class ObjectiveParameters {
         this.productionFactor = productionFactor;
     }
 
-    public static class Builder {
-        private double trimFactor;
-        private double patternsFactor;
-        private double productionFactor;
-
-        public Builder setTrimFactor(double trimFactor) {
-            this.trimFactor = trimFactor;
-            return this;
-        }
-
-        public Builder setPatternsFactor(double patternsFactor) {
-            this.patternsFactor = patternsFactor;
-            return this;
-        }
-
-        public Builder setProductionFactor(double productionFactor) {
-            this.productionFactor = productionFactor;
-            return this;
-        }
-
-        public ObjectiveParameters build() {
-            ObjectiveParameters params = new ObjectiveParameters();
-            params.trimFactor = trimFactor;
-            params.patternsFactor = patternsFactor;
-            params.productionFactor = productionFactor;
-
-            return params;
-        }
-    }
 }

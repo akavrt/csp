@@ -1,9 +1,6 @@
 package com.akavrt.csp.core.xml;
 
-import com.akavrt.csp.core.Order;
-import com.akavrt.csp.core.Pattern;
-import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.xml.PatternConverter;
 import org.jdom2.Element;
 import org.junit.Before;
@@ -42,8 +39,12 @@ public class PatternConverterTest {
         rolls.add(new Roll("roll3", 80, 20));
         rolls.add(new Roll("target-roll", 300, 200));
 
-        problem = new Problem.Builder().setOrders(orders).setRolls(rolls)
-                                       .setAllowedCutsNumber(10).build();
+        ProblemBuilder builder = new ProblemBuilder();
+        builder.setOrders(orders);
+        builder.setRolls(rolls);
+        builder.setAllowedCutsNumber(10);
+
+        problem = builder.build();
 
         converter = new PatternConverter(problem);
     }

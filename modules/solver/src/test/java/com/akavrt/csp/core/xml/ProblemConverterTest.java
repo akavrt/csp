@@ -2,6 +2,7 @@ package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.ProblemBuilder;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.google.common.collect.Maps;
@@ -50,8 +51,13 @@ public class ProblemConverterTest {
         problemRolls.add(new Roll("roll2", 90, 25));
         problemRolls.add(new Roll("roll3", 80, 20));
 
-        problem = new Problem.Builder().setOrders(problemOrders).setRolls(problemRolls)
-                                       .setAllowedCutsNumber(10).setMetadata(metadata).build();
+        ProblemBuilder builder = new ProblemBuilder();
+        builder.setOrders(problemOrders);
+        builder.setRolls(problemRolls);
+        builder.setAllowedCutsNumber(10);
+        builder.setMetadata(metadata);
+
+        problem = builder.build();
     }
 
     @Test

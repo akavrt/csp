@@ -10,9 +10,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * User: akavrt
- * Date: 03.03.13
- * Time: 14:23
+ * <p>This class can hold any meaningful data about the problem. It is responsible for saving and
+ * loading that date to and from XML.</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class ProblemMetadata implements MetadataConverter {
     public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
@@ -53,6 +54,9 @@ public class ProblemMetadata implements MetadataConverter {
         this.date = date;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Element save() {
         Element metadataElm = new Element(ProblemMetadataTags.METADATA);
@@ -81,6 +85,9 @@ public class ProblemMetadata implements MetadataConverter {
         return metadataElm;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void load(Element rootElm) {
         Element nameElm = rootElm.getChild(ProblemMetadataTags.NAME);

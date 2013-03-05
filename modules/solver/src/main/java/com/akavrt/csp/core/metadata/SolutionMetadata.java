@@ -4,19 +4,26 @@ import com.akavrt.csp.xml.MetadataConverter;
 import org.jdom2.Element;
 
 /**
- * User: akavrt
- * Date: 05.03.13
- * Time: 01:57
+ * <p>This class can hold any meaningful data about the solution. It is responsible for saving and
+ * loading that date to and from XML.</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SolutionMetadata implements MetadataConverter {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Element save() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void load(Element element) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 }
