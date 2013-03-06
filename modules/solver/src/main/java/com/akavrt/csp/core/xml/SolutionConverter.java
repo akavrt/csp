@@ -11,9 +11,7 @@ import org.jdom2.Element;
 import java.util.List;
 
 /**
- * User: akavrt
- * Date: 03.03.13
- * Time: 01:22
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SolutionConverter implements XmlConverter<Solution> {
     private final static String PATTERN_ID_TEMPLATE = "pattern%d";
@@ -27,7 +25,7 @@ public class SolutionConverter implements XmlConverter<Solution> {
     public Element export(Solution solution) {
         Element solutionElm = new Element(XmlTags.SOLUTION);
 
-        // export metadata
+        // process metadata
         if (solution.getMetadata() != null) {
             Element metadataElm = solution.getMetadata().save();
             if (metadataElm != null) {
@@ -35,7 +33,7 @@ public class SolutionConverter implements XmlConverter<Solution> {
             }
         }
 
-        // export patterns
+        // process patterns
         List<Pattern> patterns = solution.getPatterns();
         if (patterns != null && patterns.size() > 0) {
             Element patternsElm = new Element(XmlTags.PATTERNS);
@@ -59,7 +57,7 @@ public class SolutionConverter implements XmlConverter<Solution> {
     public Solution extract(Element rootElm) {
         Solution solution = new Solution();
 
-        // extract metadata
+        // process metadata
         Element metadataElm = rootElm.getChild(XmlTags.METADATA);
         if (metadataElm != null) {
             SolutionMetadata metadata = new SolutionMetadata();
@@ -67,11 +65,11 @@ public class SolutionConverter implements XmlConverter<Solution> {
             solution.setMetadata(metadata);
         }
 
-        // instance of PatternConverter can't be reused to extract different solutions
+        // instance of PatternConverter can't be reused to process different solutions
         // stock handling (extraction of attached rolls) must be done separately for each solution
         PatternConverter patternConverter = new PatternConverter(problem);
 
-        // extract patterns
+        // process patterns
         Element patternsElm = rootElm.getChild(XmlTags.PATTERNS);
         if (patternsElm != null) {
             List<Pattern> patterns = Lists.newArrayList();

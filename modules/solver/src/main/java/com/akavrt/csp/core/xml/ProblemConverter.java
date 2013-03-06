@@ -16,9 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: akavrt
- * Date: 02.03.13
- * Time: 23:50
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class ProblemConverter implements XmlConverter<Problem> {
     private final static String ORDER_ID_TEMPLATE = "order%d";
@@ -63,7 +61,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
     public Problem extract(Element rootElm) {
         ProblemBuilder builder = new ProblemBuilder();
 
-        // extract metadata
+        // process metadata
         Element metadataElm = rootElm.getChild(XmlTags.METADATA);
         if (metadataElm != null) {
             ProblemMetadata metadata = new ProblemMetadata();
@@ -72,7 +70,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
             builder.setMetadata(metadata);
         }
 
-        // extract constraints
+        // process constraints
         Element constraintsElm = rootElm.getChild(XmlTags.CONSTRAINTS);
         if (constraintsElm != null) {
             int allowedCuts = Utils.getIntegerFromText(constraintsElm,
@@ -80,13 +78,13 @@ public class ProblemConverter implements XmlConverter<Problem> {
             builder.setAllowedCutsNumber(allowedCuts);
         }
 
-        // extract list of orders
+        // process list of orders
         Element ordersElm = rootElm.getChild(XmlTags.ORDERS);
         if (ordersElm != null) {
             retrieveOrders(ordersElm, builder);
         }
 
-        // extract list of rolls
+        // process list of rolls
         Element rollsElm = rootElm.getChild(XmlTags.ROLLS);
         if (rollsElm != null) {
             retrieveRolls(rollsElm, builder);

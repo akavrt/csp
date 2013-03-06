@@ -5,9 +5,7 @@ import com.akavrt.csp.core.metadata.OrderMetadata;
 import org.jdom2.Element;
 
 /**
- * User: akavrt
- * Date: 02.03.13
- * Time: 22:57
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class OrderConverter extends StripConverter<Order> {
 

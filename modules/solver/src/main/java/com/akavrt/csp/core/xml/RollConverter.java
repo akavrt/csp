@@ -5,9 +5,7 @@ import com.akavrt.csp.core.metadata.RollMetadata;
 import org.jdom2.Element;
 
 /**
- * User: akavrt
- * Date: 02.03.13
- * Time: 23:47
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class RollConverter extends StripConverter<Roll> {
 

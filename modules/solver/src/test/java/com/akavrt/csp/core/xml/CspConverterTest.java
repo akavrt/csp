@@ -3,29 +3,23 @@ package com.akavrt.csp.core.xml;
 import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.ProblemMetadata;
 import org.jdom2.Document;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * User: akavrt
  * Date: 04.03.13
  * Time: 22:02
  */
-public class CompositeConverterTest {
+public class CspConverterTest {
     private static final double DELTA = 1e-15;
-
     private int allowedCutsNumber;
     private List<Order> orders;
     private Roll roll1;
@@ -96,13 +90,13 @@ public class CompositeConverterTest {
 
     @Test
     public void problemConversion() {
-        CompositeExporter exporter = new CompositeExporter();
+        CspWriter exporter = new CspWriter();
         exporter.setProblem(problem);
 
-        Document doc = exporter.export();
+        Document doc = exporter.process();
 
-        CompositeExtractor extractor = new CompositeExtractor();
-        extractor.extract(doc);
+        CspReader extractor = new CspReader();
+        extractor.process(doc);
 
         Problem extractedProblem = extractor.getProblem();
         assertFalse(extractedProblem == null);
@@ -113,15 +107,15 @@ public class CompositeConverterTest {
 
     @Test
     public void solutionsConversion() {
-        CompositeExporter exporter = new CompositeExporter();
+        CspWriter exporter = new CspWriter();
         exporter.setProblem(problem);
         exporter.addSolution(solution1);
         exporter.addSolution(solution2);
 
-        Document doc = exporter.export();
+        Document doc = exporter.process();
 
-        CompositeExtractor extractor = new CompositeExtractor();
-        extractor.extract(doc);
+        CspReader extractor = new CspReader();
+        extractor.process(doc);
 
         List<Solution> extractedSolutions = extractor.getSolutions();
         assertFalse(extractedSolutions == null);
@@ -134,33 +128,15 @@ public class CompositeConverterTest {
 
     @Test
     public void extractionFromExternalFile() {
-        InputStream is = null;
-        Document doc = null;
+        CspReader reader = new CspReader();
         try {
-            is = getClass().getClassLoader().getResourceAsStream("test-problem.xml");
-
-            SAXBuilder sax = new SAXBuilder();
-            doc = sax.build(is);
-        } catch (JDOMException e) {
+            InputStream is = getClass().getClassLoader().getResourceAsStream("test-problem.xml");
+            reader.read(is);
+        } catch (CspParseException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
-        assertFalse(doc == null);
-
-        CompositeExtractor extractor = new CompositeExtractor();
-        extractor.extract(doc);
-
-        Problem extractedProblem = extractor.getProblem();
+        Problem extractedProblem = reader.getProblem();
         assertFalse(extractedProblem == null);
         assertEquals(3, extractedProblem.getOrders().size());
         assertEquals(5, extractedProblem.getRolls().size());
@@ -184,7 +160,7 @@ public class CompositeConverterTest {
                      extractedCalendar.get(Calendar.HOUR_OF_DAY));
         assertEquals(calendar.get(Calendar.MINUTE), extractedCalendar.get(Calendar.MINUTE));
 
-        List<Solution> extractedSolutions = extractor.getSolutions();
+        List<Solution> extractedSolutions = reader.getSolutions();
         assertFalse(extractedSolutions == null);
         assertEquals(2, extractedSolutions.size());
 

@@ -10,9 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * User: akavrt
- * Date: 03.03.13
- * Time: 00:46
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class PatternConverter implements XmlConverter<Pattern> {
     private final List<Order> orders;

@@ -9,9 +9,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 /**
- * User: akavrt
- * Date: 04.03.13
- * Time: 14:59
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public abstract class StripConverter<T extends Strip> implements XmlConverter<T> {
 

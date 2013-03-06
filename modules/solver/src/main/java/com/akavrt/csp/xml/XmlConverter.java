@@ -7,7 +7,7 @@ import org.jdom2.Element;
  * <p>XML serialization for all core classes is implemented on a separate layer. Each core class
  * has its converter counterpart, for example see classes com.akavrt.csp.core.Problem and
  * com.akavrt.csp.core.xml.ProblemConverter. Converter classes implementing this interface are able
- * to convert an instance of corresponding core class to org.jdom2.Element (export to XML) and vice
+ * to process an instance of corresponding core class to org.jdom2.Element (export to XML) and vice
  * versa (import from XML).</p>
  *
  * <p>XML serialization was built using JDOM library, for more information check out this

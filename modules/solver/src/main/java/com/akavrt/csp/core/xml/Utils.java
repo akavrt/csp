@@ -3,9 +3,7 @@ package com.akavrt.csp.core.xml;
 import org.jdom2.Element;
 
 /**
- * User: akavrt
- * Date: 04.03.13
- * Time: 15:25
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Utils {
 

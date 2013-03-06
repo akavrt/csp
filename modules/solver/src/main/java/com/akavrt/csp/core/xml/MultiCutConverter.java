@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: akavrt
- * Date: 04.03.13
- * Time: 16:11
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class MultiCutConverter implements XmlConverter<MultiCut> {
     private final Map<String, Order> mappedOrders;
