@@ -2,10 +2,16 @@ package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.ProblemMetadata;
+import com.akavrt.csp.utils.Unit;
 import org.jdom2.Document;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import sun.management.counter.Units;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,6 +33,9 @@ public class CspConverterTest {
     private Problem problem;
     private Solution solution1;
     private Solution solution2;
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUpProblem() {
@@ -186,5 +195,47 @@ public class CspConverterTest {
         assertEquals(300, solution.getProductionLengthForOrder(targetOrder), DELTA);
         assertFalse(solution.isOrdersFulfilled(extractedProblem.getOrders()));
     }
+
+    @Test
+    public void writeToExternalFile() throws IOException, CspParseException {
+        File file = folder.newFile("problem-write-test.xml");
+        assertTrue(file.exists());
+
+        CspWriter writer = new CspWriter();
+        ProblemMetadata metadata = new ProblemMetadata();
+        metadata.setAuthor("Victor Balabanov");
+        metadata.setUnits(Unit.METER);
+        problem.setMetadata(metadata);
+
+        writer.setProblem(problem);
+        writer.addSolution(solution1);
+        writer.addSolution(solution2);
+
+        writer.write(file, true);
+
+        CspReader reader = new CspReader();
+        reader.read(file);
+
+        Problem extractedProblem = reader.getProblem();
+        assertFalse(extractedProblem == null);
+        assertEquals(problem.getOrders().size(), extractedProblem.getOrders().size());
+        assertEquals(problem.getRolls().size(), extractedProblem.getRolls().size());
+        assertEquals(problem.getAllowedCutsNumber(), extractedProblem.getAllowedCutsNumber());
+
+        assertFalse(extractedProblem.getMetadata() == null);
+        assertEquals("Victor Balabanov",  extractedProblem.getMetadata().getAuthor());
+        assertEquals(Unit.METER.getName(),  extractedProblem.getMetadata().getUnits().getName());
+        assertFalse(Unit.MILLIMETER.getName().equals(extractedProblem.getMetadata().getUnits().getName()));
+
+
+        List<Solution> extractedSolutions = reader.getSolutions();
+        assertFalse(extractedSolutions == null);
+        assertEquals(2, extractedSolutions.size());
+        for (Solution solution : extractedSolutions) {
+            assertTrue(solution.getTrimArea() == solution1.getTrimArea()
+                               || solution.getTrimArea() == solution2.getTrimArea());
+        }
+    }
+
 
 }

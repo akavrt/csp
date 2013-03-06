@@ -1,5 +1,6 @@
 package com.akavrt.csp.core.metadata;
 
+import com.akavrt.csp.utils.Unit;
 import com.akavrt.csp.xml.MetadataConverter;
 import org.jdom2.Element;
 
@@ -21,6 +22,7 @@ public class ProblemMetadata implements MetadataConverter {
     private String author;
     private String description;
     private Date date;
+    private Unit units;
 
     public String getName() {
         return name;
@@ -54,6 +56,14 @@ public class ProblemMetadata implements MetadataConverter {
         this.date = date;
     }
 
+    public Unit getUnits() {
+        return units;
+    }
+
+    public void setUnits(Unit units) {
+        this.units = units;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -80,6 +90,12 @@ public class ProblemMetadata implements MetadataConverter {
             Element dateElm = new Element(ProblemMetadataTags.DATE);
             dateElm.setText(formatted);
             metadataElm.addContent(dateElm);
+        }
+
+        if (getUnits() != null) {
+            Element unitsElm = new Element(ProblemMetadataTags.UNITS);
+            unitsElm.setText(getUnits().getSymbol());
+            metadataElm.addContent(unitsElm);
         }
 
         return metadataElm;
@@ -118,6 +134,21 @@ public class ProblemMetadata implements MetadataConverter {
                 e.printStackTrace();
             }
         }
+
+        Element unitsElm = rootElm.getChild(ProblemMetadataTags.UNITS);
+        if (unitsElm != null && unitsElm.getText()!= null) {
+            String value = unitsElm.getText();
+            Unit units = null;
+            for (Unit unit : Unit.values()) {
+                if (unit.getName().equalsIgnoreCase(value) ||
+                        unit.getSymbol().equalsIgnoreCase(value)) {
+                    units = unit;
+                    break;
+                }
+            }
+
+            setUnits(units);
+        }
     }
 
     public interface ProblemMetadataTags {
@@ -126,6 +157,7 @@ public class ProblemMetadata implements MetadataConverter {
         String AUTHOR = "author";
         String DATE = "date";
         String DESCRIPTION = "description";
+        String UNITS = "units";
     }
 
 }
