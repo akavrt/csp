@@ -17,7 +17,7 @@ public abstract class Strip {
      * <p>Strip params should be set only when an instance of class is created.</p>
      *
      * @param id     The identifier for the strip.
-     * @param length The width of the strip, in abstract units.
+     * @param length The length of the strip, in abstract units.
      * @param width  The width of the strip, in abstract units.
      */
     public Strip(String id, double length, double width) {
@@ -52,6 +52,15 @@ public abstract class Strip {
      */
     public double getWidth() {
         return width;
+    }
+
+    /**
+     * <p>Area of the strip. Measured in abstract square units.</p>
+     *
+     * @return The area of the strip.
+     */
+    public double getArea() {
+        return getLength() * getWidth();
     }
 
     /**

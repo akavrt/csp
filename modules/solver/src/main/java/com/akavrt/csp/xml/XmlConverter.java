@@ -4,7 +4,7 @@ package com.akavrt.csp.xml;
 import org.jdom2.Element;
 
 /**
- * <p>XML serialization for all core classes is implemented on a separate layer. Each core class
+ * <p>XML serialization for all core classes is implemented in a separate layer. Each core class
  * has its converter counterpart, for example see classes com.akavrt.csp.core.Problem and
  * com.akavrt.csp.core.xml.ProblemConverter. Converter classes implementing this interface are able
  * to process an instance of corresponding core class to org.jdom2.Element (export to XML) and vice

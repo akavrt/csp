@@ -1,23 +1,19 @@
 package com.akavrt.csp.core.metadata;
 
+import com.akavrt.csp.core.xml.Utils;
 import com.akavrt.csp.utils.Unit;
-import com.akavrt.csp.xml.MetadataConverter;
+import com.akavrt.csp.xml.XmlCompatible;
 import org.jdom2.Element;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * <p>This class can hold any meaningful data about the problem. It is responsible for saving and
- * loading that date to and from XML.</p>
+ * loading that data to and from XML.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class ProblemMetadata implements MetadataConverter {
-    public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+public class ProblemMetadata implements XmlCompatible {
     private String name;
     private String author;
     private String description;
@@ -69,31 +65,34 @@ public class ProblemMetadata implements MetadataConverter {
      */
     @Override
     public Element save() {
-        Element metadataElm = new Element(ProblemMetadataTags.METADATA);
+        Element metadataElm = new Element(XmlTags.METADATA);
 
-        Element nameElm = new Element(ProblemMetadataTags.NAME);
-        nameElm.setText(getName());
-        metadataElm.addContent(nameElm);
+        if (!Utils.isEmpty(getName())) {
+            Element nameElm = new Element(XmlTags.NAME);
+            nameElm.setText(getName());
+            metadataElm.addContent(nameElm);
+        }
 
-        Element authorElm = new Element(ProblemMetadataTags.AUTHOR);
-        authorElm.setText(getAuthor());
-        metadataElm.addContent(authorElm);
+        if (!Utils.isEmpty(getAuthor())) {
+            Element authorElm = new Element(XmlTags.AUTHOR);
+            authorElm.setText(getAuthor());
+            metadataElm.addContent(authorElm);
+        }
 
-        Element descriptionElm = new Element(ProblemMetadataTags.DESCRIPTION);
-        descriptionElm.setText(getDescription());
-        metadataElm.addContent(descriptionElm);
+        if (!Utils.isEmpty(getDescription())) {
+            Element descriptionElm = new Element(XmlTags.DESCRIPTION);
+            descriptionElm.setText(getDescription());
+            metadataElm.addContent(descriptionElm);
+        }
 
         if (getDate() != null) {
-            DateFormat df = new SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.ENGLISH);
-            String formatted = df.format(getDate());
-
-            Element dateElm = new Element(ProblemMetadataTags.DATE);
-            dateElm.setText(formatted);
+            Element dateElm = new Element(XmlTags.DATE);
+            dateElm.setText(Utils.formatDate(getDate()));
             metadataElm.addContent(dateElm);
         }
 
         if (getUnits() != null) {
-            Element unitsElm = new Element(ProblemMetadataTags.UNITS);
+            Element unitsElm = new Element(XmlTags.UNITS);
             unitsElm.setText(getUnits().getSymbol());
             metadataElm.addContent(unitsElm);
         }
@@ -106,37 +105,28 @@ public class ProblemMetadata implements MetadataConverter {
      */
     @Override
     public void load(Element rootElm) {
-        Element nameElm = rootElm.getChild(ProblemMetadataTags.NAME);
+        Element nameElm = rootElm.getChild(XmlTags.NAME);
         if (nameElm != null) {
             setName(nameElm.getText());
         }
 
-        Element authorElm = rootElm.getChild(ProblemMetadataTags.AUTHOR);
+        Element authorElm = rootElm.getChild(XmlTags.AUTHOR);
         if (authorElm != null) {
             setAuthor(authorElm.getText());
         }
 
-        Element descriptionElm = rootElm.getChild(ProblemMetadataTags.DESCRIPTION);
+        Element descriptionElm = rootElm.getChild(XmlTags.DESCRIPTION);
         if (descriptionElm != null) {
             setDescription(descriptionElm.getText());
         }
 
-        Element dateElm = rootElm.getChild(ProblemMetadataTags.DATE);
+        Element dateElm = rootElm.getChild(XmlTags.DATE);
         if (dateElm != null) {
-            DateFormat df = new SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.ENGLISH);
-            String formatted = dateElm.getText();
-
-            try {
-                Date date = df.parse(formatted);
-                setDate(date);
-            } catch (ParseException e) {
-                // TODO add logger statement
-                e.printStackTrace();
-            }
+            setDate(Utils.getDateFromText(dateElm));
         }
 
-        Element unitsElm = rootElm.getChild(ProblemMetadataTags.UNITS);
-        if (unitsElm != null && unitsElm.getText()!= null) {
+        Element unitsElm = rootElm.getChild(XmlTags.UNITS);
+        if (unitsElm != null && unitsElm.getText() != null) {
             String value = unitsElm.getText();
             Unit units = null;
             for (Unit unit : Unit.values()) {
@@ -151,7 +141,7 @@ public class ProblemMetadata implements MetadataConverter {
         }
     }
 
-    public interface ProblemMetadataTags {
+    public interface XmlTags {
         String METADATA = "metadata";
         String NAME = "name";
         String AUTHOR = "author";

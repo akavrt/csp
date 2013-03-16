@@ -10,11 +10,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * <p>Converter class used to transform an instance of MultiCut to its XML representation and vice
+ * versa.</p>
+ *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class MultiCutConverter implements XmlConverter<MultiCut> {
     private final Map<String, Order> mappedOrders;
 
+    /**
+     * <p>Create a reusable instance of MultiCutConverter tied with list of orders. Converter reuse
+     * is limited to the cuts linked with a fixed set of orders which is specified during
+     * creation. This restriction is needed to properly recreate references to orders while
+     * extracting cuts from XML.</p>
+     */
     public MultiCutConverter(List<Order> orders) {
         mappedOrders = Maps.newHashMap();
         for (Order order : orders) {
@@ -22,6 +31,9 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Element export(MultiCut cut) {
         Element cutElm = new Element(XmlCutTags.CUT);
@@ -37,6 +49,9 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
         return cutElm;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MultiCut extract(Element rootElm) {
         int quantity = Utils.getIntegerFromAttribute(rootElm, XmlCutTags.QUANTITY, 0);

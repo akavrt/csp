@@ -6,9 +6,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * User: akavrt
@@ -17,27 +15,28 @@ import static org.junit.Assert.assertTrue;
  */
 public class PatternTest {
     private static final double DELTA = 1e-15;
-
     private List<Order> orders;
+    private Order order1;
+    private Order order2;
+    private Order order3;
     private Roll roll;
 
     @Before
     public void setUpProblem() {
         // preparing orders
         orders = new ArrayList<Order>();
-        Order order;
 
-        order = new Order("order1", 500, 50);
-        orders.add(order);
+        order1 = new Order("order1", 500, 50);
+        orders.add(order1);
 
-        order = new Order("order2", 400, 40);
-        orders.add(order);
+        order2 = new Order("order2", 400, 40);
+        orders.add(order2);
 
-        order = new Order("order3", 300, 30);
-        orders.add(order);
+        order3 = new Order("order3", 300, 30);
+        orders.add(order3);
 
         // preparing roll
-        roll = new Roll("roll1", 300, 200);
+        roll = new Roll("roll", 300, 200);
     }
 
     @Test
@@ -50,23 +49,23 @@ public class PatternTest {
 
         // no cuts or roll at all
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 0);
-        pattern.addCut(orders.get(1), 0);
-        pattern.addCut(orders.get(2), 0);
+        pattern.addCut(order1, 0);
+        pattern.addCut(order2, 0);
+        pattern.addCut(order3, 0);
         assertFalse(pattern.isActive());
 
         // two cuts, no roll
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 1);
-        pattern.addCut(orders.get(1), 0);
-        pattern.addCut(orders.get(2), 1);
+        pattern.addCut(order1, 1);
+        pattern.addCut(order2, 0);
+        pattern.addCut(order3, 1);
         assertFalse(pattern.isActive());
 
         // everything in place
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 1);
-        pattern.addCut(orders.get(1), 0);
-        pattern.addCut(orders.get(2), 1);
+        pattern.addCut(order1, 1);
+        pattern.addCut(order2, 0);
+        pattern.addCut(order3, 1);
         pattern.setRoll(roll);
         assertTrue(pattern.isActive());
     }
@@ -82,16 +81,16 @@ public class PatternTest {
 
         // actual cuts number: 2 + 2 + 2 = 6 == 6
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 2);
-        pattern.addCut(orders.get(1), 2);
-        pattern.addCut(orders.get(2), 2);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 2);
+        pattern.addCut(order3, 2);
         assertTrue(pattern.isValid(allowedCutsNumber));
 
         // actual cuts number: 2 + 3 + 2 = 7 > 6
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 2);
-        pattern.addCut(orders.get(1), 3);
-        pattern.addCut(orders.get(2), 2);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 3);
+        pattern.addCut(order3, 2);
         assertFalse(pattern.isValid(allowedCutsNumber));
 
         // with assigned roll
@@ -101,31 +100,31 @@ public class PatternTest {
 
         // actual pattern width: 2 *  50 + 2 * 40 + 2 * 30 = 240 > 200
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 2);
-        pattern.addCut(orders.get(1), 2);
-        pattern.addCut(orders.get(2), 2);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 2);
+        pattern.addCut(order3, 2);
         pattern.setRoll(roll);
         assertFalse(pattern.isValid(allowedCutsNumber));
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170 < 200
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 2);
-        pattern.addCut(orders.get(1), 1);
-        pattern.addCut(orders.get(2), 1);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 1);
+        pattern.addCut(order3, 1);
         pattern.setRoll(roll);
         assertTrue(pattern.isValid(allowedCutsNumber));
 
         // actual pattern width: 4 *  50 + 0 * 40 + 0 * 30 = 200 == 200
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 4);
-        pattern.addCut(orders.get(1), 0);
-        pattern.addCut(orders.get(2), 0);
+        pattern.addCut(order1, 4);
+        pattern.addCut(order2, 0);
+        pattern.addCut(order3, 0);
         pattern.setRoll(roll);
         assertTrue(pattern.isValid(allowedCutsNumber));
     }
 
     @Test
-    public void patternCharacteristics() {
+    public void patternWidth() {
         Pattern pattern;
 
         // let's check pattern width
@@ -134,30 +133,77 @@ public class PatternTest {
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 2);
-        pattern.addCut(orders.get(1), 1);
-        pattern.addCut(orders.get(2), 1);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 1);
+        pattern.addCut(order3, 1);
         assertEquals(170, pattern.getWidth(), DELTA);
+    }
+
+    @Test
+    public void patternTrim() {
+        Pattern pattern;
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170
         // roll wasn't set -> trim = 0
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 2);
-        pattern.addCut(orders.get(1), 1);
-        pattern.addCut(orders.get(2), 1);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 1);
+        pattern.addCut(order3, 1);
         assertEquals(0, pattern.getTrim(), DELTA);
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170
         // trim: 200 - 170 = 30
         // trim area: trim * roll length = 30 * 300 = 9000
         pattern = new Pattern(orders);
-        pattern.addCut(orders.get(0), 2);
-        pattern.addCut(orders.get(1), 1);
-        pattern.addCut(orders.get(2), 1);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 1);
+        pattern.addCut(order3, 1);
         pattern.setRoll(roll);
         assertEquals(30, pattern.getTrim(), DELTA);
         assertEquals(9000, pattern.getTrimArea(), DELTA);
-
     }
 
+    @Test
+    public void calculateNumberOfCuts() {
+        Pattern pattern = new Pattern(orders);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 1);
+        pattern.addCut(order3, 1);
+        assertEquals(4, pattern.getTotalNumberOfCuts());
+    }
+
+    @Test
+    public void unknownOrder() {
+        Pattern pattern = new Pattern(orders);
+        pattern.addCut(order1, 2);
+        pattern.addCut(order2, 1);
+        pattern.addCut(order3, 1);
+
+        int cutsBeforeUpdate = pattern.getTotalNumberOfCuts();
+
+        Order unknown = new Order("unknown", 200, 20);
+        pattern.addCut(unknown, 5);
+
+        // unknown orders (not specified during pattern creation) are ignored
+        assertTrue(cutsBeforeUpdate == pattern.getTotalNumberOfCuts());
+    }
+
+    @Test
+    public void calculateProduction() {
+        Pattern pattern = new Pattern(orders);
+        pattern.addCut(order1, 0);
+        pattern.addCut(order2, 1);
+        pattern.addCut(order3, 2);
+
+        pattern.setRoll(roll);
+
+        assertEquals(0 * roll.getLength(), pattern.getProductionLengthForOrder(order1), DELTA);
+        assertEquals(1 * roll.getLength(), pattern.getProductionLengthForOrder(order2), DELTA);
+        assertEquals(2 * roll.getLength(), pattern.getProductionLengthForOrder(order3), DELTA);
+
+        // unknown order is ignored
+        Order unknown = new Order("unknown", 200, 20);
+        pattern.addCut(unknown, 5);
+        assertEquals(0, pattern.getProductionLengthForOrder(unknown), DELTA);
+    }
 }

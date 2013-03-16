@@ -189,7 +189,12 @@ public class Pattern {
         return productionLength;
     }
 
-    private int getTotalCutsNumber() {
+    /**
+     * <p>Calculate total number of cuts defined within pattern.</p>
+     *
+     * @return Total number of cuts.
+     */
+    public int getTotalNumberOfCuts() {
         int totalCuts = 0;
 
         for (MultiCut cut : cuts.values()) {
@@ -207,7 +212,7 @@ public class Pattern {
      * @return true if pattern is valid, false otherwise.
      */
     public boolean isValid(int allowedCutsNumber) {
-        return getTotalCutsNumber() <= allowedCutsNumber &&
+        return (allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber) &&
                 (roll == null || getWidth() <= roll.getWidth());
     }
 
@@ -218,11 +223,21 @@ public class Pattern {
      * @return true if pattern is active, false otherwise.
      */
     public boolean isActive() {
-        return roll != null && getTotalCutsNumber() > 0;
+        return roll != null && getTotalNumberOfCuts() > 0;
     }
 
     /**
      * <p>Utility method which is used to discover repeating patterns in cutting plan.</p>
+     *
+     * <p>The idea behind this check is that all patterns within the same cutting plan are based on
+     * the same set of orders. This means that if we sort orders in ascending order of width (this
+     * is done during pattern creation), than any specific position within two different patterns
+     * will point us to the same order.</p>
+     *
+     * <p>In future we should switch to something more reliable. For instance, we can replace
+     * array of quantities with array of hashes. These hashes can be calculated based on both
+     * quantities and corresponding order width. Another possible solution is to check pattern
+     * consistency on the higher level - within solution itself.</p>
      *
      * @return The content-based hash code for array of multipliers.
      */

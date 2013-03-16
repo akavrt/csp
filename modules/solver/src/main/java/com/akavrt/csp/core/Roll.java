@@ -65,15 +65,6 @@ public class Roll extends Strip {
     }
 
     /**
-     * <p>Area of the roll. Measured in abstract square units.</p>
-     *
-     * @return The usable area of the roll.
-     */
-    public double getArea() {
-        return getLength() * getWidth();
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @return String representation of the roll with custom formatting.

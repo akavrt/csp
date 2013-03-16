@@ -99,15 +99,15 @@ public class CspConverterTest {
 
     @Test
     public void problemConversion() {
-        CspWriter exporter = new CspWriter();
-        exporter.setProblem(problem);
+        CspWriter writer = new CspWriter();
+        writer.setProblem(problem);
 
-        Document doc = exporter.process();
+        Document doc = writer.process();
 
-        CspReader extractor = new CspReader();
-        extractor.process(doc);
+        CspReader reader = new CspReader();
+        reader.process(doc);
 
-        Problem extractedProblem = extractor.getProblem();
+        Problem extractedProblem = reader.getProblem();
         assertFalse(extractedProblem == null);
         assertEquals(problem.getOrders().size(), extractedProblem.getOrders().size());
         assertEquals(problem.getRolls().size(), extractedProblem.getRolls().size());
@@ -116,17 +116,17 @@ public class CspConverterTest {
 
     @Test
     public void solutionsConversion() {
-        CspWriter exporter = new CspWriter();
-        exporter.setProblem(problem);
-        exporter.addSolution(solution1);
-        exporter.addSolution(solution2);
+        CspWriter writer = new CspWriter();
+        writer.setProblem(problem);
+        writer.addSolution(solution1);
+        writer.addSolution(solution2);
 
-        Document doc = exporter.process();
+        Document doc = writer.process();
 
-        CspReader extractor = new CspReader();
-        extractor.process(doc);
+        CspReader reader = new CspReader();
+        reader.process(doc);
 
-        List<Solution> extractedSolutions = extractor.getSolutions();
+        List<Solution> extractedSolutions = reader.getSolutions();
         assertFalse(extractedSolutions == null);
         assertEquals(2, extractedSolutions.size());
         for (Solution solution : extractedSolutions) {
@@ -136,7 +136,7 @@ public class CspConverterTest {
     }
 
     @Test
-    public void extractionFromExternalFile() {
+    public void readFromExternalFile() {
         CspReader reader = new CspReader();
         try {
             InputStream is = getClass().getClassLoader().getResourceAsStream("test-problem.xml");

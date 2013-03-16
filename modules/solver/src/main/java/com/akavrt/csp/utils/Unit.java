@@ -1,7 +1,7 @@
 package com.akavrt.csp.utils;
 
 /**
- * <p>Unit of length. Values of this enum type is used in metadata.</p>
+ * <p>Units of length. Values of this enum type is used in metadata.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
@@ -10,7 +10,6 @@ public enum Unit {
     MILLIMETER("millimeter", "mm", 0.001),
     CENTIMETER("centimeter", "cm", 0.01),
     INCH("inch", "in", 0.0254);
-
     private final String name;
     private final String symbol;
     private final double multiplier;
@@ -21,19 +20,25 @@ public enum Unit {
         this.multiplier = multiplier;
     }
 
+    /**
+     * <p>The standard name of the unit.</p>
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * <p>The standard symbol or abbreviation used for the unit.</p>
+     */
     public String getSymbol() {
         return symbol;
     }
 
     /**
-     * <p>This multiplier is used to convert linear dimension specified in any custom units
-     * supported by this class to meters.</p>
+     * <p>This multiplier is used to convert linear dimension measured in specific units to
+     * meters.</p>
      *
-     * @return Linear dimension which is measured in custom units should be multiplied by this
+     * @return Linear dimension which is measured in specific units should be multiplied by this
      *         factor to convert it into meters.
      */
     public double getMultiplier() {
@@ -41,9 +46,9 @@ public enum Unit {
     }
 
     /**
-     * <p>Convert linear dimension specified in any custom units supported by this class to
-     * meters.</p>
+     * <p>Convert linear dimension measured in specific units to meters.</p>
      *
+     * @param value Linear dimension to convert.
      * @return Linear dimension converted into meters.
      */
     public double toMeters(double value) {

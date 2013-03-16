@@ -1,6 +1,7 @@
 package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.*;
+import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.core.xml.SolutionConverter;
 import org.jdom2.Element;
 import org.junit.Before;
@@ -9,8 +10,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * User: akavrt
@@ -88,4 +88,25 @@ public class SolutionConverterTest {
         assertEquals(solution.isValid(problem), extracted.isValid(problem));
 
     }
+
+    @Test
+    public void metadataConversion() {
+        // metadata wasn't set
+        Solution solution = new Solution();
+        Element solutionElm = converter.export(solution);
+        Solution extracted = converter.extract(solutionElm);
+
+        assertNull(extracted.getMetadata());
+
+        // metadata was set
+        SolutionMetadata metadata = new SolutionMetadata();
+        metadata.setDescription("Test solution.");
+        solution.setMetadata(metadata);
+
+        solutionElm = converter.export(solution);
+        extracted = converter.extract(solutionElm);
+
+        assertNotNull(extracted.getMetadata());
+    }
+
 }

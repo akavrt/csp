@@ -1,6 +1,10 @@
 package com.akavrt.csp.solver.pattern;
 
+import com.akavrt.csp.core.Order;
+import com.akavrt.csp.core.Problem;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -14,26 +18,55 @@ import java.util.Random;
 public class ConstrainedPatternGenerator implements PatternGenerator {
     private final double[] widths;
     private final int allowedCutsNumber;
-    private final int allowedTrialsCount;
     private final Random rGen;
+    private PatternGeneratorParameters params;
     private int[] currentPattern;
     private int[] bestPattern;
     private double unusedWidth;
 
-    public ConstrainedPatternGenerator(double[] orderWidths, int trials) {
-        this(orderWidths, 0, trials);
+    /**
+     * <p>Create instance of constrained pattern generator with default set of parameters.</p>
+     *
+     * @param problem Problem used to retrieve width of each order and set of constraints.
+     */
+    public ConstrainedPatternGenerator(Problem problem) {
+        this(problem, new PatternGeneratorParameters());
     }
 
-    public ConstrainedPatternGenerator(double[] orderWidths, int cuts, int trials) {
-        this.widths = orderWidths;
-        this.allowedCutsNumber = cuts;
-        this.allowedTrialsCount = trials;
+    /**
+     * <p>Create instance of constrained pattern generator configured with a set of parameters
+     * provided.</p>
+     *
+     * @param problem Problem used to retrieve width of each order and set of constraints.
+     * @param params  Parameters of pattern generator.
+     */
+    public ConstrainedPatternGenerator(Problem problem, PatternGeneratorParameters params) {
+        List<Order> orders = problem.getOrders();
+
+        widths = new double[orders.size()];
+        for (int i = 0; i < orders.size(); i++) {
+            widths[i] = orders.get(i).getWidth();
+        }
+
+        this.allowedCutsNumber = problem.getAllowedCutsNumber();
+        this.params = params;
 
         rGen = new Random();
-        currentPattern = new int[orderWidths.length];
-        bestPattern = new int[orderWidths.length];
+        currentPattern = new int[widths.length];
+        bestPattern = new int[widths.length];
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PatternGeneratorParameters getParameters() {
+        return params;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int[] generate(double rollWidth, int[] demand, double allowedTrimRatio) {
         int totalItems = 0;
@@ -50,25 +83,55 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
             return null;
         }
 
-        int trialCounter = 0;
-        double bestTrim = rollWidth;
-        double allowedTrim = rollWidth * allowedTrimRatio;
-
-        do {
-            trial(rollWidth, demand, totalItems);
-
-            // if new pattern is better than the current best,
-            // replace latter one with new pattern
-            if (unusedWidth < bestTrim) {
-                bestTrim = unusedWidth;
-                System.arraycopy(currentPattern, 0, bestPattern, 0, bestPattern.length);
-            }
-
-            trialCounter++;
+        // check whether simple greedy placement is possible
+        double totalWidth = 0;
+        for (int i = 0; i < widths.length; i++) {
+            totalWidth += widths[i] * demand[i];
         }
-        while (trialCounter < allowedTrialsCount && allowedTrim > bestTrim);
+
+        if (totalWidth <= rollWidth) {
+            // use greedy placement
+            greedyPlacement(demand);
+        } else {
+            // use randomized generation procedure
+            int trialCounter = 0;
+            double bestTrim = rollWidth;
+            double allowedTrim = rollWidth * allowedTrimRatio;
+
+            do {
+                trial(rollWidth, demand, totalItems);
+
+                // if new pattern is better than the current best,
+                // replace latter one with new pattern
+                if (unusedWidth < bestTrim) {
+                    bestTrim = unusedWidth;
+                    System.arraycopy(currentPattern, 0, bestPattern, 0, bestPattern.length);
+                }
+
+                trialCounter++;
+            }
+            while (trialCounter < params.getGenerationTrialsLimit() && allowedTrim > bestTrim);
+        }
 
         return bestPattern.clone();
+    }
+
+    private void greedyPlacement(int[] demand) {
+        Arrays.fill(bestPattern, 0);
+        int addedItems = 0;
+        boolean isCutsUnconstrained = allowedCutsNumber == 0;
+        int i = widths.length - 1;
+        while (i >= 0 && (isCutsUnconstrained || addedItems < allowedCutsNumber)) {
+            int j = 1;
+            while (j <= demand[i] && (isCutsUnconstrained || addedItems < allowedCutsNumber)) {
+                bestPattern[i]++;
+                addedItems++;
+
+                j++;
+            }
+
+            i--;
+        }
     }
 
     private void trial(double rollWidth, int[] demand, int totalItems) {

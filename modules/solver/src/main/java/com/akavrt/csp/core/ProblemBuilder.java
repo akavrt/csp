@@ -202,7 +202,6 @@ public class ProblemBuilder {
      * <p>Set additional information about the problem.</p>
      *
      * @param metadata Additional information about the problem.
-     * @return This Builder object to allow for chaining of calls to set methods.
      */
     public void setMetadata(ProblemMetadata metadata) {
         this.metadata = metadata;

@@ -9,14 +9,16 @@ import org.jdom2.Element;
  * additional content which should be stored in metadata.</p>
  *
  * <p>Thereby, converter classes implementing XmlConverter interface defines basic structure of
- * output XML while classes implementing this interface should be used as a hooks to support
- * custom metadata which content and format are both defined by the user (inside client code).</p>
+ * output XML, while classes implementing XmlCompatible interface should be used as a hooks to
+ * support custom metadata which content and format are both defined by the user (inside client
+ * code).</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public interface MetadataConverter {
+public interface XmlCompatible {
     /**
      * <p>Convert state into XML represented as org.jdom2.Element.</p>
+     *
      * @return XML representation of the state.
      */
     public Element save();

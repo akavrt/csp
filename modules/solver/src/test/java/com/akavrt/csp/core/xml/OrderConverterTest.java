@@ -32,7 +32,6 @@ public class OrderConverterTest {
 
         assertEquals(id, extracted.getId());
         assertEquals(length, extracted.getLength(), DELTA);
-        // only two fractional digits is saved in XML conversion
-        assertEquals(300.36, extracted.getWidth(), DELTA);
+        assertEquals(width, extracted.getWidth(), DELTA);
     }
 }

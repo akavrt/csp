@@ -11,16 +11,26 @@ import org.jdom2.Element;
 import java.util.List;
 
 /**
+ * <p>Converter class used to transform an instance of Solution to its XML representation and vice
+ * versa.</p>
+ *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SolutionConverter implements XmlConverter<Solution> {
     private final static String PATTERN_ID_TEMPLATE = "pattern%d";
     private final Problem problem;
 
+    /**
+     * <p>Create reusable instance of SolutionConverter. Reuse is limited to the set of solutions
+     * applied to the problem specified during creation of the converter.</p>
+     */
     public SolutionConverter(Problem problem) {
         this.problem = problem;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Element export(Solution solution) {
         Element solutionElm = new Element(XmlTags.SOLUTION);
@@ -53,6 +63,9 @@ public class SolutionConverter implements XmlConverter<Solution> {
         return solutionElm;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Solution extract(Element rootElm) {
         Solution solution = new Solution();

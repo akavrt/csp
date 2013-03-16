@@ -16,12 +16,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * <p>Converter class used to transform an instance of Problem to its XML representation and vice
+ * versa.</p>
+ *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class ProblemConverter implements XmlConverter<Problem> {
     private final static String ORDER_ID_TEMPLATE = "order%d";
     private final static String ROLL_ID_TEMPLATE = "roll%d";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Element export(Problem problem) {
         Element problemElm = new Element(XmlTags.PROBLEM);
@@ -57,6 +63,9 @@ public class ProblemConverter implements XmlConverter<Problem> {
         return problemElm;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Problem extract(Element rootElm) {
         ProblemBuilder builder = new ProblemBuilder();
@@ -74,7 +83,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
         Element constraintsElm = rootElm.getChild(XmlTags.CONSTRAINTS);
         if (constraintsElm != null) {
             int allowedCuts = Utils.getIntegerFromText(constraintsElm,
-                                                       XmlTags.ALLOWED_CUTS);
+                                                       XmlTags.ALLOWED_CUTS, 0);
             builder.setAllowedCutsNumber(allowedCuts);
         }
 

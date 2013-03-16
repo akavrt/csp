@@ -1,7 +1,6 @@
 package com.akavrt.csp.metrics;
 
 import com.akavrt.csp.core.*;
-import com.akavrt.csp.params.ObjectiveParameters;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class ScalarMetricTest {
     private Roll roll2;
     private Roll roll3;
     private Problem problem;
-    private ObjectiveParameters params;
+    private ScalarMetricParameters params;
     private ScalarMetric evaluator;
 
     @Before
@@ -48,7 +47,7 @@ public class ScalarMetricTest {
 
         problem = new Problem(orders, rolls, allowedCutsNumber);
 
-        params = new ObjectiveParameters();
+        params = new ScalarMetricParameters();
         params.setTrimFactor(0.33);
         params.setPatternsFactor(0.33);
         params.setProductionFactor(0.33);

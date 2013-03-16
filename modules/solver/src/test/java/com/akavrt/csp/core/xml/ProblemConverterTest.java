@@ -27,17 +27,6 @@ public class ProblemConverterTest {
 
     @Before
     public void setUpProblem() {
-        // preparing metadata
-        ProblemMetadata metadata = new ProblemMetadata();
-        metadata.setName("Composite test");
-        metadata.setAuthor("Victor Balabanov");
-        metadata.setDescription("Test problem");
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1984, Calendar.JULY, 28);
-        Date date = new Date(calendar.getTimeInMillis());
-        metadata.setDate(date);
-
         // preparing orders
         problemOrders = new ArrayList<Order>();
         problemOrders.add(new Order("order1", 500, 50));
@@ -55,38 +44,30 @@ public class ProblemConverterTest {
         builder.setOrders(problemOrders);
         builder.setRolls(problemRolls);
         builder.setAllowedCutsNumber(10);
-        builder.setMetadata(metadata);
 
         problem = builder.build();
     }
 
     @Test
     public void metadataConversion() {
-        ProblemMetadata metadata = problem.getMetadata();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(metadata.getDate());
-
         ProblemConverter converter = new ProblemConverter();
+
+        // metadata wasn't set
+        problem.setMetadata(null);
         Element problemElm = converter.export(problem);
         Problem extracted = converter.extract(problemElm);
 
-        ProblemMetadata extractedMetadata = extracted.getMetadata();
-        assertFalse(extractedMetadata == null);
-        assertEquals(metadata.getName(), extractedMetadata.getName());
-        assertEquals(metadata.getAuthor(), extractedMetadata.getAuthor());
-        assertEquals(metadata.getDescription(), extractedMetadata.getDescription());
+        assertNull(extracted.getMetadata());
 
-        Calendar extractedCalendar = Calendar.getInstance();
-        extractedCalendar.setTime(extractedMetadata.getDate());
+        // metadata was set
+        ProblemMetadata metadata = new ProblemMetadata();
+        metadata.setName("Composite test");
 
-        assertEquals(calendar.get(Calendar.YEAR), extractedCalendar.get(Calendar.YEAR));
-        assertEquals(calendar.get(Calendar.MONTH), extractedCalendar.get(Calendar.MONTH));
-        assertEquals(calendar.get(Calendar.DAY_OF_MONTH),
-                     extractedCalendar.get(Calendar.DAY_OF_MONTH));
-        assertEquals(calendar.get(Calendar.HOUR_OF_DAY),
-                     extractedCalendar.get(Calendar.HOUR_OF_DAY));
-        assertEquals(calendar.get(Calendar.MINUTE), extractedCalendar.get(Calendar.MINUTE));
+        problem.setMetadata(metadata);
+        problemElm = converter.export(problem);
+        extracted = converter.extract(problemElm);
+
+        assertNotNull(extracted.getMetadata());
     }
 
     @Test

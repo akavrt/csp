@@ -1,15 +1,15 @@
 package com.akavrt.csp.core.metadata;
 
-import com.akavrt.csp.xml.MetadataConverter;
+import com.akavrt.csp.xml.XmlCompatible;
 import org.jdom2.Element;
 
 /**
  * <p>This class can hold any meaningful data about the roll. It is responsible for saving and
- * loading that date to and from XML.</p>
+ * loading that data to and from XML.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class RollMetadata implements MetadataConverter {
+public class RollMetadata implements XmlCompatible {
 
     /**
      * {@inheritDoc}

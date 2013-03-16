@@ -2,53 +2,212 @@ package com.akavrt.csp.core.xml;
 
 import org.jdom2.Element;
 
+import java.text.*;
+import java.util.Date;
+import java.util.Locale;
+
 /**
+ * <p>Collection of utility methods used to format data in XML export and to parse data while
+ * importing it from XML.</p>
+ *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Utils {
+    private final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+    private static final DecimalFormat DECIMAL_FORMAT;
+    private static boolean DEBUG = false;
+    private static DateFormat DATE_FORMAT;
 
-    public static double getDoubleFromText(Element rootElm, String targetTag) {
-        double value = 0;
-        String valueString = rootElm.getChildText(targetTag);
-        if (valueString != null) {
-            try {
-                value = Double.parseDouble(valueString);
-            } catch (NumberFormatException e) {
-                // TODO add logger statement
-                e.printStackTrace();
+    static {
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+        formatSymbols.setDecimalSeparator('.');
+        formatSymbols.setGroupingSeparator(',');
+
+        DECIMAL_FORMAT = new DecimalFormat();
+        DECIMAL_FORMAT.setDecimalFormatSymbols(formatSymbols);
+        DECIMAL_FORMAT.setGroupingUsed(false);
+
+        DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.ENGLISH);
+    }
+
+    /**
+     * <p>Converts double value to String with special format applied. Dot is used as decimal
+     * separator, group separator isn't used.</p>
+     *
+     * @param value Value to format.
+     * @return Formatted value.
+     */
+    public static String formatDouble(double value) {
+        return DECIMAL_FORMAT.format(value);
+    }
+
+    /**
+     * <p>Convert the textual content directly held under element to double.</p>
+     *
+     * <p>Only dot can be used as decimal separator, group separator isn't allowed.</p>
+     *
+     * @param element      Element with textual content to convert.
+     * @param defaultValue If conversion fails, default value is returned.
+     * @return Double value parsed from textual content or default value, if conversion fails.
+     */
+    public static double getDoubleFromText(Element element, double defaultValue) {
+        double value = defaultValue;
+        String valueString = element.getText();
+        if (!isEmpty(valueString)) {
+            ParsePosition pp = new ParsePosition(0);
+            Number number = DECIMAL_FORMAT.parse(valueString, pp);
+            if (number != null && valueString.length() == pp.getIndex()) {
+                value = number.doubleValue();
             }
         }
         return value;
     }
 
-    public static int getIntegerFromText(Element rootElm, String targetTag) {
-        int value = 0;
-        String valueString = rootElm.getChildText(targetTag);
-        if (valueString != null) {
+    /**
+     * <p>Convert the textual content directly held under child element to double.</p>
+     *
+     * <p>Only dot can be used as decimal separator, group separator isn't allowed.</p>
+     *
+     * @param parent       Immediate parent for child element with textual content to convert.
+     * @param childName    Name of the child element.
+     * @param defaultValue If conversion fails, default value is returned.
+     * @return Double value parsed from textual content or default value, if conversion fails.
+     */
+    public static double getDoubleFromText(Element parent, String childName, double defaultValue) {
+        double value = defaultValue;
+        String valueString = parent.getChildText(childName);
+        if (!isEmpty(valueString)) {
+            ParsePosition pp = new ParsePosition(0);
+            Number number = DECIMAL_FORMAT.parse(valueString, pp);
+            if (number != null && valueString.length() == pp.getIndex()) {
+                value = number.doubleValue();
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * <p>Convert the textual content directly held under element to integer.</p>
+     *
+     * @param element      Element with textual content to convert.
+     * @param defaultValue If conversion fails, default value is returned.
+     * @return Integer value parsed from textual content or default value, if conversion fails.
+     */
+    public static int getIntegerFromText(Element element, int defaultValue) {
+        int value = defaultValue;
+        String valueString = element.getText();
+        if (!isEmpty(valueString)) {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
                 // TODO add logger statement
-                e.printStackTrace();
+                if (DEBUG) {
+                    e.printStackTrace();
+                }
             }
         }
 
         return value;
     }
 
-    public static int getIntegerFromAttribute(Element targetElm, String targetAttr,
+    /**
+     * <p>Convert the textual content directly held under child element to integer.</p>
+     *
+     * @param parent       Immediate parent for child element with textual content to convert.
+     * @param childName    Name of the child element.
+     * @param defaultValue If conversion fails, default value is returned.
+     * @return Integer value parsed from textual content or default value, if conversion fails.
+     */
+    public static int getIntegerFromText(Element parent, String childName, int defaultValue) {
+        int value = defaultValue;
+        String valueString = parent.getChildText(childName);
+        if (!isEmpty(valueString)) {
+            try {
+                value = Integer.parseInt(valueString);
+            } catch (NumberFormatException e) {
+                // TODO add logger statement
+                if (DEBUG) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * <p>Convert the textual content held as attribute value to integer.</p>
+     *
+     * @param element       Element containing attribute with textual content to convert.
+     * @param attributeName Name of the attribute.
+     * @param defaultValue  If conversion fails, default value is returned.
+     * @return Integer value parsed from textual content or default value, if conversion fails.
+     */
+    public static int getIntegerFromAttribute(Element element, String attributeName,
                                               int defaultValue) {
         int value = defaultValue;
-        String valueString = targetElm.getAttributeValue(targetAttr);
-        if (valueString != null) {
+        String valueString = element.getAttributeValue(attributeName);
+        if (!isEmpty(valueString)) {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
                 // TODO add logger statement
-                e.printStackTrace();
+                if (DEBUG) {
+                    e.printStackTrace();
+                }
             }
         }
 
         return value;
+    }
+
+    /**
+     * <p>Converts an instance of Date to String with special format applied.</p>
+     *
+     * <p>Pattern 'yyyy-MM-dd HH:mm' is used to format date.</p>
+     *
+     * @param date Date to format.
+     * @return Formatted date.
+     */
+    public static String formatDate(Date date) {
+        return DATE_FORMAT.format(date);
+    }
+
+    /**
+     * <p>Convert the textual content directly held under element to Date.</p>
+     *
+     * <p>The only formatting pattern supported is 'yyyy-MM-dd HH:mm'. Other formats will be
+     * ignored.</p>
+     *
+     * @param element Element with textual content to convert.
+     * @return Date parsed from textual content or null, if conversion fails.
+     */
+    public static Date getDateFromText(Element element) {
+        Date date = null;
+
+        String valueString = element.getText();
+        if (!isEmpty(valueString)) {
+            ParsePosition pp = new ParsePosition(0);
+            date = DATE_FORMAT.parse(valueString, pp);
+            if (valueString.length() != pp.getIndex()) {
+                date = null;
+            }
+        }
+
+        return date;
+    }
+
+    /**
+     * <p>Returns true if the string is null or 0-length.</p>
+     *
+     * @param str The string to be examined.
+     * @return true if str is null or zero length.
+     */
+    public static boolean isEmpty(CharSequence str) {
+        if (str == null || str.length() == 0)
+            return true;
+        else
+            return false;
     }
 }

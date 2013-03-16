@@ -10,6 +10,9 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * <p>Converter class used to transform an instance of Pattern to its XML representation and vice
+ * versa.</p>
+ *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class PatternConverter implements XmlConverter<Pattern> {
@@ -17,6 +20,14 @@ public class PatternConverter implements XmlConverter<Pattern> {
     private final List<Roll> rolls;
     private final MultiCutConverter cutConverter;
 
+    /**
+     * <p>Create a reusable instance of PatternConverter tied with problem definition. Valid
+     * conversion can be done only for patterns which resides within single solution applied to the
+     * problem specified during creation of the converter.</p>
+     *
+     * <p>The latter restriction is needed to properly recreate references to orders and rolls
+     * while extracting pattern from XML.</p>
+     */
     public PatternConverter(Problem problem) {
         orders = problem.getOrders();
 
@@ -26,6 +37,9 @@ public class PatternConverter implements XmlConverter<Pattern> {
         cutConverter = new MultiCutConverter(problem.getOrders());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Element export(Pattern pattern) {
         Element patternElm = new Element(XmlTags.PATTERN);
@@ -43,6 +57,9 @@ public class PatternConverter implements XmlConverter<Pattern> {
         return patternElm;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Pattern extract(Element rootElm) {
         // extracting cuts

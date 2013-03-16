@@ -67,6 +67,8 @@ public class ProblemTest {
 
     @Test
     public void unsorted() {
+        // no additional sorting is used when problem is
+        // created using constructor (without ProblemBuilder)
         Order order = problem.getOrders().get(0);
         assertEquals("order1", order.getId());
 

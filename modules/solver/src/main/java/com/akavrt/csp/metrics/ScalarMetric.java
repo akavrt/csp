@@ -1,7 +1,6 @@
 package com.akavrt.csp.metrics;
 
 import com.akavrt.csp.core.*;
-import com.akavrt.csp.params.ObjectiveParameters;
 
 import java.util.List;
 
@@ -15,16 +14,16 @@ import java.util.List;
  */
 public class ScalarMetric implements Metric {
     private final Problem problem;
-    private final ObjectiveParameters params;
+    private final ScalarMetricParameters params;
 
     /**
      * <p>Creates an instance of evaluator. Can be reused to evaluate different solutions against
-     * problem and objective function provided as a parameters to the constructor.</p>
+     * problem and objective function with specific parameters provided during creation.</p>
      *
      * @param problem The problem in question.
      * @param params  Parameters of objective function.
      */
-    public ScalarMetric(Problem problem, ObjectiveParameters params) {
+    public ScalarMetric(Problem problem, ScalarMetricParameters params) {
         this.problem = problem;
         this.params = params;
     }
