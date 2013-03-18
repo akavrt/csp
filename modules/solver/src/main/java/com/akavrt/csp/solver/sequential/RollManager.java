@@ -120,13 +120,15 @@ public class RollManager {
      * @param toleranceRatio Positive ratio allows to add rolls with different width of strip to
      *                       the same group. Deviation of the width within group is controlled by
      *                       fraction tolerance ratio.
+     * @param groupSize      Target size of the group.
      * @return The group of the rolls.
      */
-    public List<Roll> getGroup(int anchorIndex, double toleranceRatio) {
+    public List<Roll> getGroup(int anchorIndex, double toleranceRatio, int groupSize) {
         List<Roll> group = Lists.newArrayList();
 
         double anchorWidth = rolls.get(anchorIndex).getWidth();
-        for (Roll roll : rolls) {
+        for (int i = 0; i < rolls.size() && group.size() < groupSize; i++) {
+            Roll roll = rolls.get(i);
             double delta = 1 - anchorWidth / roll.getWidth();
             if (delta >= 0 && delta <= toleranceRatio) {
                 group.add(roll);

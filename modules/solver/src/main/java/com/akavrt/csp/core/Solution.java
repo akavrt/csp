@@ -202,4 +202,24 @@ public class Solution {
     public void setMetadata(SolutionMetadata metadata) {
         this.metadata = metadata;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        int digits = (int) Math.floor(Math.log10(patterns.size())) + 1;
+        String indexFormat = "\n    #%" + digits + "d: ";
+
+        builder.append("{");
+        int i = 0;
+        for (Pattern pattern : patterns) {
+            String index = String.format(indexFormat, ++i);
+            builder.append(index);
+            builder.append(pattern);
+        }
+        builder.append("\n}");
+
+        return builder.toString();
+    }
+
 }

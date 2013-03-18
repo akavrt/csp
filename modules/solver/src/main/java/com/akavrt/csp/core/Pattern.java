@@ -251,4 +251,23 @@ public class Pattern {
         return Arrays.hashCode(multipliers);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("[  ");
+        for (MultiCut cut : cuts.values()) {
+            Order order = cut.getOrder();
+            int quantity = cut.getQuantity();
+
+            builder.append(String.format("%.2f: %2d;  ", order.getWidth(), quantity));
+        }
+        builder.append("]");
+
+        if (roll != null) {
+            builder.append(" -> " + roll.getId());
+        }
+
+        return builder.toString();
+    }
 }

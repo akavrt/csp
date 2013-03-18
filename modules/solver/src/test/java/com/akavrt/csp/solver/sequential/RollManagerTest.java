@@ -132,17 +132,17 @@ public class RollManagerTest {
         // actual test
 
         // 100
-        group = manager.getGroup(0, 0);
+        group = manager.getGroup(0, 0, 10);
         assertTrue(isAllRollsFound(group, rolls.get(0).getInternalId()));
 
         // 100, 120
-        group = manager.getGroup(0, 0.2);
+        group = manager.getGroup(0, 0.2, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(0).getInternalId(),
                                    rolls.get(1).getInternalId()));
 
         // 100, 120, 140
-        group = manager.getGroup(0, 0.29);
+        group = manager.getGroup(0, 0.29, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(0).getInternalId(),
                                    rolls.get(1).getInternalId(),
@@ -150,29 +150,29 @@ public class RollManagerTest {
 
 
         // 180
-        group = manager.getGroup(4, 0);
+        group = manager.getGroup(4, 0, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(4).getInternalId()));
 
         // 180
-        group = manager.getGroup(4, 0.09);
+        group = manager.getGroup(4, 0.09, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(4).getInternalId()));
 
         // 180, 200
-        group = manager.getGroup(4, 0.1);
+        group = manager.getGroup(4, 0.1, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(4).getInternalId(),
                                    rolls.get(5).getInternalId()));
 
         // 180, 200
-        group = manager.getGroup(4, 0.18);
+        group = manager.getGroup(4, 0.18, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(4).getInternalId(),
                                    rolls.get(5).getInternalId()));
 
         // 180, 200, 220 X 3
-        group = manager.getGroup(4, 0.19);
+        group = manager.getGroup(4, 0.19, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(4).getInternalId(),
                                    rolls.get(5).getInternalId(),
@@ -181,14 +181,14 @@ public class RollManagerTest {
                                    rolls.get(8).getInternalId()));
 
         // 220 X 3
-        group = manager.getGroup(7, 0);
+        group = manager.getGroup(7, 0, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(6).getInternalId(),
                                    rolls.get(7).getInternalId(),
                                    rolls.get(8).getInternalId()));
 
         // 220 X 3, 230
-        group = manager.getGroup(7, 0.05);
+        group = manager.getGroup(7, 0.05, 10);
         assertTrue(isAllRollsFound(group,
                                    rolls.get(6).getInternalId(),
                                    rolls.get(7).getInternalId(),

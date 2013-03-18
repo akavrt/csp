@@ -89,11 +89,18 @@ public class PatternConverter implements XmlConverter<Pattern> {
     }
 
     private Element prepareRollReference(Roll roll) {
+        /*
         Element rollElm = new Element(XmlTags.ROLL);
 
         Element refElm = new Element(XmlTags.REF);
         refElm.setAttribute(XmlTags.ID, roll.getId());
         rollElm.addContent(refElm);
+
+        return rollElm;
+        */
+
+        Element rollElm = new Element(XmlTags.ROLL);
+        rollElm.setAttribute(XmlTags.REF, roll.getId());
 
         return rollElm;
     }
@@ -121,11 +128,29 @@ public class PatternConverter implements XmlConverter<Pattern> {
     }
 
     private Roll retrieveRoll(Element rollElm) {
+        /*
         Roll roll = null;
 
         Element refElm = rollElm.getChild(XmlTags.REF);
         if (refElm != null && refElm.getAttributeValue(XmlTags.ID) != null) {
             String rollId = refElm.getAttributeValue(XmlTags.ID);
+            for (int i = 0; i < rolls.size(); i++) {
+                Roll rollToTest = rolls.get(i);
+                if (rollToTest.getId().equals(rollId)) {
+                    // referenced roll found
+                    roll = rollToTest;
+                    rolls.remove(i);
+                    break;
+                }
+            }
+        }
+
+        return roll;
+        */
+
+        Roll roll = null;
+        String rollId = rollElm.getAttributeValue(XmlTags.REF);
+        if (rollId != null) {
             for (int i = 0; i < rolls.size(); i++) {
                 Roll rollToTest = rolls.get(i);
                 if (rollToTest.getId().equals(rollId)) {

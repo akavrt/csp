@@ -20,13 +20,8 @@ import java.util.List;
 public interface Solver {
     /**
      * <p>Initialize internal structures and start computations.</p>
-     */
-    void solve();
-
-    /**
-     * <p>Return all collected solutions.</p>
      *
-     * @return List of solutions collected during single execution of method solve().
+     * @return All solutions found.
      */
-    List<Solution> getSolutions();
+    List<Solution> solve();
 }

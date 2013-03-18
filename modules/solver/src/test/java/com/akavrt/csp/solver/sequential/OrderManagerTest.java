@@ -44,9 +44,9 @@ public class OrderManagerTest {
 
         List<Roll> group = Lists.newArrayList(roll1, roll2);
 
-        // 1000 / 1500 -> 1; 1500 / 1500 -> 1; 2100 / 1500 -> 1
+        // 1000 / 1500 -> 0; 1500 / 1500 -> 1; 2100 / 1500 -> 1
         int[] actual = manager.calcGroupDemand(group);
-        int[] expected = new int[]{1, 1, 1};
+        int[] expected = new int[]{0, 1, 1};
         assertArrayEquals(expected, actual);
 
         roll1 = new Roll("roll1", 400, 100);

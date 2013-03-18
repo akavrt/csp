@@ -19,10 +19,10 @@ import java.util.List;
  *
  * <ol>
  * <li>
- *     <a href="http://dx.doi.org/10.1287/opre.23.3.483">[R. W. Haessler, 1975];</a>
+ * <a href="http://dx.doi.org/10.1287/opre.23.3.483">[R. W. Haessler, 1975];</a>
  * </li>
  * <li>
- *     <a href="http://dx.doi.org/10.1080/05695557808975185">[R. W. Haessler, 1978].</a>
+ * <a href="http://dx.doi.org/10.1080/05695557808975185">[R. W. Haessler, 1978].</a>
  * </li>
  * </ol>
  * </p>
@@ -31,8 +31,8 @@ import java.util.List;
  */
 public class HaesslerProcedure implements Algorithm {
     public static final String METHOD_NAME = "Haessler's sequential heuristic procedure";
-    private HaesslerProcedureParameters params;
-    private PatternGenerator patternGenerator;
+    private final HaesslerProcedureParameters params;
+    private final PatternGenerator patternGenerator;
     private RollManager rollManager;
     private OrderManager orderManager;
     private Solution currentSolution;
@@ -40,26 +40,23 @@ public class HaesslerProcedure implements Algorithm {
     /**
      * <p>Create instance of Algorithm implementing Haessler's sequential heuristic procedure.
      * Default set of parameters will be used.</p>
+     *
+     * @param generator Pattern generator.
      */
-    public HaesslerProcedure() {
-        this(new HaesslerProcedureParameters());
+    public HaesslerProcedure(PatternGenerator generator) {
+        this(generator, new HaesslerProcedureParameters());
     }
 
     /**
      * <p>Create instance of Algorithm implementing Haessler's sequential heuristic procedure.
      * Algorithm is configured with a set of parameters provided.</p>
      *
-     * @param params Parameters of sequential heuristic procedure.
+     * @param generator Pattern generator.
+     * @param params    Parameters of sequential heuristic procedure.
      */
-    public HaesslerProcedure(HaesslerProcedureParameters params) {
+    public HaesslerProcedure(PatternGenerator generator, HaesslerProcedureParameters params) {
         this.params = params;
-    }
-
-    /**
-     * Current set of parameters used by the method. It could be saved to XML if needed.
-     */
-    public HaesslerProcedureParameters getParameters() {
-        return params;
+        this.patternGenerator = generator;
     }
 
     /**
@@ -75,12 +72,11 @@ public class HaesslerProcedure implements Algorithm {
      */
     @Override
     public List<Solution> execute(ExecutionContext context) {
-        if (context.getPatternGenerator() == null) {
+        if (patternGenerator == null || context.getProblem() == null) {
             return null;
         }
 
         Problem problem = context.getProblem();
-        patternGenerator = context.getPatternGenerator();
 
         rollManager = new RollManager(problem.getRolls());
         orderManager = new OrderManager(problem.getOrders());
@@ -103,6 +99,8 @@ public class HaesslerProcedure implements Algorithm {
         double allowedTrimRatio = 0;
         boolean isPatternFound = false;
         while (allowedTrimRatio < 1 && !isPatternFound) {
+            System.out.println(String.format("#TRIM_AL: %.2f", allowedTrimRatio));
+
             isPatternFound = patternUsageStep(allowedTrimRatio);
 
             // relax requirements for trim loss
@@ -133,6 +131,8 @@ public class HaesslerProcedure implements Algorithm {
 
         boolean isPatternFound = false;
         while (patternUsage > 0 && !isPatternFound) {
+            System.out.println(String.format("  #PAUS_AL: %d", patternUsage));
+
             isPatternFound = rollGroupStep(allowedTrimRatio, patternUsage);
 
             // relax requirements for pattern usage
@@ -147,10 +147,15 @@ public class HaesslerProcedure implements Algorithm {
 
         int anchorIndex = 0;
         while (anchorIndex < rollManager.size() && !isPatternFound) {
+            System.out.print(String.format("    #ANC_IDX: %d", anchorIndex));
+
             // check whether we can find group of sufficient size
             if (rollManager.getGroupSize(anchorIndex, allowedTrimRatio) >= patternUsage) {
+                System.out.print(":  group found\n");
                 // if suitable group exists, try to generate pattern
-                isPatternFound = patternGeneration(allowedTrimRatio, anchorIndex);
+                isPatternFound = patternGeneration(allowedTrimRatio, patternUsage, anchorIndex);
+            } else {
+                System.out.print("\n");
             }
 
             anchorIndex++;
@@ -159,11 +164,11 @@ public class HaesslerProcedure implements Algorithm {
         return isPatternFound;
     }
 
-    private boolean patternGeneration(double allowedTrimRatio, int anchorIndex) {
+    private boolean patternGeneration(double allowedTrimRatio, int patternUsage, int anchorIndex) {
         boolean isPatternFound = false;
 
         // let's process current group and try to generate suitable pattern
-        List<Roll> group = rollManager.getGroup(anchorIndex, allowedTrimRatio);
+        List<Roll> group = rollManager.getGroup(anchorIndex, allowedTrimRatio, patternUsage);
         int[] demand = orderManager.calcGroupDemand(group);
 
         // rolls are sorted in ascending order of width
@@ -171,6 +176,20 @@ public class HaesslerProcedure implements Algorithm {
         double baseRollWidth = group.get(0).getWidth();
 
         int[] pattern = patternGenerator.generate(baseRollWidth, demand, allowedTrimRatio);
+
+        String demandSt =  "      demand: [ ";
+        String patternSt = "      pattern: [ ";
+
+        for (int i = 0; i < demand.length; i++) {
+            demandSt += demand[i] + " ";
+            patternSt += pattern[i] + " ";
+        }
+
+        demandSt += "]";
+        patternSt += "]";
+        System.out.println(demandSt);
+        System.out.println(patternSt);
+
         if (pattern != null
                 && orderManager.getPatternTrimRatio(group, pattern) <= allowedTrimRatio) {
             // pattern search succeeded
@@ -197,7 +216,7 @@ public class HaesslerProcedure implements Algorithm {
         SolutionMetadata metadata = new SolutionMetadata();
         metadata.setDescription("Solution obtained with " + getName() + ".");
         metadata.setDate(new Date());
-        metadata.addParameters(getParameters());
+        metadata.addParameters(params);
         metadata.addParameters(patternGenerator.getParameters());
 
         return metadata;

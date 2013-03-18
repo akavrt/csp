@@ -20,4 +20,17 @@ public interface Metric {
      * @return The evaluated value of the objective function.
      */
     double evaluate(Solution solution);
+
+    /**
+     * <p>Evaluate and compare two solutions.</p>
+     *
+     * <p>Using this method we can hide details about type ot the optimization problem being
+     * solved: whether it is a minimization or maximization problem.</p>
+     *
+     * @param s1 The first solution to be compared.
+     * @param s2 The second solution to be compared.
+     * @return A negative integer, zero, or a positive integer as the first argument is worse than,
+     *         equal to, or better than the second in terms of solution quality.
+     */
+    int compare(Solution s1, Solution s2);
 }

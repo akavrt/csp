@@ -36,6 +36,7 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
      */
     @Override
     public Element export(MultiCut cut) {
+        /*
         Element cutElm = new Element(XmlCutTags.CUT);
         cutElm.setAttribute(XmlCutTags.QUANTITY, Integer.toString(cut.getQuantity()));
 
@@ -47,6 +48,13 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
         orderElm.addContent(refElm);
 
         return cutElm;
+        */
+
+        Element cutElm = new Element(XmlCutTags.CUT);
+        cutElm.setAttribute(XmlCutTags.QUANTITY, Integer.toString(cut.getQuantity()));
+        cutElm.setAttribute(XmlCutTags.REF, cut.getOrder().getId());
+
+        return cutElm;
     }
 
     /**
@@ -54,6 +62,7 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
      */
     @Override
     public MultiCut extract(Element rootElm) {
+        /*
         int quantity = Utils.getIntegerFromAttribute(rootElm, XmlCutTags.QUANTITY, 0);
 
         // extracting order reference and trying to find referenced order
@@ -66,6 +75,23 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
             if (orderId != null) {
                 order = mappedOrders.get(orderId);
             }
+        }
+
+        MultiCut cut = null;
+        if (order != null) {
+            cut = new MultiCut(order, quantity);
+        }
+
+        return cut;
+        */
+
+        int quantity = Utils.getIntegerFromAttribute(rootElm, XmlCutTags.QUANTITY, 0);
+
+        // extracting order reference and trying to find referenced order
+        Order order = null;
+        String orderId = rootElm.getAttributeValue(XmlCutTags.REF);
+        if (orderId != null) {
+            order = mappedOrders.get(orderId);
         }
 
         MultiCut cut = null;

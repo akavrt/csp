@@ -55,17 +55,17 @@
 		<solution>
 			<patterns>
 				<pattern>
-					<roll>
+					<roll ref="roll1">
 						<ref id="roll1"/>
 					</roll>
 					
 					<cuts>
-						<cut quantity="1">
+						<cut quantity="1" ref="order2">
 							<order>
 								<ref id="order2"/>
 							</order>
 						</cut>	
-						<cut quantity="1">
+						<cut quantity="1" ref="order3">
 							<order>
 								<ref id="order3"/>
 							</order>
@@ -73,22 +73,22 @@
 					</cuts>
 				</pattern>
 				<pattern>
-					<roll>
+					<roll ref="roll2">
 						<ref id="roll2"/>
 					</roll>
 					
 					<cuts>
-						<cut quantity="1">
+						<cut quantity="1" ref="order1">
 							<order>
 								<ref id="order1"/>
 							</order>
 						</cut>	
-						<cut quantity="2">
+						<cut quantity="2" ref="order2">
 							<order>
 								<ref id="order2"/>
 							</order>
 						</cut>	
-						<cut quantity="2">
+						<cut quantity="2" ref="order3">
 							<order>
 								<ref id="order3"/>
 							</order>
@@ -102,17 +102,17 @@
 		<solution>
 			<patterns>
 				<pattern>
-					<roll>
+					<roll ref="roll1">
 						<ref id="roll1"/>
 					</roll>
 					
 					<cuts>
-						<cut quantity="1">
+						<cut quantity="1" ref="order1">
 							<order>
 								<ref id="order1"/>
 							</order>
 						</cut>	
-						<cut quantity="1">
+						<cut quantity="1" ref="order2">
 							<order>
 								<ref id="order2"/>
 							</order>
@@ -120,12 +120,12 @@
 					</cuts>
 				</pattern>
 				<pattern>
-					<roll>
+					<roll ref="roll2">
 						<ref id="roll2"/>
 					</roll>
 					
 					<cuts>
-						<cut quantity="2">
+						<cut quantity="2" ref="order2">
 							<order>
 								<ref id="order2"/>
 							</order>

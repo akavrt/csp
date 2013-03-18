@@ -1,6 +1,9 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.*;
+import com.akavrt.csp.core.Order;
+import com.akavrt.csp.core.Pattern;
+import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.Solution;
 
 import java.util.List;
 
@@ -112,5 +115,19 @@ public class ScalarMetric implements Metric {
         return params.getTrimFactor() * getTrimRatio(solution) +
                 params.getPatternsFactor() * getPatternsRatio(solution) +
                 params.getProductionFactor() * getProductionRatio(solution);
+    }
+
+    /**
+     * <p>We are dealing with minimization problem: given two solutions, solution with smaller value
+     * of objective function will be better.</p>
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public int compare(Solution s1, Solution s2) {
+        double s1eval = evaluate(s1);
+        double s2eval = evaluate(s2);
+
+        return s1eval > s2eval ? -1 : (s1eval < s2eval ? 1 : 0);
     }
 }

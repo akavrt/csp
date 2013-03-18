@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <problem>
+		<metadata>
+			<name>optimal_01</name>
+			<author>Victor Balabanov</author>
+			<date>2013-03-17 21:00</date>
+			<description>Test problem with known optimal solution. Format version 2.0.
+		        1.5D-CSP test case
+		        proven optimal solution:
+		          [ 100 x 2 + 110 x 2 + 140 x 3 + 160 x 1 = 1000 mm ] x 4 rolls (1000 mm; 800 m)
+
+		          TL = 0; PD = 0; PR = 0;
+			  </description>
+		</metadata>
+		
+        <orders>
+            <order id="order1">
+                <strip>
+                    <width>0.1</width>
+                    <length>6400</length>
+                </strip>
+            </order>
+            <order id="order2">
+                <strip>
+                    <width>0.11</width>
+                    <length>6400</length>
+                </strip>
+            </order>
+            <order id="order3">
+                <strip>
+                    <width>0.14</width>
+                    <length>9600</length>
+                </strip>
+            </order>
+            <order id="order4">
+                <strip>
+                    <width>0.16</width>
+                    <length>3200</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll1" quantity="10">
+                <strip>
+                    <width>1</width>
+                    <length>800</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+</csp>

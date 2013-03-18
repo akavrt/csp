@@ -79,7 +79,11 @@ public class OrderManager {
             // in previous version rounding multiplier up
             // was allowed only if size of group equals to one
             // this rule was used to implicitly control overproduction
-            demand[i] = ratio < 1 ? 1 : (int) Math.floor(ratio);
+            if (group.size() > 1) {
+                demand[i] = (int) Math.floor(ratio);
+            } else {
+                demand[i] = ratio < 1 ? 1 : (int) Math.floor(ratio);
+            }
         }
 
         return demand;
