@@ -72,15 +72,17 @@ public class OrderManager {
         Arrays.fill(demand, 0);
 
         for (int i = 0; i < orders.size(); i++) {
-            double unfulfilledLength = orders.get(i).getUnfulfilledLength();
-            double ratio = unfulfilledLength / groupLength;
+            if (!orders.get(i).isFulfilled()) {
+                double unfulfilledLength = orders.get(i).getUnfulfilledLength();
+                double ratio = unfulfilledLength / groupLength;
 
-            // rounding multiplier up is allowed only if size of the group equals to one
-            // this rule is used to implicitly control overproduction
-            if (group.size() > 1) {
-                demand[i] = (int) Math.floor(ratio);
-            } else {
-                demand[i] = ratio < 1 ? 1 : (int) Math.floor(ratio);
+                // rounding multiplier up is allowed only if size of the group equals to one
+                // this rule is used to implicitly control overproduction
+                if (group.size() > 1) {
+                    demand[i] = (int) Math.floor(ratio);
+                } else {
+                    demand[i] = ratio < 1 ? 1 : (int) Math.floor(ratio);
+                }
             }
         }
 
@@ -94,6 +96,10 @@ public class OrderManager {
      * @return Total width of the pattern, measured in abstract units.
      */
     public double getPatternWidth(int[] pattern) {
+        if (pattern == null) {
+            return 0;
+        }
+
         double patternWidth = 0;
         for (int i = 0; i < orders.size(); i++) {
             patternWidth += pattern[i] * orders.get(i).getOrder().getWidth();
@@ -111,6 +117,10 @@ public class OrderManager {
      * @return Trim loss fractional ratio.
      */
     public double getPatternTrimRatio(List<Roll> group, int[] pattern) {
+        if (pattern == null) {
+            return 0;
+        }
+
         double totalArea = 0;
         double unusedArea = 0;
         double patternWidth = getPatternWidth(pattern);
@@ -143,6 +153,10 @@ public class OrderManager {
      * @param pattern Pattern defined by an array of integer multipliers.
      */
     public void updateProduction(List<Roll> group, int[] pattern) {
+        if (pattern == null) {
+            return;
+        }
+
         double groupLength = 0;
         for (Roll roll : group) {
             groupLength += roll.getLength();

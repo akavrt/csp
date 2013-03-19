@@ -5,10 +5,10 @@ import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
-import com.akavrt.csp.core.xml.Utils;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
+import com.akavrt.csp.utils.Utils;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +34,8 @@ import java.util.List;
  */
 public class HaesslerProcedure implements Algorithm {
     public static final String METHOD_NAME = "Haessler's sequential heuristic procedure";
-    private static final Logger logger = LogManager.getFormatterLogger(HaesslerProcedure.class);
+    private static final String SHORT_METHOD_NAME = "Haessler's SHP";
+    private static final Logger LOGGER = LogManager.getFormatterLogger(HaesslerProcedure.class);
     private final HaesslerProcedureParameters params;
     private final PatternGenerator patternGenerator;
     private RollManager rollManager;
@@ -100,13 +101,23 @@ public class HaesslerProcedure implements Algorithm {
         return solutions;
     }
 
+    private SolutionMetadata prepareMetadata() {
+        SolutionMetadata metadata = new SolutionMetadata();
+        metadata.setDescription("Solution obtained with " + SHORT_METHOD_NAME + ".");
+        metadata.setDate(new Date());
+        metadata.addParameters(params);
+        metadata.addParameters(patternGenerator.getParameters());
+
+        return metadata;
+    }
+
     private boolean trimStep() {
-        logger.entry();
+        LOGGER.entry();
 
         double allowedTrimRatio = 0;
         boolean isPatternFound = false;
         while (allowedTrimRatio < 1 && !isPatternFound) {
-            logger.debug("#TRIM_AL: %.2f", allowedTrimRatio);
+            LOGGER.debug("#TRIM_AL: %.2f", allowedTrimRatio);
 
             isPatternFound = patternUsageStep(allowedTrimRatio);
 
@@ -114,11 +125,11 @@ public class HaesslerProcedure implements Algorithm {
             allowedTrimRatio += params.getTrimRatioRelaxDelta();
         }
 
-        return logger.exit(isPatternFound);
+        return LOGGER.exit(isPatternFound);
     }
 
     private boolean patternUsageStep(double allowedTrimRatio) {
-        logger.entry();
+        LOGGER.entry();
 
         // find roll with minimal area
         double minRollArea = rollManager.getMinRollArea();
@@ -140,7 +151,7 @@ public class HaesslerProcedure implements Algorithm {
 
         boolean isPatternFound = false;
         while (patternUsage > 0 && !isPatternFound) {
-            logger.debug("#TRIM_AL: %.2f  ##PAUS_AL: %d", allowedTrimRatio, patternUsage);
+            LOGGER.debug("#TRIM_AL: %.2f  ##PU_AL: %d", allowedTrimRatio, patternUsage);
 
             isPatternFound = rollGroupStep(allowedTrimRatio, patternUsage);
 
@@ -148,7 +159,7 @@ public class HaesslerProcedure implements Algorithm {
             patternUsage -= params.getPatternUsageRelaxDelta();
         }
 
-        return logger.exit(isPatternFound);
+        return LOGGER.exit(isPatternFound);
     }
 
     private boolean rollGroupStep(double allowedTrimRatio, int patternUsage) {
@@ -181,12 +192,11 @@ public class HaesslerProcedure implements Algorithm {
         double baseRollWidth = group.get(0).getWidth();
 
         int[] pattern = patternGenerator.generate(baseRollWidth, demand, allowedTrimRatio);
-
-        if (pattern != null
-                && orderManager.getPatternTrimRatio(group, pattern) <= allowedTrimRatio) {
+        double trimRatio = orderManager.getPatternTrimRatio(group, pattern);
+        if (pattern != null && trimRatio <= allowedTrimRatio) {
             // pattern search succeeded
-            if (logger.isDebugEnabled()) {
-                debugPatternGeneration(demand, pattern, group);
+            if (LOGGER.isDebugEnabled()) {
+                debugPatternGeneration(anchorIndex, group.get(0), demand, pattern, trimRatio);
             }
 
             // adjust production and stock
@@ -207,41 +217,13 @@ public class HaesslerProcedure implements Algorithm {
         return isPatternFound;
     }
 
-    private void debugPatternGeneration(int[] demand, int[] pattern, List<Roll> rolls) {
-        logger.debug(convertIntArrayToString("       demand", demand));
-        logger.debug(convertIntArrayToString("      pattern", pattern));
-        double ratio = orderManager.getPatternTrimRatio(rolls, pattern);
-        logger.debug("      TL ratio = %.4f", ratio);
+    private void debugPatternGeneration(int anchorIndex, Roll anchorRoll,
+                                        int[] demand, int[] pattern, double trimRatio) {
+        LOGGER.debug("      ANC_IDX: %d -> base roll: '%s', #%d",
+                     anchorIndex, anchorRoll.getId(), anchorRoll.getInternalId());
+        LOGGER.debug(Utils.convertIntArrayToString("       demand", demand));
+        LOGGER.debug(Utils.convertIntArrayToString("      pattern", pattern));
+        LOGGER.debug("      TL ratio = %.4f", trimRatio);
     }
 
-    private String convertIntArrayToString(String name, int[] array) {
-        StringBuilder builder = new StringBuilder();
-        if (!Utils.isEmpty(name)) {
-            builder.append(name);
-            builder.append(": ");
-        }
-
-        if (array == null) {
-            builder.append("null");
-        } else {
-            builder.append("[ ");
-            for (int i : array) {
-                builder.append(i);
-                builder.append(" ");
-            }
-            builder.append("]");
-        }
-
-        return builder.toString();
-    }
-
-    private SolutionMetadata prepareMetadata() {
-        SolutionMetadata metadata = new SolutionMetadata();
-        metadata.setDescription("Solution obtained with " + getName() + ".");
-        metadata.setDate(new Date());
-        metadata.addParameters(params);
-        metadata.addParameters(patternGenerator.getParameters());
-
-        return metadata;
-    }
 }

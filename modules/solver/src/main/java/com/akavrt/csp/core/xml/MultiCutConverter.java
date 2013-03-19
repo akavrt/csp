@@ -48,7 +48,7 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
      */
     @Override
     public MultiCut extract(Element rootElm) {
-        int quantity = Utils.getIntegerFromAttribute(rootElm, XmlCutTags.QUANTITY, 0);
+        int quantity = XmlUtils.getIntegerFromAttribute(rootElm, XmlCutTags.QUANTITY, 0);
 
         // extracting order reference and trying to find referenced order
         Order order = null;

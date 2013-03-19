@@ -1,6 +1,6 @@
 package com.akavrt.csp.solver.sequential;
 
-import com.akavrt.csp.core.xml.Utils;
+import com.akavrt.csp.core.xml.XmlUtils;
 import com.akavrt.csp.xml.XmlCompatible;
 import org.jdom2.Element;
 
@@ -71,7 +71,7 @@ public class HaesslerProcedureParameters implements XmlCompatible {
         paramsElm.addContent(typeElm);
 
         Element trimRatioRelaxElm = new Element(XmlTags.TRIM_RATIO_RELAX_DELTA);
-        trimRatioRelaxElm.setText(Utils.formatDouble(getTrimRatioRelaxDelta()));
+        trimRatioRelaxElm.setText(XmlUtils.formatDouble(getTrimRatioRelaxDelta()));
         paramsElm.addContent(trimRatioRelaxElm);
 
         Element patternUsageRelaxElm = new Element(XmlTags.PATTERN_USAGE_RELAX_DELTA);
@@ -88,18 +88,18 @@ public class HaesslerProcedureParameters implements XmlCompatible {
     public void load(Element rootElm) {
         Element trimRatioRelaxElm = rootElm.getChild(XmlTags.TRIM_RATIO_RELAX_DELTA);
         if (trimRatioRelaxElm != null) {
-            setTrimRatioRelaxDelta(Utils.getDoubleFromText(trimRatioRelaxElm,
-                                                           DEFAULT_TRIM_RATIO_RELAX_DELTA));
+            setTrimRatioRelaxDelta(XmlUtils.getDoubleFromText(trimRatioRelaxElm,
+                                                              DEFAULT_TRIM_RATIO_RELAX_DELTA));
         }
 
         Element patternUsageRelaxElm = rootElm.getChild(XmlTags.PATTERN_USAGE_RELAX_DELTA);
         if (patternUsageRelaxElm != null) {
-            setPatternUsageRelaxDelta(Utils.getIntegerFromText(patternUsageRelaxElm,
-                                                               DEFAULT_PATTERN_USAGE_RELAX_DELTA));
+            setPatternUsageRelaxDelta(XmlUtils.getIntegerFromText(patternUsageRelaxElm,
+                                                                  DEFAULT_PATTERN_USAGE_RELAX_DELTA));
         }
     }
 
-    public interface XmlTags {
+    private interface XmlTags {
         String PARAMETERS = "sequential-procedure";
         String TYPE = "type";
         String TRIM_RATIO_RELAX_DELTA = "trim-ratio-relax-step";

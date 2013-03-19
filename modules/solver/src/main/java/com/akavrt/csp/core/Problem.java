@@ -20,9 +20,9 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Problem {
-    private ImmutableList<Order> orders;
-    private ImmutableList<Roll> rolls;
-    private int allowedCutsNumber;
+    private final ImmutableList<Order> orders;
+    private final ImmutableList<Roll> rolls;
+    private final int allowedCutsNumber;
     private ProblemMetadata metadata;
 
     /**

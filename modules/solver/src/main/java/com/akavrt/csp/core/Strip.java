@@ -8,10 +8,9 @@ package com.akavrt.csp.core;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public abstract class Strip {
-
-    private String id;
-    private double length;
-    private double width;
+    private final String id;
+    private final double length;
+    private final double width;
 
     /**
      * <p>Strip params should be set only when an instance of class is created.</p>

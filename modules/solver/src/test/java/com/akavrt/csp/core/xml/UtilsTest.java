@@ -19,20 +19,20 @@ public class UtilsTest {
     @Test
     public void formattingDouble() {
         double value = 5;
-        String formatted = Utils.formatDouble(value);
+        String formatted = XmlUtils.formatDouble(value);
         assertEquals("5", formatted);
 
         value = 5.23;
-        formatted = Utils.formatDouble(value);
+        formatted = XmlUtils.formatDouble(value);
         assertEquals("5.23", formatted);
 
         value = 5.238;
-        formatted = Utils.formatDouble(value);
+        formatted = XmlUtils.formatDouble(value);
         assertEquals("5.238", formatted);
 
         // only three fraction digits is saved
         value = 5.2386;
-        formatted = Utils.formatDouble(value);
+        formatted = XmlUtils.formatDouble(value);
         assertEquals("5.239", formatted);
     }
 
@@ -44,30 +44,30 @@ public class UtilsTest {
         double value;
 
         // element contains no data
-        value = Utils.getDoubleFromText(rootElm, defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         // element contains wrong data
         rootElm.setText("not a double value");
-        value = Utils.getDoubleFromText(rootElm, defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         // element contains double value with dot as a decimal separator
         rootElm.setText("19.84");
-        value = Utils.getDoubleFromText(rootElm, defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, defaultValue);
         assertFalse(defaultValue == value);
         assertEquals(19.84, value, DELTA);
 
         // element contains double value spoiled with text
         // this should be ignored
         rootElm.setText("19.84double");
-        value = Utils.getDoubleFromText(rootElm, defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         // element contains double value with comma as a decimal separator
         // this should be ignored, the only decimal separator allowed is dot
         rootElm.setText("7,28");
-        value = Utils.getDoubleFromText(rootElm, defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value, DELTA);
     }
 
@@ -79,37 +79,37 @@ public class UtilsTest {
         double value;
 
         // child is not exist
-        value = Utils.getDoubleFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         Element childElm = new Element("child");
         rootElm.addContent(childElm);
 
         // child exists but contains no data
-        value = Utils.getDoubleFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         // child exists, contains wrong data
         childElm.setText("not a double value");
-        value = Utils.getDoubleFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         // child exists, contains double value with dot as a decimal separator
         childElm.setText("19.84");
-        value = Utils.getDoubleFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, "child", defaultValue);
         assertFalse(defaultValue == value);
         assertEquals(19.84, value, DELTA);
 
         // child exists, contains double value spoiled with text
         // this should be ignored
         childElm.setText("19.84double");
-        value = Utils.getDoubleFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         // child exists, contains double value with comma as a decimal separator
         // this should be ignored, the only decimal separator allowed is dot
         childElm.setText("7,28");
-        value = Utils.getDoubleFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getDoubleFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value, DELTA);
     }
 
@@ -121,30 +121,30 @@ public class UtilsTest {
         int value;
 
         // element contains no data
-        value = Utils.getIntegerFromText(rootElm, defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value);
 
         // element contains wrong data
         rootElm.setText("not an int value");
-        value = Utils.getIntegerFromText(rootElm, defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value);
 
         // element contains valid integer value
         rootElm.setText("19");
-        value = Utils.getIntegerFromText(rootElm, defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, defaultValue);
         assertFalse(defaultValue == value);
         assertEquals(19, value);
 
         // element contains integer value spoiled with text
         // this should be ignored
         rootElm.setText("19int");
-        value = Utils.getIntegerFromText(rootElm, defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value);
 
         // element contains integer value with comma as a group separator
         // this should be ignored
         rootElm.setText("7,28");
-        value = Utils.getIntegerFromText(rootElm, defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, defaultValue);
         assertEquals(defaultValue, value);
     }
 
@@ -156,37 +156,37 @@ public class UtilsTest {
         int value;
 
         // child is not exist
-        value = Utils.getIntegerFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         Element childElm = new Element("child");
         rootElm.addContent(childElm);
 
         // child exists but contains no data
-        value = Utils.getIntegerFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value);
 
         // child exists, contains wrong data
         childElm.setText("not an int value");
-        value = Utils.getIntegerFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value);
 
         // child exists, contains valid integer value
         childElm.setText("19");
-        value = Utils.getIntegerFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, "child", defaultValue);
         assertFalse(defaultValue == value);
         assertEquals(19, value);
 
         // child exists, contains integer value spoiled with text
         // this should be ignored
         childElm.setText("19int");
-        value = Utils.getIntegerFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value);
 
         // child exists, contains integer value with comma as a group separator
         // this should be ignored
         childElm.setText("7,28");
-        value = Utils.getIntegerFromText(rootElm, "child", defaultValue);
+        value = XmlUtils.getIntegerFromText(rootElm, "child", defaultValue);
         assertEquals(defaultValue, value);
     }
 
@@ -198,35 +198,35 @@ public class UtilsTest {
         int value;
 
         // attribute is not exist
-        value = Utils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
+        value = XmlUtils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
         assertEquals(defaultValue, value, DELTA);
 
         // attribute exists but contains no data
         rootElm.setAttribute("attr", "");
-        value = Utils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
+        value = XmlUtils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
         assertEquals(defaultValue, value);
 
         // attribute exists, contains wrong data
         rootElm.setAttribute("attr", "not an int value");
-        value = Utils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
+        value = XmlUtils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
         assertEquals(defaultValue, value);
 
         // attribute exists, contains valid integer value
         rootElm.setAttribute("attr", "19");
-        value = Utils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
+        value = XmlUtils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
         assertFalse(defaultValue == value);
         assertEquals(19, value);
 
         // attribute exists, contains integer value spoiled with text
         // this should be ignored
         rootElm.setAttribute("attr", "19int");
-        value = Utils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
+        value = XmlUtils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
         assertEquals(defaultValue, value);
 
         // attribute exists, contains integer value with comma as a group separator
         // this should be ignored
         rootElm.setAttribute("attr", "7,28");
-        value = Utils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
+        value = XmlUtils.getIntegerFromAttribute(rootElm, "attr", defaultValue);
         assertEquals(defaultValue, value);
     }
 
@@ -239,12 +239,12 @@ public class UtilsTest {
 
         calendar.set(1984, Calendar.JULY, 28, 0, 0);
         date = calendar.getTime();
-        formatted = Utils.formatDate(date);
+        formatted = XmlUtils.formatDate(date);
         assertEquals("1984-07-28 00:00", formatted);
 
         calendar.set(1984, Calendar.JULY, 28, 4, 7);
         date = calendar.getTime();
-        formatted = Utils.formatDate(date);
+        formatted = XmlUtils.formatDate(date);
         assertEquals("1984-07-28 04:07", formatted);
     }
 
@@ -261,17 +261,17 @@ public class UtilsTest {
         Date value;
 
         // element contains no data
-        value = Utils.getDateFromText(rootElm);
+        value = XmlUtils.getDateFromText(rootElm);
         assertNull(value);
 
         // element contains wrong data
         rootElm.setText("not a correctly formatted date");
-        value = Utils.getDateFromText(rootElm);
+        value = XmlUtils.getDateFromText(rootElm);
         assertNull(value);
 
         // element contains correctly formatted date
         rootElm.setText("1984-07-28 00:00");
-        value = Utils.getDateFromText(rootElm);
+        value = XmlUtils.getDateFromText(rootElm);
         assertNotNull(value);
 
         actual.setTime(value);
@@ -280,16 +280,8 @@ public class UtilsTest {
         // element contains correctly formatted date spoiled with text
         // this should be ignored
         rootElm.setText("1984-07-28 00:00 ignore me");
-        value = Utils.getDateFromText(rootElm);
+        value = XmlUtils.getDateFromText(rootElm);
         assertNull(value);
-    }
-
-    @Test
-    public void stringEmpty() {
-        assertTrue(Utils.isEmpty(null));
-        assertTrue(Utils.isEmpty(""));
-        assertFalse(Utils.isEmpty(" "));
-        assertFalse(Utils.isEmpty("text"));
     }
 
 }

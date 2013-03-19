@@ -10,7 +10,7 @@ import com.google.common.base.Objects;
  */
 public class Roll extends Strip {
     private static final String FORMAT_TEMPLATE = "Roll '%s':\n    W = %.2f\n    L = %.2f";
-    private int internalId;
+    private final int internalId;
     private RollMetadata metadata;
 
     /**

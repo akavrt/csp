@@ -1,10 +1,12 @@
 package com.akavrt.csp.core;
 
+import com.akavrt.csp.utils.Constants;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.math.DoubleMath;
 
 import java.util.*;
+
 
 /**
  * <p>A cutting pattern is modeled as a simple array of integer multiplies. Number of elements in
@@ -19,7 +21,7 @@ import java.util.*;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Pattern {
-    private Map<Integer, MultiCut> cuts;
+    private final Map<Integer, MultiCut> cuts;
     private Roll roll;
 
     /**
@@ -98,8 +100,6 @@ public class Pattern {
     /**
      * <p>Replace current list of multipliers with new one, each multiplier is represented as an
      * instance of MultiCut.</p>
-     *
-     * @return New list of multipliers.
      */
     public void setCuts(List<MultiCut> cuts) {
         for (MultiCut cut : cuts) {
@@ -213,9 +213,10 @@ public class Pattern {
      * @return true if pattern is valid, false otherwise.
      */
     public boolean isValid(int allowedCutsNumber) {
-        return (allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber) &&
-                (roll == null || DoubleMath.fuzzyCompare(getWidth(), roll.getWidth(),
-                                                         Constants.LINEAR_TOLERANCE) <= 0);
+        boolean isCutsValid = allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber;
+        boolean isPatternWidthValid = roll == null
+                || DoubleMath.fuzzyCompare(getWidth(), roll.getWidth(), Constants.TOLERANCE) <= 0;
+        return isCutsValid && isPatternWidthValid;
     }
 
     /**
@@ -265,23 +266,18 @@ public class Pattern {
         }
 
         int digits = (int) Math.floor(Math.log10(maxQuantity)) + 1;
-//        String format = " %.2f x %" + digits + "d; ";
         String format = " %" + digits + "d ";
 
         StringBuilder builder = new StringBuilder();
 
         builder.append("[");
         for (MultiCut cut : cuts.values()) {
-            Order order = cut.getOrder();
-            int quantity = cut.getQuantity();
-
-//            builder.append(String.format(format, order.getWidth(), quantity));
-            builder.append(String.format(format, quantity));
+            builder.append(String.format(format, cut.getQuantity()));
         }
         builder.append("]");
 
         if (roll != null) {
-            builder.append(" -> ").append(roll.getId()).append(" #").append(roll.getInternalId());
+            builder.append(" -> ").append(roll.getId());
         }
 
         return builder.toString();

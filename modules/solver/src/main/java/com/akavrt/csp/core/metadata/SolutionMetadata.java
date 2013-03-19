@@ -1,6 +1,7 @@
 package com.akavrt.csp.core.metadata;
 
-import com.akavrt.csp.core.xml.Utils;
+import com.akavrt.csp.core.xml.XmlUtils;
+import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlCompatible;
 import com.google.common.collect.Lists;
 import org.jdom2.Element;
@@ -15,9 +16,9 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SolutionMetadata implements XmlCompatible {
+    private final List<XmlCompatible> parameters;
     private String description;
     private Date date;
-    private List<XmlCompatible> parameters;
 
     public SolutionMetadata() {
         parameters = Lists.newArrayList();
@@ -90,7 +91,7 @@ public class SolutionMetadata implements XmlCompatible {
 
         if (getDate() != null) {
             Element dateElm = new Element(XmlTags.DATE);
-            dateElm.setText(Utils.formatDate(getDate()));
+            dateElm.setText(XmlUtils.formatDate(getDate()));
             metadataElm.addContent(dateElm);
         }
 
@@ -123,11 +124,11 @@ public class SolutionMetadata implements XmlCompatible {
 
         Element dateElm = rootElm.getChild(XmlTags.DATE);
         if (dateElm != null) {
-            setDate(Utils.getDateFromText(dateElm));
+            setDate(XmlUtils.getDateFromText(dateElm));
         }
     }
 
-    public interface XmlTags {
+    private interface XmlTags {
         String METADATA = "metadata";
         String DESCRIPTION = "description";
         String DATE = "date";

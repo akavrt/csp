@@ -1,7 +1,9 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.*;
-import com.google.common.math.DoubleMath;
+import com.akavrt.csp.core.Order;
+import com.akavrt.csp.core.Pattern;
+import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.Solution;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class ScalarMetric implements Metric {
      * <p>Evaluated value may vary from 0 to 1. The less is better.<p/>
      *
      * @param solution The evaluated solution.
-     * @return Calculated trim loss ratio.
+     * @return Trim loss fractional ratio.
      */
     public double getTrimRatio(Solution solution) {
         double trimArea = 0;
@@ -58,7 +60,7 @@ public class ScalarMetric implements Metric {
      * evaluated value may vary from 0 to 1. The less is better.</p>
      *
      * @param solution The evaluated solution.
-     * @return Calculated pattern reduction ratio.
+     * @return Pattern reduction fractional ratio.
      */
     public double getPatternsRatio(Solution solution) {
         double ratio = 0;
@@ -84,7 +86,7 @@ public class ScalarMetric implements Metric {
      * overproduction or underproduction.</p>
      *
      * @param solution The evaluated solution.
-     * @return Calculated pattern reduction ratio.
+     * @return Product deviation fractional ratio.
      */
     public double getProductionRatio(Solution solution) {
         double totalProductDeviation = 0;
@@ -116,7 +118,8 @@ public class ScalarMetric implements Metric {
     }
 
     /**
-     * <p>We are dealing with minimization problem: given two solutions, solution with smaller value
+     * <p>We are dealing with minimization problem: given two solutions, solution with smaller
+     * value
      * of objective function will be better.</p>
      *
      * {@inheritDoc}

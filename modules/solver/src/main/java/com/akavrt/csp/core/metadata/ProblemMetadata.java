@@ -1,7 +1,8 @@
 package com.akavrt.csp.core.metadata;
 
-import com.akavrt.csp.core.xml.Utils;
+import com.akavrt.csp.core.xml.XmlUtils;
 import com.akavrt.csp.utils.Unit;
+import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlCompatible;
 import org.jdom2.Element;
 
@@ -87,7 +88,7 @@ public class ProblemMetadata implements XmlCompatible {
 
         if (getDate() != null) {
             Element dateElm = new Element(XmlTags.DATE);
-            dateElm.setText(Utils.formatDate(getDate()));
+            dateElm.setText(XmlUtils.formatDate(getDate()));
             metadataElm.addContent(dateElm);
         }
 
@@ -122,7 +123,7 @@ public class ProblemMetadata implements XmlCompatible {
 
         Element dateElm = rootElm.getChild(XmlTags.DATE);
         if (dateElm != null) {
-            setDate(Utils.getDateFromText(dateElm));
+            setDate(XmlUtils.getDateFromText(dateElm));
         }
 
         Element unitsElm = rootElm.getChild(XmlTags.UNITS);
@@ -130,8 +131,8 @@ public class ProblemMetadata implements XmlCompatible {
             String value = unitsElm.getText();
             Unit units = null;
             for (Unit unit : Unit.values()) {
-                if (unit.getName().equalsIgnoreCase(value) ||
-                        unit.getSymbol().equalsIgnoreCase(value)) {
+                if (unit.getName().equalsIgnoreCase(value)
+                        || unit.getSymbol().equalsIgnoreCase(value)) {
                     units = unit;
                     break;
                 }
@@ -141,7 +142,7 @@ public class ProblemMetadata implements XmlCompatible {
         }
     }
 
-    public interface XmlTags {
+    private interface XmlTags {
         String METADATA = "metadata";
         String NAME = "name";
         String AUTHOR = "author";

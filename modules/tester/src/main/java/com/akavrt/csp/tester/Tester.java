@@ -9,7 +9,9 @@ import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;
 import com.akavrt.csp.solver.Algorithm;
+import com.akavrt.csp.solver.MultistartSolver;
 import com.akavrt.csp.solver.SimpleSolver;
+import com.akavrt.csp.solver.Solver;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -28,7 +30,7 @@ public class Tester {
     public static void main(String[] args) throws IOException {
         CspReader reader = new CspReader();
         try {
-            InputStream is = Tester.class.getClassLoader().getResourceAsStream("tubes_01.xml");
+            InputStream is = Tester.class.getClassLoader().getResourceAsStream("optimal_10.xml");
             reader.read(is);
         } catch (CspParseException e) {
             e.printStackTrace();
@@ -51,16 +53,17 @@ public class Tester {
 
         Algorithm method = new HaesslerProcedure(generator);
 
-        SimpleSolver solver = new SimpleSolver(problem, method);
+        MultistartSolver solver = new MultistartSolver(problem, method, 1);
         solver.solve();
 
         Metric metric = new ScalarMetric(problem, new ScalarMetricParameters());
         Solution best = solver.getBestSolution(metric);
 
         if (best != null) {
-            System.out.print(String.format("Best solution found: metric = %.2f; %s",
+            System.out.println();
+            System.out.println(String.format("*** Best solution found: metric = %.3f; %s",
                                              metric.evaluate(best),
-                                             best.isValid(problem) ? "valid" : "invalid"));
+                                             best.isValid(problem) ? "valid." : "invalid"));
 
             if (!best.isValid(problem)) {
                 System.out.print(" -> ");
@@ -76,11 +79,10 @@ public class Tester {
                     System.out.print("unfulfilled orders;");
                 }
             }
-            System.out.print(".\n");
 
             System.out.println(best);
 
-            File file = new File("/Users/akavrt/Sandbox/sample-output-t01.xml");
+            File file = new File("/Users/akavrt/Sandbox/output-opt10.xml");
 
             CspWriter writer = new CspWriter();
 

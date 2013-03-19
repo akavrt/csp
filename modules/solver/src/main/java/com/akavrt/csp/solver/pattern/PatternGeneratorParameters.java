@@ -1,6 +1,6 @@
 package com.akavrt.csp.solver.pattern;
 
-import com.akavrt.csp.core.xml.Utils;
+import com.akavrt.csp.core.xml.XmlUtils;
 import com.akavrt.csp.xml.XmlCompatible;
 import org.jdom2.Element;
 
@@ -54,12 +54,12 @@ public class PatternGeneratorParameters implements XmlCompatible {
     public void load(Element rootElm) {
         Element limitElm = rootElm.getChild(XmlTags.GENERATION_TRIALS_LIMIT);
         if (limitElm != null) {
-            int limit = Utils.getIntegerFromText(limitElm, DEFAULT_GENERATION_TRIALS_LIMIT);
+            int limit = XmlUtils.getIntegerFromText(limitElm, DEFAULT_GENERATION_TRIALS_LIMIT);
             setGenerationTrialsLimit(limit);
         }
     }
 
-    public interface XmlTags {
+    private interface XmlTags {
         String PARAMETERS = "pattern-generation";
         String GENERATION_TRIALS_LIMIT = "generation-trials-limit";
     }

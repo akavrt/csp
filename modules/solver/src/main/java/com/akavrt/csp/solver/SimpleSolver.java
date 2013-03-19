@@ -17,13 +17,6 @@ public class SimpleSolver implements Solver {
     protected final Problem problem;
     protected final Algorithm algorithm;
     protected List<Solution> solutions;
-    private ExecutionContext context = new ExecutionContext() {
-
-        @Override
-        public Problem getProblem() {
-            return problem;
-        }
-    };
 
     public SimpleSolver(Problem problem, Algorithm algorithm) {
         this.problem = problem;
@@ -74,5 +67,13 @@ public class SimpleSolver implements Solver {
 
         return best;
     }
+
+    private final ExecutionContext context = new ExecutionContext() {
+
+        @Override
+        public Problem getProblem() {
+            return problem;
+        }
+    };
 
 }

@@ -1,6 +1,7 @@
 package com.akavrt.csp.core;
 
 import com.akavrt.csp.core.metadata.SolutionMetadata;
+import com.akavrt.csp.utils.Constants;
 import com.google.common.math.DoubleMath;
 
 import java.util.ArrayList;
@@ -176,7 +177,7 @@ public class Solution {
             Order order = orders.get(i);
             isOrderFulfilled = DoubleMath.fuzzyCompare(getProductionLengthForOrder(order),
                                                        order.getLength(),
-                                                       Constants.LINEAR_TOLERANCE) >= 0;
+                                                       Constants.TOLERANCE) >= 0;
             if (!isOrderFulfilled) {
                 break;
             }

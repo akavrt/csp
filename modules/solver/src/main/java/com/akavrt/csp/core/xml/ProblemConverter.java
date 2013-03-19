@@ -82,8 +82,8 @@ public class ProblemConverter implements XmlConverter<Problem> {
         // process constraints
         Element constraintsElm = rootElm.getChild(XmlTags.CONSTRAINTS);
         if (constraintsElm != null) {
-            int allowedCuts = Utils.getIntegerFromText(constraintsElm,
-                                                       XmlTags.ALLOWED_CUTS, 0);
+            int allowedCuts = XmlUtils.getIntegerFromText(constraintsElm,
+                                                          XmlTags.ALLOWED_CUTS, 0);
             builder.setAllowedCutsNumber(allowedCuts);
         }
 
@@ -193,7 +193,7 @@ public class ProblemConverter implements XmlConverter<Problem> {
                     roll = new Roll(rollId, roll.getLength(), roll.getWidth());
                 }
 
-                int quantity = Utils.getIntegerFromAttribute(rollElm, XmlTags.QUANTITY, 1);
+                int quantity = XmlUtils.getIntegerFromAttribute(rollElm, XmlTags.QUANTITY, 1);
                 if (quantity > 1) {
                     builder.addRolls(roll, quantity);
                 } else {

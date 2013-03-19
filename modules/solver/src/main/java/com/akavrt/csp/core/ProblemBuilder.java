@@ -18,9 +18,9 @@ import java.util.*;
  */
 // TODO replace IllegalArgumentException with own checked Exception
 public class ProblemBuilder {
-    private static final Logger logger = LogManager.getLogger(ProblemBuilder.class);
-    private List<Order> builderOrders;
-    private List<Roll> builderRolls;
+    private static final Logger LOGGER = LogManager.getLogger(ProblemBuilder.class);
+    private final List<Order> builderOrders;
+    private final List<Roll> builderRolls;
     private int allowedCutsNumber;
     private ProblemMetadata metadata;
 
@@ -146,8 +146,7 @@ public class ProblemBuilder {
                 builderRolls.add(roll);
             }
         } else {
-            throw new IllegalArgumentException(
-                    "Ill-defined roll can't be added to the problem.");
+            throw new IllegalArgumentException("Ill-defined roll can't be added to the problem.");
         }
     }
 
@@ -173,7 +172,7 @@ public class ProblemBuilder {
             try {
                 addRoll(copy);
             } catch (IllegalArgumentException e) {
-                logger.catching(e);
+                LOGGER.catching(e);
             }
         }
     }

@@ -70,8 +70,8 @@ public abstract class StripConverter<T extends Strip> implements XmlConverter<T>
         String id = rootElm.getAttributeValue(XmlTags.ID);
         Element stripElm = rootElm.getChild(XmlTags.STRIP);
         if (stripElm != null) {
-            length = Utils.getDoubleFromText(stripElm, XmlTags.LENGTH, 0);
-            width = Utils.getDoubleFromText(stripElm, XmlTags.WIDTH, 0);
+            length = XmlUtils.getDoubleFromText(stripElm, XmlTags.LENGTH, 0);
+            width = XmlUtils.getDoubleFromText(stripElm, XmlTags.WIDTH, 0);
         }
 
         if (length > 0 && width > 0) {
@@ -86,12 +86,12 @@ public abstract class StripConverter<T extends Strip> implements XmlConverter<T>
 
         // length of the strip
         Element lengthElm = new Element(XmlTags.LENGTH);
-        lengthElm.setText(Utils.formatDouble(strip.getLength()));
+        lengthElm.setText(XmlUtils.formatDouble(strip.getLength()));
         stripElm.addContent(lengthElm);
 
         // width of the strip
         Element widthElm = new Element(XmlTags.WIDTH);
-        widthElm.setText(Utils.formatDouble(strip.getWidth()));
+        widthElm.setText(XmlUtils.formatDouble(strip.getWidth()));
         stripElm.addContent(widthElm);
 
         return stripElm;

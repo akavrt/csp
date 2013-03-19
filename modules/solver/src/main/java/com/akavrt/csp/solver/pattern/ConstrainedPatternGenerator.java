@@ -1,9 +1,7 @@
 package com.akavrt.csp.solver.pattern;
 
-import com.akavrt.csp.core.Constants;
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
-import com.google.common.math.DoubleMath;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +21,9 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
     private double[] widths;
     private int allowedCutsNumber;
     private PatternGeneratorParameters params;
-    private int[] currentPattern;
+    private int[] currPattern;
     private int[] bestPattern;
-    private double unusedWidth;
+    private double currTrim;
 
     /**
      * <p>Create instance of constrained pattern generator with default set of parameters.</p>
@@ -99,7 +97,7 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
             widths[i] = orders.get(i).getWidth();
         }
 
-        currentPattern = new int[widths.length];
+        currPattern = new int[widths.length];
         bestPattern = new int[widths.length];
     }
 
@@ -143,7 +141,7 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
             totalWidth += widths[i] * demand[i];
         }
 
-        if (DoubleMath.fuzzyCompare(totalWidth, rollWidth, Constants.LINEAR_TOLERANCE) <= 0) {
+        if (totalWidth <= rollWidth) {
             // use greedy placement
             greedyPlacement(demand);
         } else {
@@ -157,17 +155,16 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
 
                 // if new pattern is better than the current best,
                 // replace latter one with new pattern
-                if (DoubleMath.fuzzyCompare(unusedWidth, bestTrim,
-                                            Constants.LINEAR_TOLERANCE) < 0) {
-                    bestTrim = unusedWidth;
-                    System.arraycopy(currentPattern, 0, bestPattern, 0, bestPattern.length);
+                if (getCurrentTrim() < bestTrim) {
+                    bestTrim = getCurrentTrim();
+
+                    int[] generatedPattern = getCurrentPattern();
+                    System.arraycopy(generatedPattern, 0, bestPattern, 0, bestPattern.length);
                 }
 
                 trialCounter++;
             }
-            while (trialCounter < params.getGenerationTrialsLimit()
-                    && DoubleMath.fuzzyCompare(bestTrim, allowedTrim,
-                                               Constants.LINEAR_TOLERANCE) > 0);
+            while (trialCounter < params.getGenerationTrialsLimit() && bestTrim > allowedTrim);
         }
 
         return bestPattern.clone();
@@ -192,29 +189,29 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
     }
 
     private void trial(double rollWidth, int[] demand, int totalItems) {
+        // reuse pattern, no need to create a new one
+        int[] trialPattern = getCurrentPattern();
+
         // reset pattern
-        Arrays.fill(currentPattern, 0);
+        Arrays.fill(trialPattern, 0);
 
         int addedItems = 0;
-        unusedWidth = rollWidth;
+        double trialUnusedWidth = rollWidth;
         boolean cutCanBeMade = true;
 
         // generate pattern
         do {
             int index = rGen.nextInt(widths.length);
-            if (DoubleMath.fuzzyCompare(widths[index], unusedWidth, Constants.LINEAR_TOLERANCE) <= 0
-                    && demand[index] - currentPattern[index] > 0) {
-                currentPattern[index]++;
-                unusedWidth -= widths[index];
+            if (widths[index] <= trialUnusedWidth && demand[index] - trialPattern[index] > 0) {
+                trialPattern[index]++;
+                trialUnusedWidth -= widths[index];
                 addedItems++;
 
                 // pattern was changed,
                 // check if any unfulfilled order can be cut from width remained
                 cutCanBeMade = false;
                 for (int i = 0; i < widths.length; i++) {
-                    if (demand[i] - currentPattern[i] > 0 &&
-                            DoubleMath.fuzzyCompare(widths[i], unusedWidth,
-                                                    Constants.LINEAR_TOLERANCE) <= 0) {
+                    if (demand[i] - trialPattern[i] > 0 && widths[i] <= trialUnusedWidth) {
                         cutCanBeMade = true;
                         break;
                     }
@@ -222,7 +219,28 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
             }
 
         }
-        while (cutCanBeMade && (allowedCutsNumber == 0 || addedItems < allowedCutsNumber) &&
-                totalItems - addedItems > 0);
+        while (cutCanBeMade && totalItems - addedItems > 0
+                && (allowedCutsNumber == 0 || addedItems < allowedCutsNumber));
+
+        // no need to calculate trim twice
+        // we can use this value when evaluation pattern quality
+        setCurrentTrim(trialUnusedWidth);
+        setCurrentPattern(trialPattern);
+    }
+
+    private double getCurrentTrim() {
+        return currTrim;
+    }
+
+    private void setCurrentTrim(double unusedWidth) {
+        this.currTrim = unusedWidth;
+    }
+
+    private int[] getCurrentPattern() {
+        return currPattern;
+    }
+
+    private void setCurrentPattern(int[] pattern) {
+        this.currPattern = pattern;
     }
 }

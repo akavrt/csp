@@ -1,5 +1,6 @@
 package com.akavrt.csp.core.xml;
 
+import com.akavrt.csp.utils.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
@@ -14,8 +15,8 @@ import java.util.Locale;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class Utils {
-    private static final Logger logger = LogManager.getLogger(Utils.class);
+public class XmlUtils {
+    private static final Logger LOGGER = LogManager.getLogger(XmlUtils.class);
     private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
     private static final DecimalFormat DECIMAL_FORMAT;
     private static DateFormat DATE_FORMAT;
@@ -55,7 +56,7 @@ public class Utils {
     public static double getDoubleFromText(Element element, double defaultValue) {
         double value = defaultValue;
         String valueString = element.getText();
-        if (!isEmpty(valueString)) {
+        if (!Utils.isEmpty(valueString)) {
             ParsePosition pp = new ParsePosition(0);
             Number number = DECIMAL_FORMAT.parse(valueString, pp);
             if (number != null && valueString.length() == pp.getIndex()) {
@@ -78,7 +79,7 @@ public class Utils {
     public static double getDoubleFromText(Element parent, String childName, double defaultValue) {
         double value = defaultValue;
         String valueString = parent.getChildText(childName);
-        if (!isEmpty(valueString)) {
+        if (!Utils.isEmpty(valueString)) {
             ParsePosition pp = new ParsePosition(0);
             Number number = DECIMAL_FORMAT.parse(valueString, pp);
             if (number != null && valueString.length() == pp.getIndex()) {
@@ -99,11 +100,11 @@ public class Utils {
     public static int getIntegerFromText(Element element, int defaultValue) {
         int value = defaultValue;
         String valueString = element.getText();
-        if (!isEmpty(valueString)) {
+        if (!Utils.isEmpty(valueString)) {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
-                logger.catching(e);
+                LOGGER.catching(e);
             }
         }
 
@@ -121,11 +122,11 @@ public class Utils {
     public static int getIntegerFromText(Element parent, String childName, int defaultValue) {
         int value = defaultValue;
         String valueString = parent.getChildText(childName);
-        if (!isEmpty(valueString)) {
+        if (!Utils.isEmpty(valueString)) {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
-                logger.catching(e);
+                LOGGER.catching(e);
             }
         }
 
@@ -144,11 +145,11 @@ public class Utils {
                                               int defaultValue) {
         int value = defaultValue;
         String valueString = element.getAttributeValue(attributeName);
-        if (!isEmpty(valueString)) {
+        if (!Utils.isEmpty(valueString)) {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
-                logger.catching(e);
+                LOGGER.catching(e);
             }
         }
 
@@ -180,7 +181,7 @@ public class Utils {
         Date date = null;
 
         String valueString = element.getText();
-        if (!isEmpty(valueString)) {
+        if (!Utils.isEmpty(valueString)) {
             ParsePosition pp = new ParsePosition(0);
             date = DATE_FORMAT.parse(valueString, pp);
             if (valueString.length() != pp.getIndex()) {
@@ -191,13 +192,4 @@ public class Utils {
         return date;
     }
 
-    /**
-     * <p>Returns true if the string is null or 0-length.</p>
-     *
-     * @param str The string to be examined.
-     * @return true if str is null or zero length.
-     */
-    public static boolean isEmpty(CharSequence str) {
-        return str == null || str.length() == 0;
-    }
 }

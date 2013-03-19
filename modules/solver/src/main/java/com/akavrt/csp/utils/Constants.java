@@ -1,4 +1,4 @@
-package com.akavrt.csp.core;
+package com.akavrt.csp.utils;
 
 /**
  * <p>A set of globally used constants.</p>
@@ -6,5 +6,5 @@ package com.akavrt.csp.core;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Constants {
-    public static final double LINEAR_TOLERANCE = 10e-7;
+    public static final double TOLERANCE = 10e-7;
 }
