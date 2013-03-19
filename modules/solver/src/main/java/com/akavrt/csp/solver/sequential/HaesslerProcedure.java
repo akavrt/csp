@@ -5,10 +5,13 @@ import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
+import com.akavrt.csp.core.xml.Utils;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 import java.util.List;
@@ -31,6 +34,7 @@ import java.util.List;
  */
 public class HaesslerProcedure implements Algorithm {
     public static final String METHOD_NAME = "Haessler's sequential heuristic procedure";
+    private static final Logger logger = LogManager.getFormatterLogger(HaesslerProcedure.class);
     private final HaesslerProcedureParameters params;
     private final PatternGenerator patternGenerator;
     private RollManager rollManager;
@@ -77,6 +81,7 @@ public class HaesslerProcedure implements Algorithm {
         }
 
         Problem problem = context.getProblem();
+        patternGenerator.initialize(problem);
 
         rollManager = new RollManager(problem.getRolls());
         orderManager = new OrderManager(problem.getOrders());
@@ -96,10 +101,12 @@ public class HaesslerProcedure implements Algorithm {
     }
 
     private boolean trimStep() {
+        logger.entry();
+
         double allowedTrimRatio = 0;
         boolean isPatternFound = false;
         while (allowedTrimRatio < 1 && !isPatternFound) {
-            System.out.println(String.format("#TRIM_AL: %.2f", allowedTrimRatio));
+            logger.debug("#TRIM_AL: %.2f", allowedTrimRatio);
 
             isPatternFound = patternUsageStep(allowedTrimRatio);
 
@@ -107,10 +114,12 @@ public class HaesslerProcedure implements Algorithm {
             allowedTrimRatio += params.getTrimRatioRelaxDelta();
         }
 
-        return isPatternFound;
+        return logger.exit(isPatternFound);
     }
 
     private boolean patternUsageStep(double allowedTrimRatio) {
+        logger.entry();
+
         // find roll with minimal area
         double minRollArea = rollManager.getMinRollArea();
 
@@ -131,7 +140,7 @@ public class HaesslerProcedure implements Algorithm {
 
         boolean isPatternFound = false;
         while (patternUsage > 0 && !isPatternFound) {
-            System.out.println(String.format("  #PAUS_AL: %d", patternUsage));
+            logger.debug("  #PAUS_AL: %d", patternUsage);
 
             isPatternFound = rollGroupStep(allowedTrimRatio, patternUsage);
 
@@ -139,37 +148,41 @@ public class HaesslerProcedure implements Algorithm {
             patternUsage -= params.getPatternUsageRelaxDelta();
         }
 
-        return isPatternFound;
+        return logger.exit(isPatternFound);
     }
 
     private boolean rollGroupStep(double allowedTrimRatio, int patternUsage) {
+        logger.entry();
+
         boolean isPatternFound = false;
 
         int anchorIndex = 0;
         while (anchorIndex < rollManager.size() && !isPatternFound) {
-            System.out.print(String.format("    #ANC_IDX: %d", anchorIndex));
+            logger.debug("    #ANC_IDX: %d", anchorIndex);
 
             // check whether we can find group of sufficient size
             if (rollManager.getGroupSize(anchorIndex, allowedTrimRatio) >= patternUsage) {
-                System.out.print(":  group found\n");
                 // if suitable group exists, try to generate pattern
                 isPatternFound = patternGeneration(allowedTrimRatio, patternUsage, anchorIndex);
             } else {
-                System.out.print("\n");
+                logger.debug("      suitable group of rolls wasn't found.");
             }
 
             anchorIndex++;
         }
 
-        return isPatternFound;
+        return logger.exit(isPatternFound);
     }
 
     private boolean patternGeneration(double allowedTrimRatio, int patternUsage, int anchorIndex) {
+        logger.entry();
+
         boolean isPatternFound = false;
 
         // let's process current group and try to generate suitable pattern
         List<Roll> group = rollManager.getGroup(anchorIndex, allowedTrimRatio, patternUsage);
         int[] demand = orderManager.calcGroupDemand(group);
+
 
         // rolls are sorted in ascending order of width
         // the narrowest roll is always the first roll in the group
@@ -177,18 +190,9 @@ public class HaesslerProcedure implements Algorithm {
 
         int[] pattern = patternGenerator.generate(baseRollWidth, demand, allowedTrimRatio);
 
-        String demandSt =  "      demand: [ ";
-        String patternSt = "      pattern: [ ";
-
-        for (int i = 0; i < demand.length; i++) {
-            demandSt += demand[i] + " ";
-            patternSt += pattern[i] + " ";
+        if (logger.isDebugEnabled()) {
+            debugPatternGeneration(demand, pattern);
         }
-
-        demandSt += "]";
-        patternSt += "]";
-        System.out.println(demandSt);
-        System.out.println(patternSt);
 
         if (pattern != null
                 && orderManager.getPatternTrimRatio(group, pattern) <= allowedTrimRatio) {
@@ -209,7 +213,58 @@ public class HaesslerProcedure implements Algorithm {
             isPatternFound = true;
         }
 
-        return isPatternFound;
+        return logger.exit(isPatternFound);
+    }
+
+    private void debugPatternGeneration(int[] demand, int[] pattern) {
+        int max = getMax(demand, pattern);
+
+        int digits = (int) Math.floor(Math.log10(max)) + 1;
+        String format = "%" + digits + "d ";
+        logger.debug(convertIntArrayToString("       demand", demand, format));
+        logger.debug(convertIntArrayToString("      pattern", pattern, format));
+    }
+
+    private int getMax(int[] a1, int[] a2) {
+        int max1 = 0;
+        if (a1 != null) {
+            for (int i = 0; i < a1.length; i++) {
+                if (i == 0 || a1[i] > max1) {
+                    max1 = a1[i];
+                }
+            }
+        }
+
+        int max2 = 0;
+        if (a2 != null) {
+            for (int i = 0; i < a2.length; i++) {
+                if (i == 0 || a2[i] > max2) {
+                    max2 = a2[i];
+                }
+            }
+        }
+
+        return Math.max(max1, max2);
+    }
+
+    private String convertIntArrayToString(String name, int[] array, String format) {
+        StringBuilder builder = new StringBuilder();
+        if (!Utils.isEmpty(name)) {
+            builder.append(name);
+            builder.append(": ");
+        }
+
+        if (array == null) {
+            builder.append("null");
+        } else {
+            builder.append("[ ");
+            for (int i : array) {
+                builder.append(String.format(format, i));
+            }
+            builder.append("]");
+        }
+
+        return builder.toString();
     }
 
     private SolutionMetadata prepareMetadata() {

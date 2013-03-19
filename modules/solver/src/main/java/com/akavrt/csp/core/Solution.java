@@ -1,6 +1,8 @@
 package com.akavrt.csp.core;
 
 import com.akavrt.csp.core.metadata.SolutionMetadata;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,6 +16,7 @@ import java.util.Set;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Solution {
+    private static final Logger logger = LogManager.getLogger(Solution.class);
     private List<Pattern> patterns;
     private SolutionMetadata metadata;
 
@@ -125,12 +128,17 @@ public class Solution {
      *                evaluation.
      * @return true if plan consists of valid patterns only, false otherwise.
      */
-    private boolean isPatternsValid(Problem problem) {
+    public boolean isPatternsValid(Problem problem) {
         boolean isPatternValid = true;
 
         // exit on the first invalid pattern
         for (int i = 0; i < patterns.size() && isPatternValid; i++) {
             isPatternValid = patterns.get(i).isValid(problem.getAllowedCutsNumber());
+
+            if (!isPatternValid) {
+                logger.error("pattern width = {}; roll width = {}", patterns.get(i).getWidth(),
+                             patterns.get(i).getRoll().getWidth());
+            }
         }
 
         return isPatternValid;
@@ -142,11 +150,13 @@ public class Solution {
      *
      * @return true if plan doesn't contain rolls which are used more than once, false otherwise.
      */
-    private boolean isRollsValid() {
+    public boolean isRollsValid() {
         Set<Integer> rollIds = new HashSet<Integer>();
         boolean isRepeatedRollFound = false;
         for (Pattern pattern : patterns) {
             if (pattern.isActive() && !rollIds.add(pattern.getRoll().getInternalId())) {
+                Roll roll = pattern.getRoll();
+                logger.error("Repeated roll: id = '{}', hash = {}", roll.getId(), roll.getInternalId());
                 // we can't use same roll twice
                 isRepeatedRollFound = true;
                 break;

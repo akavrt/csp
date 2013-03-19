@@ -1,5 +1,7 @@
 package com.akavrt.csp.solver.pattern;
 
+import com.akavrt.csp.core.Problem;
+
 /**
  * <p>Pattern generation is widely used in sequential heuristic procedures and a number of other
  * approximate methods designed to solve complex real-world CSPs. Here we define minimalistic
@@ -45,4 +47,19 @@ public interface PatternGenerator {
      * @return Current set of parameters used by pattern generator.
      */
     PatternGeneratorParameters getParameters();
+
+    /**
+     * <p>Associate pattern generator with specific problem.</p>
+     *
+     * <p>Information about orders characteristics and constraints defined within problem will be
+     * used in pattern generation process.</p>
+     *
+     * <p>Initialization of the pattern generator can be done either during instantiation or using
+     * this method. Uninitialized pattern generator (with no problem linked to it) can't be used to
+     * produce valid patterns.</p>
+     *
+     * @param problem The problem which is being solved.
+     */
+    public void initialize(Problem problem);
+
 }

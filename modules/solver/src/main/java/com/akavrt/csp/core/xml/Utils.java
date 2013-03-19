@@ -1,5 +1,7 @@
 package com.akavrt.csp.core.xml;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
 
 import java.text.*;
@@ -13,9 +15,9 @@ import java.util.Locale;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Utils {
-    private final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+    private static final Logger logger = LogManager.getLogger(Utils.class);
+    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
     private static final DecimalFormat DECIMAL_FORMAT;
-    private static boolean DEBUG = false;
     private static DateFormat DATE_FORMAT;
 
     static {
@@ -101,10 +103,7 @@ public class Utils {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
-                // TODO add logger statement
-                if (DEBUG) {
-                    e.printStackTrace();
-                }
+                logger.catching(e);
             }
         }
 
@@ -126,10 +125,7 @@ public class Utils {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
-                // TODO add logger statement
-                if (DEBUG) {
-                    e.printStackTrace();
-                }
+                logger.catching(e);
             }
         }
 
@@ -152,10 +148,7 @@ public class Utils {
             try {
                 value = Integer.parseInt(valueString);
             } catch (NumberFormatException e) {
-                // TODO add logger statement
-                if (DEBUG) {
-                    e.printStackTrace();
-                }
+                logger.catching(e);
             }
         }
 
@@ -205,9 +198,6 @@ public class Utils {
      * @return true if str is null or zero length.
      */
     public static boolean isEmpty(CharSequence str) {
-        if (str == null || str.length() == 0)
-            return true;
-        else
-            return false;
+        return str == null || str.length() == 0;
     }
 }

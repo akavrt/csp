@@ -8,17 +8,18 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * <p>Modification of the pattern generation procedure proposed by Vahrenkamp. Constraint on the
- * maximum number of cuts allowed within one pattern can be imposed.</p>
+ * <p>Modification of the pattern generation procedure proposed by Vahrenkamp in this
+ * <a href="http://dx.doi.org/10.1016/0377-2217(95)00198-0">paper</a>. Constraint on the maximum
+ * number of cuts allowed within one pattern can be imposed.</p>
  *
  * <p>This implementation is not thread safe.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class ConstrainedPatternGenerator implements PatternGenerator {
-    private final double[] widths;
-    private final int allowedCutsNumber;
     private final Random rGen;
+    private double[] widths;
+    private int allowedCutsNumber;
     private PatternGeneratorParameters params;
     private int[] currentPattern;
     private int[] bestPattern;
@@ -26,6 +27,24 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
 
     /**
      * <p>Create instance of constrained pattern generator with default set of parameters.</p>
+     */
+    public ConstrainedPatternGenerator() {
+        this(null, new PatternGeneratorParameters());
+    }
+
+    /**
+     * <p>Create instance of constrained pattern generator configured with a set of parameters
+     * provided.</p>
+     *
+     * @param params Parameters of pattern generator.
+     */
+    public ConstrainedPatternGenerator(PatternGeneratorParameters params) {
+        this(null, params);
+    }
+
+    /**
+     * <p>Create instance of constrained pattern generator with default set of parameters tied to
+     * specific problem.</p>
      *
      * @param problem Problem used to retrieve width of each order and set of constraints.
      */
@@ -35,25 +54,19 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
 
     /**
      * <p>Create instance of constrained pattern generator configured with a set of parameters
-     * provided.</p>
+     * provided tied to specific problem.</p>
      *
      * @param problem Problem used to retrieve width of each order and set of constraints.
      * @param params  Parameters of pattern generator.
      */
     public ConstrainedPatternGenerator(Problem problem, PatternGeneratorParameters params) {
-        List<Order> orders = problem.getOrders();
-
-        widths = new double[orders.size()];
-        for (int i = 0; i < orders.size(); i++) {
-            widths[i] = orders.get(i).getWidth();
+        if (problem != null) {
+            setOrders(problem.getOrders());
+            setAllowedCutsNumber(problem.getAllowedCutsNumber());
         }
 
-        this.allowedCutsNumber = problem.getAllowedCutsNumber();
         this.params = params;
-
         rGen = new Random();
-        currentPattern = new int[widths.length];
-        bestPattern = new int[widths.length];
     }
 
     /**
@@ -68,7 +81,47 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
      * {@inheritDoc}
      */
     @Override
+    public void initialize(Problem problem) {
+        setOrders(problem.getOrders());
+        setAllowedCutsNumber(problem.getAllowedCutsNumber());
+    }
+
+    /**
+     * <p>Information about orders enumerated within problem definition is used in pattern
+     * generation process.</p>
+     *
+     * @param orders The list of orders defined within problem.
+     */
+    private void setOrders(List<Order> orders) {
+        widths = new double[orders.size()];
+        for (int i = 0; i < orders.size(); i++) {
+            widths[i] = orders.get(i).getWidth();
+        }
+
+        currentPattern = new int[widths.length];
+        bestPattern = new int[widths.length];
+    }
+
+    /**
+     * <p>Set the upper bound for total number of cuts allowed within one pattern. Use zero if
+     * constraint isn't used.</p>
+     *
+     * @param allowedCutsNumber The maximum number of cuts allowed within one pattern or zero if
+     *                          constraint isn't used.
+     */
+    private void setAllowedCutsNumber(int allowedCutsNumber) {
+        this.allowedCutsNumber = allowedCutsNumber;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int[] generate(double rollWidth, int[] demand, double allowedTrimRatio) {
+        if (widths == null) {
+            return null;
+        }
+
         int totalItems = 0;
         double minUnfulfilledWidth = 0;
         for (int i = 0; i < widths.length; i++) {

@@ -253,19 +253,31 @@ public class Pattern {
 
     @Override
     public String toString() {
+        int maxQuantity = 0;
+        int i = 0;
+        for (MultiCut cut : cuts.values()) {
+            int quantity = cut.getQuantity();
+            if (i++ == 0 || quantity > maxQuantity) {
+                maxQuantity = quantity;
+            }
+        }
+
+        int digits = (int) Math.floor(Math.log10(maxQuantity)) + 1;
+        String format = " %.2f x %" + digits + "d; ";
+
         StringBuilder builder = new StringBuilder();
 
-        builder.append("[  ");
+        builder.append("[");
         for (MultiCut cut : cuts.values()) {
             Order order = cut.getOrder();
             int quantity = cut.getQuantity();
 
-            builder.append(String.format("%.2f: %2d;  ", order.getWidth(), quantity));
+            builder.append(String.format(format, order.getWidth(), quantity));
         }
         builder.append("]");
 
         if (roll != null) {
-            builder.append(" -> " + roll.getId());
+            builder.append(" -> ").append(roll.getId()).append(" #").append(roll.getInternalId());
         }
 
         return builder.toString();

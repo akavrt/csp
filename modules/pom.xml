@@ -14,6 +14,10 @@
         <module>tester</module>
     </modules>
 
+    <properties>
+        <log4j.2x.version>2.0-beta4</log4j.2x.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
 
@@ -29,6 +33,17 @@
                 <version>2.0.2</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.2x.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.2x.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -39,5 +54,6 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 </project>

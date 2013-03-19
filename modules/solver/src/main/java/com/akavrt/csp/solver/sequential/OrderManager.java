@@ -75,10 +75,8 @@ public class OrderManager {
             double unfulfilledLength = orders.get(i).getUnfulfilledLength();
             double ratio = unfulfilledLength / groupLength;
 
-            // TODO another rounding rule:
-            // in previous version rounding multiplier up
-            // was allowed only if size of group equals to one
-            // this rule was used to implicitly control overproduction
+            // rounding multiplier up is allowed only if size of the group equals to one
+            // this rule is used to implicitly control overproduction
             if (group.size() > 1) {
                 demand[i] = (int) Math.floor(ratio);
             } else {

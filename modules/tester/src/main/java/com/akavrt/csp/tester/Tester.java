@@ -28,7 +28,7 @@ public class Tester {
     public static void main(String[] args) throws IOException {
         CspReader reader = new CspReader();
         try {
-            InputStream is = Tester.class.getClassLoader().getResourceAsStream("optimal_01.xml");
+            InputStream is = Tester.class.getClassLoader().getResourceAsStream("optimal_10.xml");
             reader.read(is);
         } catch (CspParseException e) {
             e.printStackTrace();
@@ -47,7 +47,8 @@ public class Tester {
 
         PatternGeneratorParameters generatorParams = new PatternGeneratorParameters();
         generatorParams.setGenerationTrialsLimit(20);
-        PatternGenerator generator = new ConstrainedPatternGenerator(problem, generatorParams);
+        PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
+
         Algorithm method = new HaesslerProcedure(generator);
 
         SimpleSolver solver = new SimpleSolver(problem, method);
@@ -57,13 +58,29 @@ public class Tester {
         Solution best = solver.getBestSolution(metric);
 
         if (best != null) {
-            System.out.println(String.format("Best solution found: metric = %.2f; %s.",
+            System.out.print(String.format("Best solution found: metric = %.2f; %s",
                                              metric.evaluate(best),
                                              best.isValid(problem) ? "valid" : "invalid"));
 
+            if (!best.isValid(problem)) {
+                System.out.print(" -> ");
+                if (!best.isPatternsValid(problem)) {
+                    System.out.print("problem with patterns; ");
+                }
+
+                if (!best.isRollsValid()) {
+                    System.out.print("problem with repeated rolls; ");
+                }
+
+                if (!best.isOrdersFulfilled(problem.getOrders())) {
+                    System.out.print("unfulfilled orders;");
+                }
+            }
+            System.out.print(".\n");
+
             System.out.println(best);
 
-            File file = new File("/Users/akavrt/Sandbox/sample-output.xml");
+            File file = new File("/Users/akavrt/Sandbox/sample-output-10.xml");
 
             CspWriter writer = new CspWriter();
 

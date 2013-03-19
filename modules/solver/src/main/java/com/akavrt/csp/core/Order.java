@@ -1,7 +1,7 @@
 package com.akavrt.csp.core;
 
 import com.akavrt.csp.core.metadata.OrderMetadata;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.google.common.base.Objects;
 
 /**
  * <p>This class represents an order. Required length can be composed from any number of separate
@@ -34,7 +34,7 @@ public class Order extends Strip {
      * @return The internal id of the order.
      */
     private int calculateInternalId() {
-        return new HashCodeBuilder().append(getId()).toHashCode();
+        return Objects.hashCode(getId());
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.akavrt.csp.core;
 
 import com.akavrt.csp.core.metadata.RollMetadata;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.google.common.base.Objects;
 
 /**
  * <p>This class represents a single unit of stock material.</p>
@@ -51,7 +51,7 @@ public class Roll extends Strip {
     }
 
     private int calculateInternalId(int rollId) {
-        return new HashCodeBuilder().append(getId()).append(rollId).toHashCode();
+        return Objects.hashCode(getId(), rollId);
     }
 
     /**

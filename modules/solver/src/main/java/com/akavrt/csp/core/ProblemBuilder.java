@@ -2,6 +2,8 @@ package com.akavrt.csp.core;
 
 import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.google.common.collect.Sets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -16,6 +18,7 @@ import java.util.*;
  */
 // TODO replace IllegalArgumentException with own checked Exception
 public class ProblemBuilder {
+    private static final Logger logger = LogManager.getLogger(ProblemBuilder.class);
     private List<Order> builderOrders;
     private List<Roll> builderRolls;
     private int allowedCutsNumber;
@@ -170,8 +173,7 @@ public class ProblemBuilder {
             try {
                 addRoll(copy);
             } catch (IllegalArgumentException e) {
-                // TODO add logger statement
-                e.printStackTrace();
+                logger.catching(e);
             }
         }
     }
