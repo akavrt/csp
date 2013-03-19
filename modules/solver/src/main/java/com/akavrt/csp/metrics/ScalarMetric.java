@@ -1,9 +1,7 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Order;
-import com.akavrt.csp.core.Pattern;
-import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.*;
+import com.google.common.math.DoubleMath;
 
 import java.util.List;
 

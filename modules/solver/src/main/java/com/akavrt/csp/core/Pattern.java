@@ -2,6 +2,7 @@ package com.akavrt.csp.core;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.math.DoubleMath;
 
 import java.util.*;
 
@@ -213,7 +214,8 @@ public class Pattern {
      */
     public boolean isValid(int allowedCutsNumber) {
         return (allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber) &&
-                (roll == null || getWidth() <= roll.getWidth());
+                (roll == null || DoubleMath.fuzzyCompare(getWidth(), roll.getWidth(),
+                                                         Constants.LINEAR_TOLERANCE) <= 0);
     }
 
     /**
@@ -263,7 +265,8 @@ public class Pattern {
         }
 
         int digits = (int) Math.floor(Math.log10(maxQuantity)) + 1;
-        String format = " %.2f x %" + digits + "d; ";
+//        String format = " %.2f x %" + digits + "d; ";
+        String format = " %" + digits + "d ";
 
         StringBuilder builder = new StringBuilder();
 
@@ -272,7 +275,8 @@ public class Pattern {
             Order order = cut.getOrder();
             int quantity = cut.getQuantity();
 
-            builder.append(String.format(format, order.getWidth(), quantity));
+//            builder.append(String.format(format, order.getWidth(), quantity));
+            builder.append(String.format(format, quantity));
         }
         builder.append("]");
 

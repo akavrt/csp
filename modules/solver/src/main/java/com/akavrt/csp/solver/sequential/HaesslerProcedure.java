@@ -140,7 +140,7 @@ public class HaesslerProcedure implements Algorithm {
 
         boolean isPatternFound = false;
         while (patternUsage > 0 && !isPatternFound) {
-            logger.debug("  #PAUS_AL: %d", patternUsage);
+            logger.debug("#TRIM_AL: %.2f  ##PAUS_AL: %d", allowedTrimRatio, patternUsage);
 
             isPatternFound = rollGroupStep(allowedTrimRatio, patternUsage);
 
@@ -152,31 +152,23 @@ public class HaesslerProcedure implements Algorithm {
     }
 
     private boolean rollGroupStep(double allowedTrimRatio, int patternUsage) {
-        logger.entry();
-
         boolean isPatternFound = false;
 
         int anchorIndex = 0;
         while (anchorIndex < rollManager.size() && !isPatternFound) {
-            logger.debug("    #ANC_IDX: %d", anchorIndex);
-
             // check whether we can find group of sufficient size
             if (rollManager.getGroupSize(anchorIndex, allowedTrimRatio) >= patternUsage) {
                 // if suitable group exists, try to generate pattern
                 isPatternFound = patternGeneration(allowedTrimRatio, patternUsage, anchorIndex);
-            } else {
-                logger.debug("      suitable group of rolls wasn't found.");
             }
 
             anchorIndex++;
         }
 
-        return logger.exit(isPatternFound);
+        return isPatternFound;
     }
 
     private boolean patternGeneration(double allowedTrimRatio, int patternUsage, int anchorIndex) {
-        logger.entry();
-
         boolean isPatternFound = false;
 
         // let's process current group and try to generate suitable pattern
@@ -190,13 +182,12 @@ public class HaesslerProcedure implements Algorithm {
 
         int[] pattern = patternGenerator.generate(baseRollWidth, demand, allowedTrimRatio);
 
-        if (logger.isDebugEnabled()) {
-            debugPatternGeneration(demand, pattern);
-        }
-
         if (pattern != null
                 && orderManager.getPatternTrimRatio(group, pattern) <= allowedTrimRatio) {
             // pattern search succeeded
+            if (logger.isDebugEnabled()) {
+                debugPatternGeneration(demand, pattern, group);
+            }
 
             // adjust production and stock
             orderManager.updateProduction(group, pattern);
@@ -213,41 +204,17 @@ public class HaesslerProcedure implements Algorithm {
             isPatternFound = true;
         }
 
-        return logger.exit(isPatternFound);
+        return isPatternFound;
     }
 
-    private void debugPatternGeneration(int[] demand, int[] pattern) {
-        int max = getMax(demand, pattern);
-
-        int digits = (int) Math.floor(Math.log10(max)) + 1;
-        String format = "%" + digits + "d ";
-        logger.debug(convertIntArrayToString("       demand", demand, format));
-        logger.debug(convertIntArrayToString("      pattern", pattern, format));
+    private void debugPatternGeneration(int[] demand, int[] pattern, List<Roll> rolls) {
+        logger.debug(convertIntArrayToString("       demand", demand));
+        logger.debug(convertIntArrayToString("      pattern", pattern));
+        double ratio = orderManager.getPatternTrimRatio(rolls, pattern);
+        logger.debug("      TL ratio = %.4f", ratio);
     }
 
-    private int getMax(int[] a1, int[] a2) {
-        int max1 = 0;
-        if (a1 != null) {
-            for (int i = 0; i < a1.length; i++) {
-                if (i == 0 || a1[i] > max1) {
-                    max1 = a1[i];
-                }
-            }
-        }
-
-        int max2 = 0;
-        if (a2 != null) {
-            for (int i = 0; i < a2.length; i++) {
-                if (i == 0 || a2[i] > max2) {
-                    max2 = a2[i];
-                }
-            }
-        }
-
-        return Math.max(max1, max2);
-    }
-
-    private String convertIntArrayToString(String name, int[] array, String format) {
+    private String convertIntArrayToString(String name, int[] array) {
         StringBuilder builder = new StringBuilder();
         if (!Utils.isEmpty(name)) {
             builder.append(name);
@@ -259,7 +226,8 @@ public class HaesslerProcedure implements Algorithm {
         } else {
             builder.append("[ ");
             for (int i : array) {
-                builder.append(String.format(format, i));
+                builder.append(i);
+                builder.append(" ");
             }
             builder.append("]");
         }

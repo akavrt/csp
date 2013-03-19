@@ -28,7 +28,7 @@ public class Tester {
     public static void main(String[] args) throws IOException {
         CspReader reader = new CspReader();
         try {
-            InputStream is = Tester.class.getClassLoader().getResourceAsStream("optimal_10.xml");
+            InputStream is = Tester.class.getClassLoader().getResourceAsStream("tubes_01.xml");
             reader.read(is);
         } catch (CspParseException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class Tester {
 
             System.out.println(best);
 
-            File file = new File("/Users/akavrt/Sandbox/sample-output-10.xml");
+            File file = new File("/Users/akavrt/Sandbox/sample-output-t01.xml");
 
             CspWriter writer = new CspWriter();
 

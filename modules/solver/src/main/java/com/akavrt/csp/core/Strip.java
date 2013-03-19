@@ -12,8 +12,6 @@ public abstract class Strip {
     private String id;
     private double length;
     private double width;
-    private long internalLength;
-    private long internalWidth;
 
     /**
      * <p>Strip params should be set only when an instance of class is created.</p>
@@ -26,9 +24,6 @@ public abstract class Strip {
         this.id = id;
         this.length = length;
         this.width = width;
-
-        internalLength = (long) (length  * 10e+6);
-        internalWidth = (long) (length  * 10e+6);
     }
 
     /**

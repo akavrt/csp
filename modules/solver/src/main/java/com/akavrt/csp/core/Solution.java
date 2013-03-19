@@ -1,8 +1,7 @@
 package com.akavrt.csp.core;
 
 import com.akavrt.csp.core.metadata.SolutionMetadata;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.google.common.math.DoubleMath;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +15,6 @@ import java.util.Set;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Solution {
-    private static final Logger logger = LogManager.getLogger(Solution.class);
     private List<Pattern> patterns;
     private SolutionMetadata metadata;
 
@@ -132,12 +130,11 @@ public class Solution {
         boolean isPatternValid = true;
 
         // exit on the first invalid pattern
-        for (int i = 0; i < patterns.size() && isPatternValid; i++) {
+        for (int i = 0; i < patterns.size(); i++) {
             isPatternValid = patterns.get(i).isValid(problem.getAllowedCutsNumber());
 
             if (!isPatternValid) {
-                logger.error("pattern width = {}; roll width = {}", patterns.get(i).getWidth(),
-                             patterns.get(i).getRoll().getWidth());
+                break;
             }
         }
 
@@ -155,8 +152,6 @@ public class Solution {
         boolean isRepeatedRollFound = false;
         for (Pattern pattern : patterns) {
             if (pattern.isActive() && !rollIds.add(pattern.getRoll().getInternalId())) {
-                Roll roll = pattern.getRoll();
-                logger.error("Repeated roll: id = '{}', hash = {}", roll.getId(), roll.getInternalId());
                 // we can't use same roll twice
                 isRepeatedRollFound = true;
                 break;
@@ -177,9 +172,14 @@ public class Solution {
         boolean isOrderFulfilled = true;
 
         // exit on the first unfulfilled order
-        for (int i = 0; i < orders.size() && isOrderFulfilled; i++) {
+        for (int i = 0; i < orders.size(); i++) {
             Order order = orders.get(i);
-            isOrderFulfilled = getProductionLengthForOrder(order) >= order.getLength();
+            isOrderFulfilled = DoubleMath.fuzzyCompare(getProductionLengthForOrder(order),
+                                                       order.getLength(),
+                                                       Constants.LINEAR_TOLERANCE) >= 0;
+            if (!isOrderFulfilled) {
+                break;
+            }
         }
 
         return isOrderFulfilled;
