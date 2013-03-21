@@ -83,6 +83,8 @@ public class VahrenkampProcedure extends SequentialProcedure {
         int patternUsage = evaluatePatternUsage(allowedTrimRatio);
 
         while (!orderManager.isOrdersFulfilled() && rollManager.size() > 0) {
+            LOGGER.debug("#TRIM_AL: %.2f  #PU_AL: %d", allowedTrimRatio, patternUsage);
+
             // search for the next suitable pattern
             // to be added to the partial solution
             BuildingBlock block = rollGroupStep(allowedTrimRatio, patternUsage);
@@ -103,6 +105,7 @@ public class VahrenkampProcedure extends SequentialProcedure {
                 // reset aspiration levels
                 allowedTrimRatio = 0;
                 patternUsage = evaluatePatternUsage(allowedTrimRatio);
+                LOGGER.debug("  RESET  #TRIM_AL: %.2f  #PU_AL: %d", allowedTrimRatio, patternUsage);
             } else {
                 // relax one of the aspiration levels
                 // which level to relax is decided based on a draw
@@ -111,11 +114,13 @@ public class VahrenkampProcedure extends SequentialProcedure {
                     // relax pattern usage
                     if (patternUsage > 1) {
                         patternUsage -= params.getPatternUsageRelaxDelta();
+                        LOGGER.debug("  RELAX  #PU_AL to %d", patternUsage);
                     }
                 } else {
                     // relax trim
                     if (allowedTrimRatio < 1) {
                         allowedTrimRatio += params.getTrimRatioRelaxDelta();
+                        LOGGER.debug("  RELAX  #TRIM_AL to %.2f", allowedTrimRatio);
                     }
                 }
             }
