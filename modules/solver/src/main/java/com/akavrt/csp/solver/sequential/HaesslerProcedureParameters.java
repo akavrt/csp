@@ -67,7 +67,7 @@ public class HaesslerProcedureParameters implements XmlCompatible {
         Element paramsElm = new Element(XmlTags.PARAMETERS);
 
         Element typeElm = new Element(XmlTags.TYPE);
-        typeElm.setText(HaesslerProcedure.METHOD_NAME);
+        typeElm.setText(getProcedureType());
         paramsElm.addContent(typeElm);
 
         Element trimRatioRelaxElm = new Element(XmlTags.TRIM_RATIO_RELAX_DELTA);
@@ -97,6 +97,10 @@ public class HaesslerProcedureParameters implements XmlCompatible {
             setPatternUsageRelaxDelta(XmlUtils.getIntegerFromText(patternUsageRelaxElm,
                                                                   DEFAULT_PATTERN_USAGE_RELAX_DELTA));
         }
+    }
+
+    protected String getProcedureType() {
+        return HaesslerProcedure.METHOD_NAME;
     }
 
     private interface XmlTags {
