@@ -1,6 +1,5 @@
 package com.akavrt.csp.solver.pattern;
 
-import com.akavrt.csp.solver.sequential.HaesslerProcedureParameters;
 import org.jdom2.Element;
 import org.junit.Test;
 

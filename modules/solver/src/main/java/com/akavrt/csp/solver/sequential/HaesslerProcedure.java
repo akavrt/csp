@@ -4,7 +4,6 @@ import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
-import com.akavrt.csp.xml.XmlCompatible;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +31,7 @@ public class HaesslerProcedure extends SequentialProcedure {
     public static final String METHOD_NAME = "Haessler's sequential heuristic procedure";
     private static final String SHORT_METHOD_NAME = "Haessler's SHP";
     private static final Logger LOGGER = LogManager.getFormatterLogger(HaesslerProcedure.class);
-    private final HaesslerProcedureParameters params;
+    private final SequentialProcedureParameters params;
 
     /**
      * <p>Create instance of Algorithm implementing Haessler's sequential heuristic procedure.
@@ -41,7 +40,7 @@ public class HaesslerProcedure extends SequentialProcedure {
      * @param generator Pattern generator.
      */
     public HaesslerProcedure(PatternGenerator generator) {
-        this(generator, new HaesslerProcedureParameters());
+        this(generator, new SequentialProcedureParameters());
     }
 
     /**
@@ -51,21 +50,30 @@ public class HaesslerProcedure extends SequentialProcedure {
      * @param generator Pattern generator.
      * @param params    Parameters of sequential heuristic procedure.
      */
-    public HaesslerProcedure(PatternGenerator generator, HaesslerProcedureParameters params) {
+    public HaesslerProcedure(PatternGenerator generator, SequentialProcedureParameters params) {
         super(generator);
         this.params = params;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getShortMethodName() {
         return SHORT_METHOD_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected XmlCompatible getMethodParams() {
+    protected SequentialProcedureParameters getMethodParameters() {
         return params;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Logger getLogger() {
         return LOGGER;
@@ -75,15 +83,18 @@ public class HaesslerProcedure extends SequentialProcedure {
      * {@inheritDoc}
      */
     @Override
-    public String getName() {
+    public String name() {
         return METHOD_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Solution search() {
         Solution solution = new Solution();
-
-        while (!orderManager.isOrdersFulfilled() && rollManager.size() > 0) {
+        while (!context.isCancelled() &&
+                !orderManager.isOrdersFulfilled() && rollManager.size() > 0) {
             BuildingBlock block = trimStep();
 
             if (block != null) {
@@ -107,15 +118,15 @@ public class HaesslerProcedure extends SequentialProcedure {
     private BuildingBlock trimStep() {
         BuildingBlock block = null;
 
-        double allowedTrimRatio = 0;
+        double allowedTrimRatio = params.getTrimRatioLowerBound();
 
-        while (allowedTrimRatio < 1 && block == null) {
+        while (!context.isCancelled() && allowedTrimRatio < 1 && block == null) {
             LOGGER.debug("#TRIM_AL: %.2f", allowedTrimRatio);
 
             block = patternUsageStep(allowedTrimRatio);
 
             // relax requirements for trim loss
-            allowedTrimRatio += params.getTrimRatioRelaxDelta();
+            allowedTrimRatio += params.getTrimRatioRelaxStep();
         }
 
         return block;
@@ -127,13 +138,13 @@ public class HaesslerProcedure extends SequentialProcedure {
         // let's evaluate maximum possible pattern usage
         int patternUsage = evaluatePatternUsage(allowedTrimRatio);
 
-        while (patternUsage > 0 && block == null) {
+        while (!context.isCancelled() && patternUsage > 0 && block == null) {
             LOGGER.debug("#TRIM_AL: %.2f  ##PU_AL: %d", allowedTrimRatio, patternUsage);
 
             block = rollGroupStep(allowedTrimRatio, patternUsage);
 
             // relax requirements for pattern usage
-            patternUsage -= params.getPatternUsageRelaxDelta();
+            patternUsage -= params.getPatternUsageRelaxStep();
         }
 
         return block;

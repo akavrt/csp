@@ -14,9 +14,9 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SimpleSolver implements Solver {
-    protected final Problem problem;
-    protected final Algorithm algorithm;
-    protected List<Solution> solutions;
+    private final Problem problem;
+    private final Algorithm algorithm;
+    private List<Solution> solutions;
 
     public SimpleSolver(Problem problem, Algorithm algorithm) {
         this.problem = problem;
@@ -31,7 +31,7 @@ public class SimpleSolver implements Solver {
      * {@inheritDoc}
      */
     @Override
-    public List<Solution> solve() {
+    public final List<Solution> solve() {
         solutions = null;
 
         if (problem != null && algorithm != null) {
@@ -39,6 +39,20 @@ public class SimpleSolver implements Solver {
         }
 
         return solutions;
+    }
+
+    /**
+     * <p>Problem associated with solver.</p>
+     */
+    protected Problem getProblem() {
+        return problem;
+    }
+
+    /**
+     * <p>Implementation of the optimization routine associated with solver.</p>
+     */
+    protected Algorithm getAlgorithm() {
+        return algorithm;
     }
 
     /**
@@ -73,6 +87,11 @@ public class SimpleSolver implements Solver {
         @Override
         public Problem getProblem() {
             return problem;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
         }
     };
 

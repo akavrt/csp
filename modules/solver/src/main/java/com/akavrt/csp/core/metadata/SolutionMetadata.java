@@ -1,6 +1,7 @@
 package com.akavrt.csp.core.metadata;
 
 import com.akavrt.csp.core.xml.XmlUtils;
+import com.akavrt.csp.utils.ParameterSet;
 import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlCompatible;
 import com.google.common.collect.Lists;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SolutionMetadata implements XmlCompatible {
-    private final List<XmlCompatible> parameters;
+    private final List<ParameterSet> parameters;
     private String description;
     private Date date;
 
@@ -56,17 +57,34 @@ public class SolutionMetadata implements XmlCompatible {
     /**
      * <p>Sometimes it's useful to save which method and with what set of parameters was used to
      * obtain this particular solution. To make life more easier all important parameter classes
-     * implements XmlCompatible interface. Thus, parameters can be exported to XML. Solution can be
-     * accompanied by any number of parameter sets, all of them will be added to XML during
-     * export.</p>
+     * implements ParameterSet interface. Thus, parameters can be exported to XML (ParameterSet
+     * interface extends XmlCompatible). Solution can be accompanied by any number of parameter
+     * sets, all of them will be added to XML during export.</p>
      *
      * <p>Reverse conversion, i.e. extraction of the parameter values linked with solution in XML,
      * currently is not supported.</p>
      *
      * @param parameters Set of parameters to be stored with solution in XML.
      */
-    public void addParameters(XmlCompatible parameters) {
+    public void addParameters(ParameterSet parameters) {
         this.parameters.add(parameters);
+    }
+
+    /**
+     * <p>Sometimes it's useful to save which method and with what set of parameters was used to
+     * obtain this particular solution. To make life more easier all important parameter classes
+     * implements ParameterSet interface. Thus, parameters can be exported to XML (ParameterSet
+     * interface extends XmlCompatible). Solution can be accompanied by any number of parameter
+     * sets, all of them will be added to XML during export.</p>
+     *
+     * <p>Reverse conversion, i.e. extraction of the parameter values linked with solution in XML,
+     * currently is not supported.</p>
+     *
+     * @param parameters List of parameters to be stored with solution in XML.
+     */
+    public void setParameters(List<ParameterSet> parameters) {
+        this.parameters.clear();
+        this.parameters.addAll(parameters);
     }
 
     /**
@@ -112,8 +130,7 @@ public class SolutionMetadata implements XmlCompatible {
      *
      * <p>Extraction of the parameter sets stored within metadata doesn't supported in current
      * version. It means that if you extract solution from XML and than save it back, parameter
-     * sets
-     * data will be lost.</p>
+     * sets data will be lost.</p>
      */
     @Override
     public void load(Element rootElm) {

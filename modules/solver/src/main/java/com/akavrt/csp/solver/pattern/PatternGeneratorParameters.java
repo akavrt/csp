@@ -1,7 +1,7 @@
 package com.akavrt.csp.solver.pattern;
 
 import com.akavrt.csp.core.xml.XmlUtils;
-import com.akavrt.csp.xml.XmlCompatible;
+import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
 
 /**
@@ -13,7 +13,7 @@ import org.jdom2.Element;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class PatternGeneratorParameters implements XmlCompatible {
+public class PatternGeneratorParameters implements ParameterSet {
     private static final int DEFAULT_GENERATION_TRIALS_LIMIT = 100;
     private int generationTrialsLimit = DEFAULT_GENERATION_TRIALS_LIMIT;
 
@@ -60,7 +60,7 @@ public class PatternGeneratorParameters implements XmlCompatible {
     }
 
     private interface XmlTags {
-        String PARAMETERS = "pattern-generation";
+        String PARAMETERS = "pattern";
         String GENERATION_TRIALS_LIMIT = "generation-trials-limit";
     }
 

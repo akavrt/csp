@@ -16,7 +16,6 @@ import java.util.*;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-// TODO replace IllegalArgumentException with own checked Exception
 public class ProblemBuilder {
     private static final Logger LOGGER = LogManager.getLogger(ProblemBuilder.class);
     private final List<Order> builderOrders;
@@ -39,7 +38,7 @@ public class ProblemBuilder {
      *
      * @param orders The list of orders.
      */
-    public void setOrders(List<Order> orders) {
+    public void setOrders(List<Order> orders) throws IllegalProblemException {
         builderOrders.clear();
 
         Set<String> ids = Sets.newHashSet();
@@ -51,7 +50,7 @@ public class ProblemBuilder {
                     // id clash, inconsistent problem definition
                     ids.clear();
                     builderOrders.clear();
-                    throw new IllegalArgumentException("Uniqueness of order's ids is broken.");
+                    throw new IllegalProblemException("Uniqueness of order's ids is broken.");
                 } else {
                     ids.add(id);
                     builderOrders.add(order);
@@ -65,7 +64,7 @@ public class ProblemBuilder {
      *
      * @param order The added order.
      */
-    public void addOrder(Order order) {
+    public void addOrder(Order order) throws IllegalProblemException {
         if (order != null && order.getId() != null && order.getId().trim().length() > 0) {
             String id = order.getId();
 
@@ -76,13 +75,12 @@ public class ProblemBuilder {
 
             if (repeatedIdFound) {
                 // id clash, inconsistent problem definition
-                throw new IllegalArgumentException("Uniqueness of order's ids is broken.");
+                throw new IllegalProblemException("Uniqueness of order's ids is broken.");
             } else {
                 builderOrders.add(order);
             }
         } else {
-            throw new IllegalArgumentException(
-                    "Ill-defined order can't be added to the problem.");
+            throw new IllegalProblemException("Ill-defined order can't be added to the problem.");
         }
     }
 
@@ -102,7 +100,7 @@ public class ProblemBuilder {
      *
      * @param rolls The list of rolls.
      */
-    public void setRolls(List<Roll> rolls) {
+    public void setRolls(List<Roll> rolls) throws IllegalProblemException {
         builderRolls.clear();
 
         Set<Integer> ids = Sets.newHashSet();
@@ -114,7 +112,7 @@ public class ProblemBuilder {
                     // id clash, inconsistent problem definition
                     ids.clear();
                     builderRolls.clear();
-                    throw new IllegalArgumentException(
+                    throw new IllegalProblemException(
                             "Uniqueness of ids within list of stock rolls is broken.");
                 } else {
                     ids.add(internalId);
@@ -129,7 +127,7 @@ public class ProblemBuilder {
      *
      * @param roll The added roll.
      */
-    public void addRoll(Roll roll) {
+    public void addRoll(Roll roll) throws IllegalProblemException {
         if (roll != null && roll.getId() != null && roll.getId().trim().length() > 0) {
             int internalId = roll.getInternalId();
 
@@ -140,13 +138,13 @@ public class ProblemBuilder {
 
             if (repeatedIdFound) {
                 // id clash, inconsistent problem definition
-                throw new IllegalArgumentException(
+                throw new IllegalProblemException(
                         "Uniqueness of ids within list of stock rolls is broken.");
             } else {
                 builderRolls.add(roll);
             }
         } else {
-            throw new IllegalArgumentException("Ill-defined roll can't be added to the problem.");
+            throw new IllegalProblemException("Ill-defined roll can't be added to the problem.");
         }
     }
 
@@ -161,8 +159,7 @@ public class ProblemBuilder {
      */
     public void addRolls(Roll roll, int quantity) {
         if (roll == null || roll.getId() == null || roll.getId().trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Ill-defined roll can't be added to the problem.");
+            throw new IllegalProblemException("Ill-defined roll can't be added to the problem.");
         }
 
         for (int i = 1; i <= quantity; i++) {
@@ -171,7 +168,7 @@ public class ProblemBuilder {
 
             try {
                 addRoll(copy);
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalProblemException e) {
                 LOGGER.catching(e);
             }
         }

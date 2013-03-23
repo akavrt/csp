@@ -16,4 +16,16 @@ public interface ExecutionContext {
      */
     Problem getProblem();
 
+    /**
+     * <p>Algorithms could be executed in both synchronous and asynchronous modes. Environment for
+     * asynchronous execution and control logic is implemented by the solver.</p>
+     *
+     * <p>On the other side each algorithm should provide support for early termination. The
+     * easiest way to achieve this is to constantly check the value returned by this method during
+     * all potentially long-running operations (inside loops, for example) and stop execution
+     * immediately on the first dispatch of the cancel request.</p>
+     *
+     * @return true if execution have to be terminated early.
+     */
+    boolean isCancelled();
 }

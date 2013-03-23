@@ -3,12 +3,11 @@ package com.akavrt.csp.core.xml;
 import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.akavrt.csp.utils.Unit;
-import org.jdom2.Document;
+import org.jdom2.Element;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import sun.management.counter.Units;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +25,6 @@ import static org.junit.Assert.*;
  */
 public class CspConverterTest {
     private static final double DELTA = 1e-15;
-    private int allowedCutsNumber;
-    private List<Order> orders;
-    private Roll roll1;
-    private Roll roll2;
     private Problem problem;
     private Solution solution1;
     private Solution solution2;
@@ -39,10 +34,10 @@ public class CspConverterTest {
 
     @Before
     public void setUpProblem() {
-        allowedCutsNumber = 10;
+        int allowedCutsNumber = 10;
 
         // preparing orders
-        orders = new ArrayList<Order>();
+        List<Order> orders = new ArrayList<Order>();
         orders.add(new Order("order1", 500, 50));
         orders.add(new Order("order2", 400, 40));
         orders.add(new Order("order3", 300, 30));
@@ -50,8 +45,8 @@ public class CspConverterTest {
         // preparing rolls
         List<Roll> rolls = new ArrayList<Roll>();
 
-        roll1 = new Roll("roll1", 300, 200);
-        roll2 = new Roll("roll2", 500, 300);
+        Roll roll1 = new Roll("roll1", 300, 200);
+        Roll roll2 = new Roll("roll2", 500, 300);
 
         rolls.add(roll1);
         rolls.add(roll2);
@@ -102,10 +97,10 @@ public class CspConverterTest {
         CspWriter writer = new CspWriter();
         writer.setProblem(problem);
 
-        Document doc = writer.process();
+        Element element = writer.process();
 
         CspReader reader = new CspReader();
-        reader.process(doc);
+        reader.process(element);
 
         Problem extractedProblem = reader.getProblem();
         assertFalse(extractedProblem == null);
@@ -121,10 +116,10 @@ public class CspConverterTest {
         writer.addSolution(solution1);
         writer.addSolution(solution2);
 
-        Document doc = writer.process();
+        Element element = writer.process();
 
         CspReader reader = new CspReader();
-        reader.process(doc);
+        reader.process(element);
 
         List<Solution> extractedSolutions = reader.getSolutions();
         assertFalse(extractedSolutions == null);

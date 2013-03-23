@@ -11,10 +11,10 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * User: akavrt
- * Date: 02.03.13
- * Time: 01:52
+ * Date: 23.03.13
+ * Time: 00:50
  */
-public class ScalarMetricTest {
+public class ProductDeviationMetricTest {
     private static final double DELTA = 1e-15;
     private int allowedCutsNumber;
     private List<Order> orders;
@@ -22,8 +22,7 @@ public class ScalarMetricTest {
     private Roll roll2;
     private Roll roll3;
     private Problem problem;
-    private ScalarMetricParameters params;
-    private ScalarMetric evaluator;
+    private ProductDeviationMetric metric;
 
     @Before
     public void setUpProblem() {
@@ -47,23 +46,44 @@ public class ScalarMetricTest {
 
         problem = new Problem(orders, rolls, allowedCutsNumber);
 
-        params = new ScalarMetricParameters();
-        params.setTrimFactor(0.33);
-        params.setPatternsFactor(0.33);
-        params.setProductionFactor(0.33);
-
-        evaluator = new ScalarMetric(problem, params);
+        metric = new ProductDeviationMetric(problem);
     }
 
     @Test
     public void emptySolution() {
         Solution solution = new Solution();
 
-        // no active patterns -> no trim
-        // if there are less than 2 patterns within solution,
-        // patterns ration always equals to zero
         // 100% underproduction -> production ration equals to 1
-        assertEquals(1 * params.getProductionFactor(), evaluator.evaluate(solution), DELTA);
+        assertEquals(1, metric.evaluate(solution), DELTA);
+    }
+
+    @Test
+    public void solutionWithExactProduction() {
+        Solution solution = new Solution();
+        Pattern pattern;
+
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 1);
+        pattern.setRoll(roll1);
+        solution.addPattern(pattern);
+
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 1);
+        pattern.addCut(orders.get(1), 0);
+        pattern.addCut(orders.get(2), 0);
+        pattern.setRoll(roll2);
+        solution.addPattern(pattern);
+
+        pattern = new Pattern(orders);
+        pattern.addCut(orders.get(0), 0);
+        pattern.addCut(orders.get(1), 1);
+        pattern.addCut(orders.get(2), 0);
+        pattern.setRoll(roll3);
+        solution.addPattern(pattern);
+
+        assertEquals(0, metric.evaluate(solution), DELTA);
     }
 
 }

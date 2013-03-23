@@ -9,7 +9,7 @@ import com.google.common.base.Objects;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Roll extends Strip {
-    private static final String FORMAT_TEMPLATE = "Roll '%s':\n    W = %.2f\n    L = %.2f";
+    private static final String FORMAT_TEMPLATE = "Roll '%s', #%d:  W = %.2f  L = %.2f";
     private final int internalId;
     private RollMetadata metadata;
 
@@ -71,7 +71,7 @@ public class Roll extends Strip {
      */
     @Override
     public String toString() {
-        return String.format(FORMAT_TEMPLATE, getId(), getWidth(), getLength());
+        return String.format(FORMAT_TEMPLATE, getId(), getInternalId(), getWidth(), getLength());
     }
 
     /**

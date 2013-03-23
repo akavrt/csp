@@ -68,7 +68,7 @@ public class ProblemBuilderTest {
         assertEquals(problemOrders.size() + 1, tested.getOrders().size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalProblemException.class)
     public void duplicatedRoll() {
         Roll singleRoll = new Roll("roll1", 500, 300);
         Roll groupedRoll = new Roll("roll2", 400, 200);
@@ -80,7 +80,7 @@ public class ProblemBuilderTest {
         builder.addRoll(duplicatedRoll);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalProblemException.class)
     public void duplicatedSetRolls() {
         Roll singleRoll = new Roll("roll1", 500, 300);
         Roll duplicatedRoll = new Roll("roll1", 100, 10);
@@ -93,7 +93,7 @@ public class ProblemBuilderTest {
         builder.setRolls(rolls);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalProblemException.class)
     public void duplicatedAddRolls() {
         Roll roll = new Roll("roll1", 500, 300);
 
@@ -102,7 +102,7 @@ public class ProblemBuilderTest {
         builder.addRolls(problemRolls);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalProblemException.class)
     public void duplicatedOrder() {
         Order order = new Order("order1", 500, 300);
         Order duplicate = new Order("order1", 200, 20);
@@ -112,7 +112,7 @@ public class ProblemBuilderTest {
         builder.addOrder(duplicate);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalProblemException.class)
     public void duplicatedSetOrders() {
         Order order = new Order("order1", 500, 300);
         Order duplicate = new Order("order1", 200, 20);
@@ -125,7 +125,7 @@ public class ProblemBuilderTest {
         builder.setOrders(orders);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalProblemException.class)
     public void duplicatedAddOrders() {
         Order order = new Order("order1", 500, 300);
 

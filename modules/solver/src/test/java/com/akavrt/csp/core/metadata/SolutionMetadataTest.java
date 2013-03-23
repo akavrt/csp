@@ -50,7 +50,7 @@ public class SolutionMetadataTest {
         SolutionMetadata expected = new SolutionMetadata();
 
         Element element = expected.save();
-        Element paramsElm = element.getChild(SolutionMetadata.XmlTags.PARAMETERS);
+        Element paramsElm = element.getChild(XmlTags.PARAMETERS);
         assertNull(paramsElm);
 
         // add parameter
@@ -59,13 +59,13 @@ public class SolutionMetadataTest {
         expected.addParameters(params);
 
         element = expected.save();
-        paramsElm = element.getChild(SolutionMetadata.XmlTags.PARAMETERS);
+        paramsElm = element.getChild(XmlTags.PARAMETERS);
         assertNotNull(paramsElm);
 
         // clear parameters
         expected.clearParameters();
         element = expected.save();
-        paramsElm = element.getChild(SolutionMetadata.XmlTags.PARAMETERS);
+        paramsElm = element.getChild(XmlTags.PARAMETERS);
         assertNull(paramsElm);
     }
 
@@ -74,7 +74,7 @@ public class SolutionMetadataTest {
         SolutionMetadata expected = new SolutionMetadata();
 
         Element element = expected.save();
-        Element paramsElm = element.getChild(SolutionMetadata.XmlTags.PARAMETERS);
+        Element paramsElm = element.getChild(XmlTags.PARAMETERS);
         assertNull(paramsElm);
 
         SolutionMetadata actual = new SolutionMetadata();
@@ -84,5 +84,8 @@ public class SolutionMetadataTest {
         assertNull(actual.getDate());
     }
 
+    private interface XmlTags {
+        String PARAMETERS = "parameters";
+    }
 
 }

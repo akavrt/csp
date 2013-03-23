@@ -254,6 +254,9 @@ public class Pattern {
         return Arrays.hashCode(multipliers);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         int maxQuantity = 0;

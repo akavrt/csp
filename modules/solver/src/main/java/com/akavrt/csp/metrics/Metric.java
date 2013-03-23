@@ -33,4 +33,18 @@ public interface Metric {
      *         equal to, or better than the second in terms of solution quality.
      */
     int compare(Solution s1, Solution s2);
+
+    /**
+     * <p>Abbreviated name of the metric.</p>
+     *
+     * @return Abbreviated name of the metric.
+     */
+    String abbreviation();
+
+    /**
+     * <p>Human-readable name of the metric.</p>
+     *
+     * @return Full name of the metric.
+     */
+    String name();
 }

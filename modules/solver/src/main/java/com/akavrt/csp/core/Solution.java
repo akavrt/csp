@@ -85,6 +85,25 @@ public class Solution {
     }
 
     /**
+     * <p>Calculate number of active patterns in solution.</p>
+     *
+     * <p>Pattern is active if it has a roll attached to it and non-zero width (at least one cut
+     * will be made when pattern is applied to the roll).</p>
+     *
+     * @return Number of active patterns.
+     */
+    public int getActivePatternsCount() {
+        int activePatternsCount = 0;
+        for (Pattern pattern : patterns) {
+            if (pattern.isActive()) {
+                activePatternsCount++;
+            }
+        }
+
+        return activePatternsCount;
+    }
+
+    /**
      * <p>Number of unique pattern used in this solution equals to the number of times we need to
      * setup equipment (circular shears, in particular) to cut rolls in a way defined by this
      * cutting plan.</p>
@@ -131,10 +150,10 @@ public class Solution {
         boolean isPatternValid = true;
 
         // exit on the first invalid pattern
-        for (int i = 0; i < patterns.size(); i++) {
-            isPatternValid = patterns.get(i).isValid(problem.getAllowedCutsNumber());
-
-            if (!isPatternValid) {
+        int allowedCutsNumber = problem.getAllowedCutsNumber();
+        for (Pattern pattern : patterns) {
+            if (!pattern.isValid(allowedCutsNumber)) {
+                isPatternValid = false;
                 break;
             }
         }
@@ -173,8 +192,7 @@ public class Solution {
         boolean isOrderFulfilled = true;
 
         // exit on the first unfulfilled order
-        for (int i = 0; i < orders.size(); i++) {
-            Order order = orders.get(i);
+        for (Order order : orders) {
             isOrderFulfilled = DoubleMath.fuzzyCompare(getProductionLengthForOrder(order),
                                                        order.getLength(),
                                                        Constants.TOLERANCE) >= 0;

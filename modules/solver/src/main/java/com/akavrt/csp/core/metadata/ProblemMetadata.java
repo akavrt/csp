@@ -21,42 +21,74 @@ public class ProblemMetadata implements XmlCompatible {
     private Date date;
     private Unit units;
 
+    /**
+     * <p>Precise self-descriptive name used to identify problem.</p>
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * <p>Set precise self-descriptive name used to identify problem.</p>
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * <p>Information about the author of the problem.</p>
+     */
     public String getAuthor() {
         return author;
     }
 
+    /**
+     * <p>Set information about the author of the problem.</p>
+     */
     public void setAuthor(String author) {
         this.author = author;
     }
 
+    /**
+     * <p>Textual description of the problem. Characteristic specific to the problem should be
+     * extensively described using this field.</p>
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * <p>Set textual description of the problem.</p>
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * <p>Indicates date when problem was created.</p>
+     */
     public Date getDate() {
         return date;
     }
 
+    /**
+     * <p>Set date indicating the moment when problem was created.</p>
+     */
     public void setDate(Date date) {
         this.date = date;
     }
 
+    /**
+     * <p>Units of measure used in problem definition. It's expected that same units used to
+     * describe linear dimensions of all orders and rolls involved.</p>
+     */
     public Unit getUnits() {
         return units;
     }
 
+    /**
+     * <p>Set units of measure used in problem definition.</p>
+     */
     public void setUnits(Unit units) {
         this.units = units;
     }

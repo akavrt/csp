@@ -1,23 +1,23 @@
 package com.akavrt.csp.tester;
 
+import com.akavrt.csp.analyzer.Average;
+import com.akavrt.csp.analyzer.SimpleCollector;
+import com.akavrt.csp.analyzer.StandardDeviation;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
-import com.akavrt.csp.core.xml.CspWriter;
-import com.akavrt.csp.metrics.Metric;
-import com.akavrt.csp.metrics.ScalarMetric;
-import com.akavrt.csp.metrics.ScalarMetricParameters;
+import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.MultistartSolver;
-import com.akavrt.csp.solver.SimpleSolver;
-import com.akavrt.csp.solver.Solver;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
-import com.akavrt.csp.solver.sequential.HaesslerProcedure;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,6 +27,8 @@ import java.io.InputStream;
  * Time: 19:41
  */
 public class Tester {
+    private static final Logger LOGGER = LogManager.getLogger(Tester.class);
+
     public static void main(String[] args) throws IOException {
         CspReader reader = new CspReader();
         try {
@@ -38,50 +40,46 @@ public class Tester {
 
         Problem problem = reader.getProblem();
         if (problem == null) {
-            System.out.println("Error occurred while loading problem from external file.");
+            LOGGER.error("Error occurred while loading problem from external file.");
             return;
         }
 
-        String message = String.format("Problem definition:\n    %d orders;\n    %d rolls.",
-                                       problem.getOrders().size(),
-                                       problem.getRolls().size());
-        System.out.println(message);
+        System.out.println(TraceUtils.traceProblem(problem, true, true));
 
         PatternGeneratorParameters generatorParams = new PatternGeneratorParameters();
         generatorParams.setGenerationTrialsLimit(20);
         PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
 
-        Algorithm method = new HaesslerProcedure(generator);
+        VahrenkampProcedureParameters methodParams = new VahrenkampProcedureParameters();
+        methodParams.setPatternUsageUpperBound(0.5);
+        methodParams.setGoalmix(0.5);
+        methodParams.setTrimRatioUpperBound(1);
+        Algorithm method = new VahrenkampProcedure(generator, methodParams);
 
-        MultistartSolver solver = new MultistartSolver(problem, method, 1);
+        ScalarMetric metric = new ScalarMetric(problem, new ScalarMetricParameters());
+
+        SimpleCollector collector = new SimpleCollector();
+        collector.addMeasure(new Average());
+        collector.addMeasure(new StandardDeviation());
+
+        collector.addMetric(metric);
+        collector.addMetric(new TrimLossMetric());
+        collector.addMetric(new PatternReductionMetric());
+        collector.addMetric(new UniquePatternsMetric());
+        collector.addMetric(new ActivePatternsMetric());
+        collector.addMetric(new ProductDeviationMetric(problem));
+
+        MultistartSolver solver = new MultistartSolver(problem, method, 10);
+        solver.setCollector(collector);
         solver.solve();
 
-        Metric metric = new ScalarMetric(problem, new ScalarMetricParameters());
         Solution best = solver.getBestSolution(metric);
 
         if (best != null) {
-            System.out.println();
-            System.out.println(String.format("*** Best solution found: metric = %.3f; %s",
-                                             metric.evaluate(best),
-                                             best.isValid(problem) ? "valid." : "invalid"));
+            String trace = TraceUtils.traceSolution(best, problem, metric, true);
+            System.out.println("*** OVERALL BEST solution found:\n" + trace);
 
-            if (!best.isValid(problem)) {
-                System.out.print(" -> ");
-                if (!best.isPatternsValid(problem)) {
-                    System.out.print("problem with patterns; ");
-                }
-
-                if (!best.isRollsValid()) {
-                    System.out.print("problem with repeated rolls; ");
-                }
-
-                if (!best.isOrdersFulfilled(problem.getOrders())) {
-                    System.out.print("unfulfilled orders;");
-                }
-            }
-
-            System.out.println(best);
-
+            /*
             File file = new File("/Users/akavrt/Sandbox/output-opt10.xml");
 
             CspWriter writer = new CspWriter();
@@ -90,6 +88,7 @@ public class Tester {
             writer.addSolution(best);
 
             writer.write(file, true);
+            */
         } else {
             System.out.println("Best is null.");
         }

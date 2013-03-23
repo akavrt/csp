@@ -17,26 +17,26 @@ public class HaesslerProcedureParametersTest {
     public void defaults() {
         // no custom values were provided,
         // default values should be converted to XML and then retrieved back
-        Element element = new HaesslerProcedureParameters().save();
-        HaesslerProcedureParameters actual = new HaesslerProcedureParameters();
+        Element element = new SequentialProcedureParameters().save();
+        SequentialProcedureParameters actual = new SequentialProcedureParameters();
         actual.load(element);
 
-        HaesslerProcedureParameters expected = new HaesslerProcedureParameters();
-        assertEquals(expected.getTrimRatioRelaxDelta(), actual.getTrimRatioRelaxDelta(), DELTA);
-        assertEquals(expected.getPatternUsageRelaxDelta(), actual.getPatternUsageRelaxDelta());
+        SequentialProcedureParameters expected = new SequentialProcedureParameters();
+        assertEquals(expected.getTrimRatioRelaxStep(), actual.getTrimRatioRelaxStep(), DELTA);
+        assertEquals(expected.getPatternUsageRelaxStep(), actual.getPatternUsageRelaxStep());
     }
 
     @Test
     public void conversion() {
-        HaesslerProcedureParameters expected = new HaesslerProcedureParameters();
-        expected.setTrimRatioRelaxDelta(0.5);
-        expected.setPatternUsageRelaxDelta(5);
+        SequentialProcedureParameters expected = new SequentialProcedureParameters();
+        expected.setTrimRatioRelaxStep(0.5);
+        expected.setPatternUsageRelaxStep(5);
 
         Element element = expected.save();
-        HaesslerProcedureParameters actual = new HaesslerProcedureParameters();
+        SequentialProcedureParameters actual = new SequentialProcedureParameters();
         actual.load(element);
 
-        assertEquals(expected.getTrimRatioRelaxDelta(), actual.getTrimRatioRelaxDelta(), DELTA);
-        assertEquals(expected.getPatternUsageRelaxDelta(), actual.getPatternUsageRelaxDelta());
+        assertEquals(expected.getTrimRatioRelaxStep(), actual.getTrimRatioRelaxStep(), DELTA);
+        assertEquals(expected.getPatternUsageRelaxStep(), actual.getPatternUsageRelaxStep());
     }
 }

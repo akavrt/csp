@@ -1,11 +1,8 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Order;
-import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
-
-import java.util.List;
+import com.akavrt.csp.utils.Tracer;
 
 /**
  * <p>Implementation of the objective function used in a previous version. Based on a linear
@@ -15,8 +12,10 @@ import java.util.List;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class ScalarMetric implements Metric {
-    private final Problem problem;
+public class ScalarMetric extends MinimizationMetric implements Tracer<Solution> {
+    private final TrimLossMetric trimMetric;
+    private final PatternReductionMetric patternsMetric;
+    private final ProductDeviationMetric productMetric;
     private final ScalarMetricParameters params;
 
     /**
@@ -27,78 +26,11 @@ public class ScalarMetric implements Metric {
      * @param params  Parameters of objective function.
      */
     public ScalarMetric(Problem problem, ScalarMetricParameters params) {
-        this.problem = problem;
         this.params = params;
-    }
 
-    /**
-     * <p>Calculates trim loss ratio.</p>
-     *
-     * <p>Evaluated value may vary from 0 to 1. The less is better.<p/>
-     *
-     * @param solution The evaluated solution.
-     * @return Trim loss fractional ratio.
-     */
-    public double getTrimRatio(Solution solution) {
-        double trimArea = 0;
-        double totalArea = 0;
-
-        for (Pattern pattern : solution.getPatterns()) {
-            if (pattern.isActive()) {
-                trimArea += pattern.getTrimArea();
-                totalArea += pattern.getRoll().getArea();
-            }
-        }
-
-        return totalArea == 0 ? 0 : trimArea / totalArea;
-    }
-
-    /**
-     * <p>Calculates pattern reduction ratio.</p>
-     *
-     * <p>If only one roll is used, then the fixed value of zero will be returned. Otherwise
-     * evaluated value may vary from 0 to 1. The less is better.</p>
-     *
-     * @param solution The evaluated solution.
-     * @return Pattern reduction fractional ratio.
-     */
-    public double getPatternsRatio(Solution solution) {
-        double ratio = 0;
-
-        int activePatternsCount = 0;
-        for (Pattern pattern : solution.getPatterns()) {
-            if (pattern.isActive()) {
-                activePatternsCount++;
-            }
-        }
-
-        if (activePatternsCount > 1) {
-            ratio = (solution.getUniquePatternsCount() - 1) / (double) (activePatternsCount - 1);
-        }
-
-        return ratio;
-    }
-
-    /**
-     * <p>Calculates product deviation ratio.</p>
-     *
-     * <p>Evaluated value may vary from 0 to 1. The less is better: zero means that there is no
-     * overproduction or underproduction.</p>
-     *
-     * @param solution The evaluated solution.
-     * @return Product deviation fractional ratio.
-     */
-    public double getProductionRatio(Solution solution) {
-        double totalProductDeviation = 0;
-
-        List<Order> orders = problem.getOrders();
-        for (Order order : orders) {
-            double productDeviation = Math.abs(order.getLength() -
-                                                       solution.getProductionLengthForOrder(order));
-            totalProductDeviation += productDeviation / order.getLength();
-        }
-
-        return totalProductDeviation / orders.size();
+        trimMetric = new TrimLossMetric();
+        patternsMetric = new PatternReductionMetric();
+        productMetric = new ProductDeviationMetric(problem);
     }
 
     /**
@@ -112,23 +44,55 @@ public class ScalarMetric implements Metric {
      */
     @Override
     public double evaluate(Solution solution) {
-        return params.getTrimFactor() * getTrimRatio(solution) +
-                params.getPatternsFactor() * getPatternsRatio(solution) +
-                params.getProductionFactor() * getProductionRatio(solution);
+        return params.getTrimFactor() * trimMetric.evaluate(solution) +
+                params.getPatternsFactor() * patternsMetric.evaluate(solution) +
+                params.getProductionFactor() * productMetric.evaluate(solution);
     }
 
     /**
-     * <p>We are dealing with minimization problem: given two solutions, solution with smaller
-     * value
-     * of objective function will be better.</p>
+     * <p>Set of parameter provided to the scalar metric during instantiation.</p>
      *
+     * @return Current set of parameters.
+     */
+    public ScalarMetricParameters getParameters() {
+        return params;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
-    public int compare(Solution s1, Solution s2) {
-        double s1eval = evaluate(s1);
-        double s2eval = evaluate(s2);
-
-        return s1eval > s2eval ? -1 : (s1eval < s2eval ? 1 : 0);
+    public String abbreviation() {
+        return "SCALAR";
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String name() {
+        return "Linearly scalarized objective";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String trace(Solution solution) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(String.format("  SCALAR:  %.3f", evaluate(solution)));
+        builder.append(String.format("\n      TL:  %.2f * %.2f",
+                                     params.getTrimFactor(), trimMetric.evaluate(solution)));
+        builder.append(String.format("\n      PR:  %.2f * %.2f  (%d unique of %d total)",
+                                     params.getPatternsFactor(), patternsMetric.evaluate(solution),
+                                     solution.getUniquePatternsCount(),
+                                     solution.getActivePatternsCount()));
+        builder.append(String.format("\n      PD:  %.2f * %.2f",
+                                     params.getProductionFactor(),
+                                     productMetric.evaluate(solution)));
+
+        return builder.toString();
+    }
+
 }

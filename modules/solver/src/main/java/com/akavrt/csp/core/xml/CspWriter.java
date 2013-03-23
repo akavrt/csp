@@ -42,7 +42,7 @@ public class CspWriter {
      *
      * @return Data structure with problem and solutions converted to XML.
      */
-    public Document process() {
+    public Element process() {
         Element cspElm = new Element(XmlTags.CSP);
 
         if (exportedProblem != null) {
@@ -58,7 +58,7 @@ public class CspWriter {
             }
         }
 
-        return new Document(cspElm);
+        return cspElm;
     }
 
     /**
@@ -68,7 +68,8 @@ public class CspWriter {
      * @return Data structure with problem and solutions converted to XML.
      */
     public org.w3c.dom.Document convert() {
-        Document doc = process();
+        Element rootElm = process();
+        Document doc = new Document(rootElm);
 
         org.w3c.dom.Document domDoc = null;
         try {
@@ -89,7 +90,8 @@ public class CspWriter {
      * @throws IOException If any IO-related problem occurs while writing.
      */
     public void write(OutputStream out, boolean prettyFormat) throws IOException {
-        Document doc = process();
+        Element rootElm = process();
+        Document doc = new Document(rootElm);
 
         XMLOutputter outputter;
         if (prettyFormat) {
@@ -110,7 +112,8 @@ public class CspWriter {
      * @throws IOException If any IO-related problem occurs while writing.
      */
     public void write(File file, boolean prettyFormat) throws IOException {
-        Document doc = process();
+        Element rootElm = process();
+        Document doc = new Document(rootElm);
 
         XMLOutputter outputter;
         if (prettyFormat) {

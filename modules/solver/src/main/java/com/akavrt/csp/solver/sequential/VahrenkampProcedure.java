@@ -4,7 +4,6 @@ import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
-import com.akavrt.csp.xml.XmlCompatible;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,16 +51,25 @@ public class VahrenkampProcedure extends SequentialProcedure {
         rGen = new Random();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getShortMethodName() {
         return SHORT_METHOD_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected XmlCompatible getMethodParams() {
+    protected SequentialProcedureParameters getMethodParameters() {
         return params;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Logger getLogger() {
         return LOGGER;
@@ -71,18 +79,22 @@ public class VahrenkampProcedure extends SequentialProcedure {
      * {@inheritDoc}
      */
     @Override
-    public String getName() {
+    public String name() {
         return METHOD_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Solution search() {
         Solution solution = new Solution();
 
-        double allowedTrimRatio = 0;
+        double allowedTrimRatio = params.getTrimRatioLowerBound();
         int patternUsage = evaluatePatternUsage(allowedTrimRatio);
 
-        while (!orderManager.isOrdersFulfilled() && rollManager.size() > 0) {
+        while (!context.isCancelled() &&
+                !orderManager.isOrdersFulfilled() && rollManager.size() > 0) {
             LOGGER.debug("#TRIM_AL: %.2f  #PU_AL: %d", allowedTrimRatio, patternUsage);
 
             // search for the next suitable pattern
@@ -103,7 +115,7 @@ public class VahrenkampProcedure extends SequentialProcedure {
                 }
 
                 // reset aspiration levels
-                allowedTrimRatio = 0;
+                allowedTrimRatio = params.getTrimRatioLowerBound();
                 patternUsage = evaluatePatternUsage(allowedTrimRatio);
                 LOGGER.debug("  RESET  #TRIM_AL: %.2f  #PU_AL: %d", allowedTrimRatio, patternUsage);
             } else {
@@ -113,14 +125,20 @@ public class VahrenkampProcedure extends SequentialProcedure {
                 if (draw > params.getGoalmix()) {
                     // relax pattern usage
                     if (patternUsage > 1) {
-                        patternUsage -= params.getPatternUsageRelaxDelta();
+                        patternUsage -= params.getPatternUsageRelaxStep();
                         LOGGER.debug("  RELAX  #PU_AL to %d", patternUsage);
+                    } else {
+                        LOGGER.debug("  [SKIP] RELAX for #PU_AL: %d", patternUsage);
                     }
                 } else {
                     // relax trim
-                    if (allowedTrimRatio < 1) {
-                        allowedTrimRatio += params.getTrimRatioRelaxDelta();
+                    if (allowedTrimRatio < params.getTrimRatioUpperBound()) {
+                        allowedTrimRatio += params.getTrimRatioRelaxStep();
                         LOGGER.debug("  RELAX  #TRIM_AL to %.2f", allowedTrimRatio);
+                    } else if (patternUsage == 1 && allowedTrimRatio < 1) {
+                        // this should prevent endless looping
+                        allowedTrimRatio += params.getTrimRatioRelaxStep();
+                        LOGGER.debug("  [FORCE] RELAX  #TRIM_AL to %.2f", allowedTrimRatio);
                     }
                 }
             }

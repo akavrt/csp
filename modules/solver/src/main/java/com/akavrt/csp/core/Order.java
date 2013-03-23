@@ -10,7 +10,7 @@ import com.google.common.base.Objects;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Order extends Strip {
-    private static final String FORMAT_TEMPLATE = "Order '%s':\n    W = %.2f\n    L = %.2f";
+    private static final String FORMAT_TEMPLATE = "Order '%s':  W = %.2f  L = %.2f";
     private final int internalId;
     private OrderMetadata metadata;
 

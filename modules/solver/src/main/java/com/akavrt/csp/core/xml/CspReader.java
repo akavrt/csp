@@ -27,11 +27,20 @@ public class CspReader {
     /**
      * <p>Extract problem definition and list of solutions from prepared XML.</p>
      *
+     * @param element org.jdom2.Element to use as a source.
+     */
+    public void process(Element element) {
+        loadedProblem = loadProblem(element);
+        loadedSolutions = loadedProblem == null ? null : loadSolutions(element, loadedProblem);
+    }
+
+    /**
+     * <p>Extract problem definition and list of solutions from prepared XML.</p>
+     *
      * @param doc org.jdom2.Document to use as a source.
      */
     public void process(Document doc) {
-        loadedProblem = loadProblem(doc);
-        loadedSolutions = loadedProblem == null ? null : loadSolutions(doc, loadedProblem);
+        process(doc.getRootElement());
     }
 
     /**
@@ -104,8 +113,7 @@ public class CspReader {
         return loadedSolutions;
     }
 
-    private Problem loadProblem(Document doc) {
-        Element cspElm = doc.getRootElement();
+    private Problem loadProblem(Element cspElm) {
         if (cspElm == null) {
             return null;
         }
@@ -121,8 +129,7 @@ public class CspReader {
         return problem;
     }
 
-    private List<Solution> loadSolutions(Document doc, Problem problem) {
-        Element cspElm = doc.getRootElement();
+    private List<Solution> loadSolutions(Element cspElm, Problem problem) {
         if (cspElm == null) {
             return null;
         }
