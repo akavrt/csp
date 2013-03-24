@@ -16,11 +16,12 @@ import java.util.List;
 public class MultistartSolver extends SimpleSolver {
     private static final int DEFAULT_NUMBER_OF_RUNS = 1;
     private int numberOfRuns = DEFAULT_NUMBER_OF_RUNS;
-    private Collector collector;
+    private List<Collector> collectors;
 
     public MultistartSolver(Problem problem, Algorithm algorithm, int numberOfRuns) {
         super(problem, algorithm);
         this.numberOfRuns = numberOfRuns;
+        collectors = Lists.newArrayList();
     }
 
     public int getNumberOfRuns() {
@@ -31,19 +32,23 @@ public class MultistartSolver extends SimpleSolver {
         this.numberOfRuns = numberOfRuns;
     }
 
-    public Collector getCollector() {
-        return collector;
+    public List<Collector> getCollectors() {
+        return collectors;
     }
 
-    public void setCollector(Collector collector) {
-        this.collector = collector;
+    public void addCollector(Collector collector) {
+        collectors.add(collector);
+    }
+
+    public void clearCollectors() {
+        collectors.clear();
     }
 
     @Override
     protected List<Solution> run() {
         List<Solution> solutions = Lists.newArrayList();
 
-        if (collector != null) {
+        for (Collector collector : collectors) {
             collector.clear();
         }
 
@@ -61,18 +66,13 @@ public class MultistartSolver extends SimpleSolver {
                 String trace = TraceUtils.traceSolution(solution, getProblem(), metric, false);
                 System.out.println("Best solution found in run:\n" + trace);
 
-                if (collector != null) {
+                for (Collector collector : collectors) {
                     collector.collect(solution, end - start);
                 }
             }
 
             solutions.addAll(runResult);
         }
-
-        if (collector != null) {
-            collector.process();
-        }
-
 
         return solutions;
     }

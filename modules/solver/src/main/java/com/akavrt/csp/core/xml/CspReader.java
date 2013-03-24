@@ -29,18 +29,9 @@ public class CspReader {
      *
      * @param element org.jdom2.Element to use as a source.
      */
-    public void process(Element element) {
+    public void convert(Element element) {
         loadedProblem = loadProblem(element);
         loadedSolutions = loadedProblem == null ? null : loadSolutions(element, loadedProblem);
-    }
-
-    /**
-     * <p>Extract problem definition and list of solutions from prepared XML.</p>
-     *
-     * @param doc org.jdom2.Document to use as a source.
-     */
-    public void process(Document doc) {
-        process(doc.getRootElement());
     }
 
     /**
@@ -57,7 +48,7 @@ public class CspReader {
 
             SAXBuilder sax = new SAXBuilder();
             Document doc = sax.build(in);
-            process(doc);
+            convert(doc.getRootElement());
         } catch (JDOMException e) {
             throw new CspParseException("Error related to XML parsing.", e);
         } catch (IOException e) {
@@ -87,7 +78,7 @@ public class CspReader {
 
             SAXBuilder sax = new SAXBuilder();
             Document doc = sax.build(file);
-            process(doc);
+            convert(doc.getRootElement());
         } catch (JDOMException e) {
             throw new CspParseException("Error related to XML parsing.", e);
         } catch (IOException e) {

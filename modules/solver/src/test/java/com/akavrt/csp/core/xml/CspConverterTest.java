@@ -97,10 +97,10 @@ public class CspConverterTest {
         CspWriter writer = new CspWriter();
         writer.setProblem(problem);
 
-        Element element = writer.process();
+        Element element = writer.convert();
 
         CspReader reader = new CspReader();
-        reader.process(element);
+        reader.convert(element);
 
         Problem extractedProblem = reader.getProblem();
         assertFalse(extractedProblem == null);
@@ -116,10 +116,10 @@ public class CspConverterTest {
         writer.addSolution(solution1);
         writer.addSolution(solution2);
 
-        Element element = writer.process();
+        Element element = writer.convert();
 
         CspReader reader = new CspReader();
-        reader.process(element);
+        reader.convert(element);
 
         List<Solution> extractedSolutions = reader.getSolutions();
         assertFalse(extractedSolutions == null);

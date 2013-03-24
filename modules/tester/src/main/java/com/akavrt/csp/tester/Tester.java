@@ -1,8 +1,6 @@
 package com.akavrt.csp.tester;
 
-import com.akavrt.csp.analyzer.Average;
-import com.akavrt.csp.analyzer.SimpleCollector;
-import com.akavrt.csp.analyzer.StandardDeviation;
+import com.akavrt.csp.analyzer.*;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
@@ -18,6 +16,7 @@ import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -58,7 +57,7 @@ public class Tester {
 
         ScalarMetric metric = new ScalarMetric(problem, new ScalarMetricParameters());
 
-        SimpleCollector collector = new SimpleCollector();
+        XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
         collector.addMeasure(new StandardDeviation());
 
@@ -69,9 +68,24 @@ public class Tester {
         collector.addMetric(new ActivePatternsMetric());
         collector.addMetric(new ProductDeviationMetric(problem));
 
+        SimpleCollector debugCollector = new SimpleCollector();
+        debugCollector.addMeasure(new Average());
+        debugCollector.addMeasure(new StandardDeviation());
+
+        debugCollector.addMetric(metric);
+        debugCollector.addMetric(new TrimLossMetric());
+        debugCollector.addMetric(new PatternReductionMetric());
+        debugCollector.addMetric(new UniquePatternsMetric());
+        debugCollector.addMetric(new ActivePatternsMetric());
+        debugCollector.addMetric(new ProductDeviationMetric(problem));
+
         MultistartSolver solver = new MultistartSolver(problem, method, 10);
-        solver.setCollector(collector);
+        solver.addCollector(collector);
+        solver.addCollector(debugCollector);
+
         solver.solve();
+
+        debugCollector.process();
 
         Solution best = solver.getBestSolution(metric);
 
@@ -89,6 +103,17 @@ public class Tester {
 
             writer.write(file, true);
             */
+            File file = new File("/Users/akavrt/Sandbox/output-opt10run.xml");
+
+            RunResultWriter writer = new RunResultWriter();
+
+            writer.setAlgorithm(method);
+            writer.setNumberOfExecutions(solver.getNumberOfRuns());
+            writer.setCollector(collector);
+            writer.setProblem(problem);
+            writer.addSolution(best);
+
+            writer.write(file, true);
         } else {
             System.out.println("Best is null.");
         }

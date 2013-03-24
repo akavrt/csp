@@ -2,6 +2,7 @@ package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.xml.XmlWriter;
 import com.google.common.collect.Lists;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -31,7 +32,7 @@ import java.util.List;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class CspWriter {
+public class CspWriter extends XmlWriter {
     private final static String SOLUTION_ID_TEMPLATE = "solution%d";
     private Problem exportedProblem;
     private List<Solution> exportedSolutions;
@@ -42,7 +43,7 @@ public class CspWriter {
      *
      * @return Data structure with problem and solutions converted to XML.
      */
-    public Element process() {
+    public Element convert() {
         Element cspElm = new Element(XmlTags.CSP);
 
         if (exportedProblem != null) {
@@ -59,71 +60,6 @@ public class CspWriter {
         }
 
         return cspElm;
-    }
-
-    /**
-     * <p>Convert problem definition and list of solution into XML represented as an instance of
-     * org.w3c.dom.Document.</p>
-     *
-     * @return Data structure with problem and solutions converted to XML.
-     */
-    public org.w3c.dom.Document convert() {
-        Element rootElm = process();
-        Document doc = new Document(rootElm);
-
-        org.w3c.dom.Document domDoc = null;
-        try {
-            DOMOutputter outputter = new DOMOutputter();
-            domDoc = outputter.output(doc);
-        } catch (JDOMException e) {
-            e.printStackTrace();
-        }
-
-        return domDoc;
-    }
-
-    /**
-     * <p>Convert to XML and write problem and solutions into stream.</p>
-     *
-     * @param out          OutputStream to use.
-     * @param prettyFormat Use whitespace beautification.
-     * @throws IOException If any IO-related problem occurs while writing.
-     */
-    public void write(OutputStream out, boolean prettyFormat) throws IOException {
-        Element rootElm = process();
-        Document doc = new Document(rootElm);
-
-        XMLOutputter outputter;
-        if (prettyFormat) {
-            outputter = new XMLOutputter(Format.getPrettyFormat());
-        } else {
-            outputter = new XMLOutputter();
-        }
-
-        outputter.output(doc, out);
-    }
-
-    /**
-     * <p>Convert to XML and write problem and solutions into file. Any previous data stored in
-     * this file will be lost.</p>
-     *
-     * @param file         File to use.
-     * @param prettyFormat Use whitespace beautification.
-     * @throws IOException If any IO-related problem occurs while writing.
-     */
-    public void write(File file, boolean prettyFormat) throws IOException {
-        Element rootElm = process();
-        Document doc = new Document(rootElm);
-
-        XMLOutputter outputter;
-        if (prettyFormat) {
-            outputter = new XMLOutputter(Format.getPrettyFormat());
-        } else {
-            outputter = new XMLOutputter();
-        }
-
-        FileWriter writer = new FileWriter(file, false);
-        outputter.output(doc, writer);
     }
 
     /**

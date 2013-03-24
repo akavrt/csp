@@ -16,10 +16,10 @@ import java.util.List;
 public class SimpleCollector implements Collector {
     private static final Logger LOGGER = LogManager.getFormatterLogger(SimpleCollector.class);
 
-    private final List<Metric> metrics;
-    private final List<Measure> measures;
-    private final List<Solution> solutions;
-    private final List<Long> executionTimeInMillis;
+    protected final List<Metric> metrics;
+    protected final List<Measure> measures;
+    protected final List<Solution> solutions;
+    protected final List<Long> executionTimeInMillis;
 
     public SimpleCollector() {
         metrics = Lists.newArrayList();
@@ -78,7 +78,6 @@ public class SimpleCollector implements Collector {
 
             LOGGER.info("  %s = %.4f", measure.name(), value);
         }
-
     }
 
 }
