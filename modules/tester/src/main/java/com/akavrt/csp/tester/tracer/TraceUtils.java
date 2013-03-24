@@ -1,10 +1,9 @@
-package com.akavrt.csp.tester;
+package com.akavrt.csp.tester.tracer;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.Solution;
-import com.akavrt.csp.utils.Tracer;
 
 /**
  * User: akavrt
@@ -75,11 +74,11 @@ public class TraceUtils {
         return builder.toString();
     }
 
-    public static String traceSolution(Solution solution, Problem problem, Tracer<Solution> metric,
+    public static String traceSolution(Solution solution, Problem problem, Tracer<Solution> tracer,
                                        boolean printPatterns) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(metric.trace(solution));
+        builder.append(tracer.trace(solution));
         builder.append("\n");
         builder.append(traceSolutionValidity(solution, problem));
 

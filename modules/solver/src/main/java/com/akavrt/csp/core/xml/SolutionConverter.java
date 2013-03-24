@@ -1,14 +1,13 @@
 package com.akavrt.csp.core.xml;
 
-import com.akavrt.csp.core.Pattern;
-import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.xml.XmlConverter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.jdom2.Element;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>Converter class used to transform an instance of Solution to its XML representation and vice
@@ -49,13 +48,16 @@ public class SolutionConverter implements XmlConverter<Solution> {
             Element patternsElm = new Element(XmlTags.PATTERNS);
             solutionElm.addContent(patternsElm);
 
-            // converting patterns
-            PatternConverter patternConverter = new PatternConverter(problem);
-            for (int i = 0; i < patterns.size(); i++) {
-                String patternId = String.format(PATTERN_ID_TEMPLATE, i + 1);
+            // group patterns
+            List<PatternGroup> groups = preparePatternGroups(patterns);
+            PatternGroupConverter converter = new PatternGroupConverter(problem);
+            int i = 0;
+            for (PatternGroup group : groups) {
+                String patternId = String.format(PATTERN_ID_TEMPLATE, ++i);
 
-                Element patternElm = patternConverter.export(patterns.get(i));
+                Element patternElm = converter.export(group);
                 patternElm.setAttribute(XmlTags.ID, patternId);
+
                 patternsElm.addContent(patternElm);
             }
         }
@@ -78,25 +80,60 @@ public class SolutionConverter implements XmlConverter<Solution> {
             solution.setMetadata(metadata);
         }
 
-        // instance of PatternConverter can't be reused to process different solutions
-        // stock handling (extraction of attached rolls) must be done separately for each solution
-        PatternConverter patternConverter = new PatternConverter(problem);
-
         // process patterns
         Element patternsElm = rootElm.getChild(XmlTags.PATTERNS);
         if (patternsElm != null) {
-            List<Pattern> patterns = Lists.newArrayList();
+            // instance of PatternGroupConverter can't be reused to process different solutions
+            // stock handling (extraction of attached rolls) must be done separately for each solution
+            PatternGroupConverter converter = new PatternGroupConverter(problem);
 
-            // extracting patterns one by one
+            // extracting pattern groups one by one
             for (Element patternElm : patternsElm.getChildren(XmlTags.PATTERN)) {
-                Pattern pattern = patternConverter.extract(patternElm);
-                patterns.add(pattern);
-            }
+                PatternGroup group = converter.extract(patternElm);
 
-            solution.setPatterns(patterns);
+                for (Roll roll : group.getRolls()) {
+                    Pattern pattern = new Pattern(problem.getOrders());
+                    pattern.setCuts(group.getCuts());
+                    pattern.setRoll(roll);
+
+                    solution.addPattern(pattern);
+                }
+            }
         }
 
         return solution;
+    }
+
+    private List<PatternGroup> preparePatternGroups(List<Pattern> patterns) {
+        // group patterns
+        Map<Integer, PatternGroup> groups = Maps.newHashMap();
+        for (Pattern pattern : patterns) {
+            int hash = pattern.getCutsHashCode();
+            PatternGroup group = groups.get(hash);
+            if (group == null) {
+                // first occurrence
+                group = new PatternGroup(pattern.getCuts());
+                group.addRoll(pattern.getRoll());
+
+                groups.put(hash, group);
+            } else {
+                // no need to create new group
+                group.addRoll(pattern.getRoll());
+            }
+        }
+
+        List<PatternGroup> patternGroups = Lists.newArrayList(groups.values());
+
+        // sort groups in descending order of pattern usage
+        Collections.sort(patternGroups, new Comparator<PatternGroup>() {
+            @Override
+            public int compare(PatternGroup lhs, PatternGroup rhs) {
+                return lhs.getRolls().size() > rhs.getRolls().size() ? -1 :
+                        (lhs.getRolls().size() < rhs.getRolls().size() ? 1 : 0);
+            }
+        });
+
+        return patternGroups;
     }
 
     private interface XmlTags {

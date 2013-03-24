@@ -1,6 +1,8 @@
-package com.akavrt.csp.analyzer;
+package com.akavrt.csp.analyzer.xml;
 
-import com.akavrt.csp.core.xml.XmlUtils;
+import com.akavrt.csp.analyzer.Measure;
+import com.akavrt.csp.analyzer.SimpleCollector;
+import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.metrics.Metric;
 import org.jdom2.Element;
 

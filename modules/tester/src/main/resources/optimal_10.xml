@@ -8,7 +8,7 @@
 		    <description>Test problem with known solution. Format version 2.0.
 		      1.5D-CSP test case
 		      supposed optimal solution:
-			1st pattern
+			    1st pattern
 		          [ 105 x 1 + 130 x 0 + 155 x 1 + 180 x 0 + 195 x 1 + 225 x 2 + 250 x 0 + 270 x 0 + 285 x 1 + 300 x 0 + 360 x 1 + 390 x 0 = 1550 mm ] x 4 rolls (1550 mm; 200 m)
 		          [ 105 x 1 + 130 x 0 + 155 x 1 + 180 x 0 + 195 x 1 + 225 x 2 + 250 x 0 + 270 x 0 + 285 x 1 + 300 x 0 + 360 x 1 + 390 x 0 = 1550 mm ] x 3 rolls (1550 mm; 220 m)
 		          [ 105 x 1 + 130 x 0 + 155 x 1 + 180 x 0 + 195 x 1 + 225 x 2 + 250 x 0 + 270 x 0 + 285 x 1 + 300 x 0 + 360 x 1 + 390 x 0 = 1550 mm ] x 5 rolls (1550 mm; 290 m)
@@ -40,55 +40,55 @@
 		</metadata>
 		
 		<orders>
-            <order id="order1">
+            <order id="order01">
                 <strip>
                     <width>0.105</width>
                     <length>8790</length>
                 </strip>
             </order>
-            <order id="order2">
+            <order id="order02">
                 <strip>
                     <width>0.13</width>
                     <length>18330</length>
                 </strip>
             </order>
-            <order id="order3">
+            <order id="order03">
                 <strip>
                     <width>0.155</width>
                     <length>8790</length>
                 </strip>
             </order>
-            <order id="order4">
+            <order id="order04">
                 <strip>
                     <width>0.18</width>
                     <length>20550</length>
                 </strip>
             </order>
-            <order id="order5">
+            <order id="order05">
                 <strip>
                     <width>0.195</width>
                     <length>10680</length>
                 </strip>
             </order>
-            <order id="order6">
+            <order id="order06">
                 <strip>
                     <width>0.225</width>
                     <length>17910</length>
                 </strip>
             </order>
-            <order id="order7">
+            <order id="order07">
                 <strip>
                     <width>0.250</width>
                     <length>8550</length>
                 </strip>
             </order>
-            <order id="order8">
+            <order id="order08">
                 <strip>
                     <width>0.27</width>
                     <length>2550</length>
                 </strip>
             </order>
-            <order id="order9">
+            <order id="order09">
                 <strip>
                     <width>0.285</width>
                     <length>15450</length>
@@ -114,55 +114,55 @@
             </order>
         </orders>
         <rolls>
-            <roll id="roll1" quantity="5">
+            <roll id="roll01" quantity="5">
                 <strip>
                     <width>1.5</width>
                     <length>200</length>
                 </strip>
             </roll>
-            <roll id="roll2" quantity="5">
+            <roll id="roll02" quantity="5">
                 <strip>
                     <width>1.5</width>
                     <length>220</length>
                 </strip>
             </roll>
-            <roll id="roll3" quantity="5">
+            <roll id="roll03" quantity="5">
                 <strip>
                     <width>1.5</width>
                     <length>290</length>
                 </strip>
             </roll>
-            <roll id="roll4" quantity="5">
+            <roll id="roll04" quantity="5">
                 <strip>
                     <width>1.5</width>
                     <length>340</length>
                 </strip>
             </roll>
-            <roll id="roll5" quantity="5">
+            <roll id="roll05" quantity="5">
                 <strip>
                     <width>1.5</width>
                     <length>410</length>
                 </strip>
             </roll>
-            <roll id="roll6" quantity="5">
+            <roll id="roll06" quantity="5">
                 <strip>
                     <width>1.55</width>
                     <length>200</length>
                 </strip>
             </roll>
-            <roll id="roll7" quantity="5">
+            <roll id="roll07" quantity="5">
                 <strip>
                     <width>1.55</width>
                     <length>220</length>
                 </strip>
             </roll>
-            <roll id="roll8" quantity="5">
+            <roll id="roll08" quantity="5">
                 <strip>
                     <width>1.55</width>
                     <length>290</length>
                 </strip>
             </roll>
-            <roll id="roll9" quantity="5">
+            <roll id="roll09" quantity="5">
                 <strip>
                     <width>1.55</width>
                     <length>340</length>

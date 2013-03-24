@@ -1,6 +1,6 @@
 package com.akavrt.csp.solver.sequential;
 
-import com.akavrt.csp.core.xml.XmlUtils;
+import com.akavrt.csp.xml.XmlUtils;
 import org.jdom2.Element;
 
 /**
@@ -62,11 +62,6 @@ public class VahrenkampProcedureParameters extends SequentialProcedureParameters
         if (goalmixElm != null) {
             setGoalmix(XmlUtils.getDoubleFromText(goalmixElm, DEFAULT_GOALMIX));
         }
-    }
-
-    @Override
-    protected String getProcedureType() {
-        return VahrenkampProcedure.METHOD_NAME;
     }
 
     private interface XmlTags {

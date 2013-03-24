@@ -2,7 +2,6 @@ package com.akavrt.csp.metrics;
 
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
-import com.akavrt.csp.utils.Tracer;
 
 /**
  * <p>Implementation of the objective function used in a previous version. Based on a linear
@@ -12,7 +11,7 @@ import com.akavrt.csp.utils.Tracer;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class ScalarMetric extends MinimizationMetric implements Tracer<Solution> {
+public class ScalarMetric extends MinimizationMetric {
     private final TrimLossMetric trimMetric;
     private final PatternReductionMetric patternsMetric;
     private final ProductDeviationMetric productMetric;
@@ -50,7 +49,7 @@ public class ScalarMetric extends MinimizationMetric implements Tracer<Solution>
     }
 
     /**
-     * <p>Set of parameter provided to the scalar metric during instantiation.</p>
+     * <p>Parameter set provided to the scalar metric during instantiation.</p>
      *
      * @return Current set of parameters.
      */
@@ -72,27 +71,6 @@ public class ScalarMetric extends MinimizationMetric implements Tracer<Solution>
     @Override
     public String name() {
         return "Linearly scalarized objective";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String trace(Solution solution) {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(String.format("  SCALAR:  %.3f", evaluate(solution)));
-        builder.append(String.format("\n      TL:  %.2f * %.2f",
-                                     params.getTrimFactor(), trimMetric.evaluate(solution)));
-        builder.append(String.format("\n      PR:  %.2f * %.2f  (%d unique of %d total)",
-                                     params.getPatternsFactor(), patternsMetric.evaluate(solution),
-                                     solution.getUniquePatternsCount(),
-                                     solution.getActivePatternsCount()));
-        builder.append(String.format("\n      PD:  %.2f * %.2f",
-                                     params.getProductionFactor(),
-                                     productMetric.evaluate(solution)));
-
-        return builder.toString();
     }
 
 }

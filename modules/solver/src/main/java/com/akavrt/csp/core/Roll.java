@@ -29,10 +29,10 @@ public class Roll extends Strip {
      *
      * <p>Sometimes when defining a problem it's handy to use brief notation and combine rolls with
      * same size in groups. For example, if we have 5 rolls of the same size, we can enumerate
-     * these rolls explicitly using id's like "roll1", "roll2", ..., "roll5". This is cumbersome
+     * these rolls explicitly using id's like 'roll1', 'roll2', ..., 'roll5'. This is cumbersome
      * and can lead to a lengthy problem definitions.</p>
      *
-     * <p>A better approach would be something like this: id = "roll1", quantity = 5, where "roll1"
+     * <p>A better approach would be something like this: id = 'roll1', quantity = 5, where 'roll1'
      * (let's call it groupId) corresponds not to a single roll but rather to 5 rolls with the same
      * size. To differentiate these rolls we should introduce new additional identifier (let's call
      * it rollId) applied to a lower level (uniqueness have to be insured only within group of

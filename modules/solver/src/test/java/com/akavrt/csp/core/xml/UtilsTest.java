@@ -1,5 +1,6 @@
 package com.akavrt.csp.core.xml;
 
+import com.akavrt.csp.xml.XmlUtils;
 import org.jdom2.Element;
 import org.junit.Test;
 

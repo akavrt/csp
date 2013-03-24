@@ -1,4 +1,4 @@
-package com.akavrt.csp.utils;
+package com.akavrt.csp.tester.tracer;
 
 /**
  * <p>Sometimes object properties cannot be thoroughly investigated without resorting to external

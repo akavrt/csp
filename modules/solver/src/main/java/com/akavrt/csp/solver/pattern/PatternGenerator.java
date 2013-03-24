@@ -41,7 +41,7 @@ public interface PatternGenerator {
     int[] generate(double rollWidth, int[] demand, double allowedTrimRatio);
 
     /**
-     * <p>Pattern generator can (and should) be configured with suitable to the context set of
+     * <p>Pattern generator could (and should) be configured with suitable to the context set of
      * parameters.</p>
      *
      * @return Current set of parameters used by pattern generator.

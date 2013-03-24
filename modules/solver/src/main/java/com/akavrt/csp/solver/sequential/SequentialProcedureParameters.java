@@ -1,6 +1,6 @@
 package com.akavrt.csp.solver.sequential;
 
-import com.akavrt.csp.core.xml.XmlUtils;
+import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
 
@@ -134,10 +134,6 @@ public class SequentialProcedureParameters implements ParameterSet {
     public Element save() {
         Element paramsElm = new Element(XmlTags.PARAMETERS);
 
-        Element typeElm = new Element(XmlTags.TYPE);
-        typeElm.setText(getProcedureType());
-        paramsElm.addContent(typeElm);
-
         // trim ratio parameters
         Element trimRatioElm = new Element(XmlTags.TRIM_RATIO);
         paramsElm.addContent(trimRatioElm);
@@ -201,13 +197,8 @@ public class SequentialProcedureParameters implements ParameterSet {
         }
     }
 
-    protected String getProcedureType() {
-        return HaesslerProcedure.METHOD_NAME;
-    }
-
     private interface XmlTags {
         String PARAMETERS = "sequential";
-        String TYPE = "type";
         String TRIM_RATIO = "trim-ratio";
         String PATTERN_USAGE = "pattern-usage";
         String RELAX_STEP = "relax-step";

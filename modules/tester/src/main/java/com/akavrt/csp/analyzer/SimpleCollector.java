@@ -32,8 +32,26 @@ public class SimpleCollector implements Collector {
         metrics.add(metric);
     }
 
+    public List<Metric> getMetrics() {
+        return metrics;
+    }
+
+    public void setMetrics(List<Metric> metrics) {
+        this.metrics.clear();
+        this.metrics.addAll(metrics);
+    }
+
     public void addMeasure(Measure measure) {
         measures.add(measure);
+    }
+
+    public List<Measure> getMeasures() {
+        return measures;
+    }
+
+    public void setMeasures(List<Measure> measures) {
+        this.measures.clear();
+        this.measures.addAll(measures);
     }
 
     @Override

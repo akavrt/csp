@@ -20,7 +20,7 @@ import java.util.Random;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class VahrenkampProcedure extends SequentialProcedure {
-    public static final String METHOD_NAME = "Vahrenkamp's sequential heuristic procedure";
+    private static final String METHOD_NAME = "Vahrenkamp's sequential heuristic procedure";
     private static final String SHORT_METHOD_NAME = "Vahrenkamp's SHP";
     private static final Logger LOGGER = LogManager.getFormatterLogger(VahrenkampProcedure.class);
     private final VahrenkampProcedureParameters params;

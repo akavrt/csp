@@ -2,6 +2,7 @@ package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.Strip;
 import com.akavrt.csp.xml.XmlConverter;
+import com.akavrt.csp.xml.XmlUtils;
 import org.jdom2.Element;
 
 /**

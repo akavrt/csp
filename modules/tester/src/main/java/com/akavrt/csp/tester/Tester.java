@@ -1,6 +1,8 @@
 package com.akavrt.csp.tester;
 
 import com.akavrt.csp.analyzer.*;
+import com.akavrt.csp.analyzer.xml.RunResultWriter;
+import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
@@ -13,6 +15,8 @@ import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
 import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
+import com.akavrt.csp.tester.tracer.ScalarTracer;
+import com.akavrt.csp.tester.tracer.TraceUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,15 +73,8 @@ public class Tester {
         collector.addMetric(new ProductDeviationMetric(problem));
 
         SimpleCollector debugCollector = new SimpleCollector();
-        debugCollector.addMeasure(new Average());
-        debugCollector.addMeasure(new StandardDeviation());
-
-        debugCollector.addMetric(metric);
-        debugCollector.addMetric(new TrimLossMetric());
-        debugCollector.addMetric(new PatternReductionMetric());
-        debugCollector.addMetric(new UniquePatternsMetric());
-        debugCollector.addMetric(new ActivePatternsMetric());
-        debugCollector.addMetric(new ProductDeviationMetric(problem));
+        debugCollector.setMeasures(collector.getMeasures());
+        debugCollector.setMetrics(collector.getMetrics());
 
         MultistartSolver solver = new MultistartSolver(problem, method, 10);
         solver.addCollector(collector);
@@ -90,7 +87,8 @@ public class Tester {
         Solution best = solver.getBestSolution(metric);
 
         if (best != null) {
-            String trace = TraceUtils.traceSolution(best, problem, metric, true);
+            ScalarTracer tracer = new ScalarTracer(metric, problem);
+            String trace = TraceUtils.traceSolution(best, problem, tracer, true);
             System.out.println("*** OVERALL BEST solution found:\n" + trace);
 
             /*

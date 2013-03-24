@@ -3,9 +3,9 @@ package com.akavrt.csp.solver;
 import com.akavrt.csp.analyzer.Collector;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
-import com.akavrt.csp.metrics.ScalarMetric;
-import com.akavrt.csp.metrics.ScalarMetricParameters;
-import com.akavrt.csp.tester.TraceUtils;
+import com.akavrt.csp.metrics.*;
+import com.akavrt.csp.tester.tracer.ScalarTracer;
+import com.akavrt.csp.tester.tracer.TraceUtils;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -54,6 +54,8 @@ public class MultistartSolver extends SimpleSolver {
 
         ScalarMetric metric = new ScalarMetric(getProblem(), new ScalarMetricParameters());
 
+        ScalarTracer tracer = new ScalarTracer(metric, getProblem());
+
         for (int i = 1; i <= numberOfRuns; i++) {
             System.out.println("*** run " + i);
 
@@ -63,7 +65,7 @@ public class MultistartSolver extends SimpleSolver {
 
             if (runResult.size() > 0 && runResult.get(0) != null) {
                 Solution solution = runResult.get(0);
-                String trace = TraceUtils.traceSolution(solution, getProblem(), metric, false);
+                String trace = TraceUtils.traceSolution(solution, getProblem(), tracer, false);
                 System.out.println("Best solution found in run:\n" + trace);
 
                 for (Collector collector : collectors) {

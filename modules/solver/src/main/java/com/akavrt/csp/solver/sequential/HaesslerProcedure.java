@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class HaesslerProcedure extends SequentialProcedure {
-    public static final String METHOD_NAME = "Haessler's sequential heuristic procedure";
+    private static final String METHOD_NAME = "Haessler's sequential heuristic procedure";
     private static final String SHORT_METHOD_NAME = "Haessler's SHP";
     private static final Logger LOGGER = LogManager.getFormatterLogger(HaesslerProcedure.class);
     private final SequentialProcedureParameters params;

@@ -1,6 +1,6 @@
 package com.akavrt.csp.core.metadata;
 
-import com.akavrt.csp.core.xml.XmlUtils;
+import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.utils.Unit;
 import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlCompatible;

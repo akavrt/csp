@@ -1,14 +1,16 @@
-package com.akavrt.csp.analyzer;
+package com.akavrt.csp.analyzer.xml;
 
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspWriter;
+import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.utils.ParameterSet;
 import com.akavrt.csp.xml.XmlWriter;
 import com.google.common.collect.Lists;
 import org.jdom2.Element;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -95,6 +97,10 @@ public class RunResultWriter extends XmlWriter {
     public Element convert() {
         Element runElm = new Element(XmlTags.RUN);
 
+        Element dateElm = new Element(XmlTags.DATE);
+        dateElm.setText(XmlUtils.formatDate(new Date()));
+        runElm.addContent(dateElm);
+
         if (algorithm != null) {
             Element methodElm = new Element(XmlTags.METHOD);
             runElm.addContent(methodElm);
@@ -146,12 +152,12 @@ public class RunResultWriter extends XmlWriter {
         algorithm = null;
         numberOfExecutions = 0;
         collector = null;
-
     }
 
     private interface XmlTags {
         String RESULTS = "results";
         String RUN = "run";
+        String DATE = "date";
         String METHOD = "method";
         String NAME = "name";
         String PARAMETERS = "parameters";

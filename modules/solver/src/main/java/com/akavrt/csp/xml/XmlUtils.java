@@ -1,4 +1,4 @@
-package com.akavrt.csp.core.xml;
+package com.akavrt.csp.xml;
 
 import com.akavrt.csp.utils.Utils;
 import org.apache.logging.log4j.LogManager;

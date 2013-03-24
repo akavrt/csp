@@ -3,6 +3,7 @@ package com.akavrt.csp.core.xml;
 import com.akavrt.csp.core.MultiCut;
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.xml.XmlConverter;
+import com.akavrt.csp.xml.XmlUtils;
 import com.google.common.collect.Maps;
 import org.jdom2.Element;
 
@@ -36,9 +37,9 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
      */
     @Override
     public Element export(MultiCut cut) {
-        Element cutElm = new Element(XmlCutTags.CUT);
-        cutElm.setAttribute(XmlCutTags.QUANTITY, Integer.toString(cut.getQuantity()));
-        cutElm.setAttribute(XmlCutTags.REF, cut.getOrder().getId());
+        Element cutElm = new Element(XmlTags.CUT);
+        cutElm.setAttribute(XmlTags.QUANTITY, Integer.toString(cut.getQuantity()));
+        cutElm.setAttribute(XmlTags.REF, cut.getOrder().getId());
 
         return cutElm;
     }
@@ -48,11 +49,11 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
      */
     @Override
     public MultiCut extract(Element rootElm) {
-        int quantity = XmlUtils.getIntegerFromAttribute(rootElm, XmlCutTags.QUANTITY, 0);
+        int quantity = XmlUtils.getIntegerFromAttribute(rootElm, XmlTags.QUANTITY, 0);
 
         // extracting order reference and trying to find referenced order
         Order order = null;
-        String orderId = rootElm.getAttributeValue(XmlCutTags.REF);
+        String orderId = rootElm.getAttributeValue(XmlTags.REF);
         if (orderId != null) {
             order = mappedOrders.get(orderId);
         }
@@ -65,7 +66,7 @@ public class MultiCutConverter implements XmlConverter<MultiCut> {
         return cut;
     }
 
-    private interface XmlCutTags {
+    private interface XmlTags {
         String REF = "ref";
         String CUT = "cut";
         String QUANTITY = "quantity";

@@ -6,6 +6,7 @@ import com.akavrt.csp.core.ProblemBuilder;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.akavrt.csp.xml.XmlConverter;
+import com.akavrt.csp.xml.XmlUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.jdom2.Element;
@@ -215,25 +216,4 @@ public class ProblemConverter implements XmlConverter<Problem> {
         String ROLL = "roll";
     }
 
-    private static class RollGroup {
-        private Roll roll;
-        private int quantity;
-
-        public RollGroup(Roll roll) {
-            this.roll = roll;
-            quantity = 1;
-        }
-
-        public Roll getRoll() {
-            return roll;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void incQuantity() {
-            quantity++;
-        }
-    }
 }

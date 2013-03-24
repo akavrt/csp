@@ -1,6 +1,6 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.xml.XmlUtils;
+import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
 

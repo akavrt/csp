@@ -55,7 +55,9 @@
         <solution>
             <patterns>
                 <pattern>
-                    <roll ref="roll1"/>
+                    <rolls>
+                        <roll quantity="1" ref="roll1"/>
+                    </rolls>
 
                     <cuts>
                         <cut quantity="1" ref="order2"/>
@@ -63,7 +65,9 @@
                     </cuts>
                 </pattern>
                 <pattern>
-                    <roll ref="roll2"/>
+                    <rolls>
+                        <roll quantity="1" ref="roll2"/>
+                    </rolls>
 
                     <cuts>
                         <cut quantity="1" ref="order1"/>
@@ -78,7 +82,9 @@
         <solution>
             <patterns>
                 <pattern>
-                    <roll ref="roll1"/>
+                    <rolls>
+                        <roll quantity="1" ref="roll1"/>
+                    </rolls>
 
                     <cuts>
                         <cut quantity="1" ref="order1"/>
@@ -86,7 +92,9 @@
                     </cuts>
                 </pattern>
                 <pattern>
-                    <roll ref="roll2"/>
+                    <rolls>
+                        <roll quantity="1" ref="roll2"/>
+                    </rolls>
 
                     <cuts>
                         <cut quantity="2" ref="order2"/>
