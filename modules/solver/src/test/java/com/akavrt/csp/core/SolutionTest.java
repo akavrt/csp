@@ -110,7 +110,7 @@ public class SolutionTest {
         double trimArea2 = pattern.getTrimArea();
 
         Solution solution = new Solution(patterns);
-        assertEquals(trimArea1 + trimArea2, solution.getTrimArea(), DELTA);
+        assertEquals(trimArea1 + trimArea2, solution.getMetricProvider().getTrimArea(), DELTA);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class SolutionTest {
         patterns.add(pattern);
 
         solution = new Solution(patterns);
-        assertEquals(2, solution.getUniquePatternsCount());
+        assertEquals(2, solution.getMetricProvider().getUniquePatternsCount());
 
         // same pattern added twice
         patterns.clear();
@@ -156,7 +156,7 @@ public class SolutionTest {
         patterns.add(pattern);
 
         solution.setPatterns(patterns);
-        assertEquals(1, solution.getUniquePatternsCount());
+        assertEquals(1, solution.getMetricProvider().getUniquePatternsCount());
     }
 
     @Test

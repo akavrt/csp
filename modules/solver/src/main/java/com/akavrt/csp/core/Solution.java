@@ -1,6 +1,7 @@
 package com.akavrt.csp.core;
 
 import com.akavrt.csp.core.metadata.SolutionMetadata;
+import com.akavrt.csp.metrics.MetricProvider;
 import com.akavrt.csp.utils.Constants;
 import com.google.common.math.DoubleMath;
 
@@ -17,6 +18,7 @@ import java.util.Set;
  */
 public class Solution implements Plan {
     private List<Pattern> patterns;
+    private final SolutionMetricProvider metricProvider;
     private SolutionMetadata metadata;
 
     /**
@@ -24,6 +26,7 @@ public class Solution implements Plan {
      */
     public Solution() {
         patterns = new ArrayList<Pattern>();
+        metricProvider = new SolutionMetricProvider(this);
     }
 
     /**
@@ -33,6 +36,7 @@ public class Solution implements Plan {
      */
     public Solution(List<Pattern> patterns) {
         this.patterns = patterns;
+        metricProvider = new SolutionMetricProvider(this);
     }
 
     /**
@@ -70,79 +74,6 @@ public class Solution implements Plan {
     }
 
     /**
-     * <p>Calculate total wasted area for cutting plan as a whole. Measured in abstract square
-     * units.</p>
-     *
-     * @return The wasted area for cutting plan.
-     */
-    public double getTrimArea() {
-        double trimArea = 0;
-        for (Pattern pattern : patterns) {
-            trimArea += pattern.getTrimArea();
-        }
-
-        return trimArea;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getTrimRatio() {
-        double trimArea = 0;
-        double totalArea = 0;
-
-        for (Pattern pattern : getPatterns()) {
-            if (pattern.isActive()) {
-                trimArea += pattern.getTrimArea();
-                totalArea += pattern.getRoll().getArea();
-            }
-        }
-
-        return totalArea == 0 ? 0 : trimArea / totalArea;
-    }
-
-    /**
-     * <p>Calculate number of active patterns in solution.</p>
-     *
-     * <p>Pattern is active if it has a roll attached to it and non-zero width (at least one cut
-     * will be made when pattern is applied to the roll).</p>
-     *
-     * @return Number of active patterns.
-     */
-    @Override
-    public int getActivePatternsCount() {
-        int activePatternsCount = 0;
-        for (Pattern pattern : patterns) {
-            if (pattern.isActive()) {
-                activePatternsCount++;
-            }
-        }
-
-        return activePatternsCount;
-    }
-
-    /**
-     * <p>Number of unique pattern used in this solution equals to the number of times we need to
-     * setup equipment (circular shears, in particular) to cut rolls in a way defined by this
-     * cutting plan.</p>
-     *
-     * @return Number of unique cutting patterns used in solution.
-     */
-    @Override
-    public int getUniquePatternsCount() {
-        Set<Integer> set = new HashSet<Integer>();
-
-        for (Pattern pattern : patterns) {
-            if (pattern.isActive()) {
-                set.add(pattern.getCutsHashCode());
-            }
-        }
-
-        return set.size();
-    }
-
-    /**
      * <p>Calculate the length of the finished product we will get for specific order after
      * executing cutting plan. Measured in abstract units.</p>
      *
@@ -157,42 +88,6 @@ public class Solution implements Plan {
         }
 
         return productionLength;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getAverageUnderProductionRatio(Problem problem) {
-        double underProductionRatio = 0;
-
-        List<Order> orders = problem.getOrders();
-        for (Order order : orders) {
-            double production = getProductionLengthForOrder(order);
-            if (production < order.getLength()) {
-                underProductionRatio += 1 - production / order.getLength();
-            }
-        }
-
-        return underProductionRatio / orders.size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getAverageOverProductionRatio(Problem problem) {
-        double overProductionRatio = 0;
-
-        List<Order> orders = problem.getOrders();
-        for (Order order : orders) {
-            double production = getProductionLengthForOrder(order);
-            if (production > order.getLength()) {
-                overProductionRatio += production / order.getLength() - 1;
-            }
-        }
-
-        return overProductionRatio / orders.size();
     }
 
     /**
@@ -268,6 +163,14 @@ public class Solution implements Plan {
      */
     public boolean isValid(Problem problem) {
         return isPatternsValid(problem) && isRollsValid() && isOrdersFulfilled(problem.getOrders());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MetricProvider getMetricProvider() {
+        return metricProvider;
     }
 
     /**

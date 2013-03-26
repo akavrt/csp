@@ -19,7 +19,7 @@ public class UniquePatternsMetric extends MinimizationMetric {
      */
     @Override
     public double evaluate(Plan plan) {
-        return plan.getUniquePatternsCount();
+        return plan.getMetricProvider().getUniquePatternsCount();
     }
 
     /**

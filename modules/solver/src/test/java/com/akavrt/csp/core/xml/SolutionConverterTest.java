@@ -3,6 +3,7 @@ package com.akavrt.csp.core.xml;
 import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.core.xml.SolutionConverter;
+import com.akavrt.csp.metrics.MetricProvider;
 import org.jdom2.Element;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +78,8 @@ public class SolutionConverterTest {
         Solution extracted = converter.extract(solutionElm);
 
         assertEquals(solution.getPatterns().size(), extracted.getPatterns().size());
-        assertEquals(solution.getUniquePatternsCount(), extracted.getUniquePatternsCount());
+        assertEquals(solution.getMetricProvider().getUniquePatternsCount(),
+                     extracted.getMetricProvider().getUniquePatternsCount());
 
         for (Order order : orders) {
             assertEquals(solution.getProductionLengthForOrder(order),

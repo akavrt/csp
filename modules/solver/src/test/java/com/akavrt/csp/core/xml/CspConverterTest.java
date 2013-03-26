@@ -25,12 +25,11 @@ import static org.junit.Assert.*;
  */
 public class CspConverterTest {
     private static final double DELTA = 1e-15;
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
     private Problem problem;
     private Solution solution1;
     private Solution solution2;
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUpProblem() {
@@ -125,8 +124,10 @@ public class CspConverterTest {
         assertFalse(extractedSolutions == null);
         assertEquals(2, extractedSolutions.size());
         for (Solution solution : extractedSolutions) {
-            assertTrue(solution.getTrimArea() == solution1.getTrimArea()
-                               || solution.getTrimArea() == solution2.getTrimArea());
+            assertTrue(solution.getMetricProvider().getTrimArea()
+                               == solution1.getMetricProvider().getTrimArea()
+                               || solution.getMetricProvider().getTrimArea() ==
+                    solution2.getMetricProvider().getTrimArea());
         }
     }
 
@@ -218,17 +219,20 @@ public class CspConverterTest {
         assertEquals(problem.getAllowedCutsNumber(), extractedProblem.getAllowedCutsNumber());
 
         assertFalse(extractedProblem.getMetadata() == null);
-        assertEquals("Victor Balabanov",  extractedProblem.getMetadata().getAuthor());
-        assertEquals(Unit.METER.getName(),  extractedProblem.getMetadata().getUnits().getName());
-        assertFalse(Unit.MILLIMETER.getName().equals(extractedProblem.getMetadata().getUnits().getName()));
+        assertEquals("Victor Balabanov", extractedProblem.getMetadata().getAuthor());
+        assertEquals(Unit.METER.getName(), extractedProblem.getMetadata().getUnits().getName());
+        assertFalse(Unit.MILLIMETER.getName().equals(extractedProblem.getMetadata().getUnits()
+                                                                     .getName()));
 
 
         List<Solution> extractedSolutions = reader.getSolutions();
         assertFalse(extractedSolutions == null);
         assertEquals(2, extractedSolutions.size());
         for (Solution solution : extractedSolutions) {
-            assertTrue(solution.getTrimArea() == solution1.getTrimArea()
-                               || solution.getTrimArea() == solution2.getTrimArea());
+            assertTrue(solution.getMetricProvider().getTrimArea()
+                               == solution1.getMetricProvider().getTrimArea()
+                               || solution.getMetricProvider().getTrimArea()
+                    == solution2.getMetricProvider().getTrimArea());
         }
     }
 

@@ -40,8 +40,8 @@ public class ScalarTracer implements Tracer<Solution> {
         builder.append(String.format("\n      PR:  %.2f * %.2f  (%d unique of %d total)",
                                      scalarMetric.getParameters().getPatternsFactor(),
                                      patternsMetric.evaluate(solution),
-                                     solution.getUniquePatternsCount(),
-                                     solution.getActivePatternsCount()));
+                                     solution.getMetricProvider().getUniquePatternsCount(),
+                                     solution.getMetricProvider().getActivePatternsCount()));
         builder.append(String.format("\n      PD:  %.2f * %.2f",
                                      scalarMetric.getParameters().getProductionFactor(),
                                      productMetric.evaluate(solution)));

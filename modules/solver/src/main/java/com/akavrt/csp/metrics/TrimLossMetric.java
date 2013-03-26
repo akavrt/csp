@@ -18,7 +18,7 @@ public class TrimLossMetric extends MinimizationMetric {
      */
     @Override
     public double evaluate(Plan plan) {
-        return plan.getTrimRatio();
+        return plan.getMetricProvider().getTrimRatio();
     }
 
     /**

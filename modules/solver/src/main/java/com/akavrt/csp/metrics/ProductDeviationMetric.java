@@ -33,8 +33,8 @@ public class ProductDeviationMetric extends MinimizationMetric {
      */
     @Override
     public double evaluate(Plan plan) {
-        return plan.getAverageUnderProductionRatio(problem) +
-                plan.getAverageOverProductionRatio(problem);
+        return plan.getMetricProvider().getAverageUnderProductionRatio(problem) +
+                plan.getMetricProvider().getAverageOverProductionRatio(problem);
     }
 
     /**

@@ -22,9 +22,10 @@ public class PatternReductionMetric extends MinimizationMetric {
     public double evaluate(Plan plan) {
         double ratio = 0;
 
-        int activePatternsCount = plan.getActivePatternsCount();
+        int activePatternsCount = plan.getMetricProvider().getActivePatternsCount();
         if (activePatternsCount > 1) {
-            ratio = (plan.getUniquePatternsCount() - 1) / (double) (activePatternsCount - 1);
+            ratio = (plan.getMetricProvider().getUniquePatternsCount() - 1)
+                    / (double) (activePatternsCount - 1);
         }
 
         return ratio;

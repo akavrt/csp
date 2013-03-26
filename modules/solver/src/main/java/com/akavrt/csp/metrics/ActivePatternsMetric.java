@@ -19,7 +19,7 @@ public class ActivePatternsMetric extends MinimizationMetric{
      */
     @Override
     public double evaluate(Plan plan) {
-        return plan.getActivePatternsCount();
+        return plan.getMetricProvider().getActivePatternsCount();
     }
 
     /**
