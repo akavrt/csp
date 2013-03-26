@@ -1,6 +1,6 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.Plan;
 
 /**
  * <p>This metric corresponds to the pattern reduction objective.</p>
@@ -14,12 +14,12 @@ public class UniquePatternsMetric extends MinimizationMetric {
      *
      * <p>Acts as a mere wrapper.</p>
      *
-     * @param solution The evaluated solution.
+     * @param plan The evaluated solution.
      * @return Number of unique patterns.
      */
     @Override
-    public double evaluate(Solution solution) {
-        return solution.getUniquePatternsCount();
+    public double evaluate(Plan plan) {
+        return plan.getUniquePatternsCount();
     }
 
     /**

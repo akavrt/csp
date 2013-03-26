@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class Solution {
+public class Solution implements Plan {
     private List<Pattern> patterns;
     private SolutionMetadata metadata;
 
@@ -85,6 +85,24 @@ public class Solution {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getTrimRatio() {
+        double trimArea = 0;
+        double totalArea = 0;
+
+        for (Pattern pattern : getPatterns()) {
+            if (pattern.isActive()) {
+                trimArea += pattern.getTrimArea();
+                totalArea += pattern.getRoll().getArea();
+            }
+        }
+
+        return totalArea == 0 ? 0 : trimArea / totalArea;
+    }
+
+    /**
      * <p>Calculate number of active patterns in solution.</p>
      *
      * <p>Pattern is active if it has a roll attached to it and non-zero width (at least one cut
@@ -92,6 +110,7 @@ public class Solution {
      *
      * @return Number of active patterns.
      */
+    @Override
     public int getActivePatternsCount() {
         int activePatternsCount = 0;
         for (Pattern pattern : patterns) {
@@ -110,6 +129,7 @@ public class Solution {
      *
      * @return Number of unique cutting patterns used in solution.
      */
+    @Override
     public int getUniquePatternsCount() {
         Set<Integer> set = new HashSet<Integer>();
 
@@ -137,6 +157,42 @@ public class Solution {
         }
 
         return productionLength;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAverageUnderProductionRatio(Problem problem) {
+        double underProductionRatio = 0;
+
+        List<Order> orders = problem.getOrders();
+        for (Order order : orders) {
+            double production = getProductionLengthForOrder(order);
+            if (production < order.getLength()) {
+                underProductionRatio += 1 - production / order.getLength();
+            }
+        }
+
+        return underProductionRatio / orders.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAverageOverProductionRatio(Problem problem) {
+        double overProductionRatio = 0;
+
+        List<Order> orders = problem.getOrders();
+        for (Order order : orders) {
+            double production = getProductionLengthForOrder(order);
+            if (production > order.getLength()) {
+                overProductionRatio += production / order.getLength() - 1;
+            }
+        }
+
+        return overProductionRatio / orders.size();
     }
 
     /**

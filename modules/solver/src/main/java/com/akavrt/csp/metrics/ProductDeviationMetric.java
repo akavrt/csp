@@ -1,10 +1,7 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Order;
+import com.akavrt.csp.core.Plan;
 import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.core.Solution;
-
-import java.util.List;
 
 /**
  * <p>This metric corresponds to the minimization of the both under and overproduction of the final
@@ -31,21 +28,13 @@ public class ProductDeviationMetric extends MinimizationMetric {
      * <p>Evaluated value may vary from 0 to 1. The less is better: zero means that there is no
      * overproduction or underproduction.</p>
      *
-     * @param solution The evaluated solution.
+     * @param plan The evaluated solution.
      * @return Product deviation fractional ratio.
      */
     @Override
-    public double evaluate(Solution solution) {
-        double totalProductDeviation = 0;
-
-        List<Order> orders = problem.getOrders();
-        for (Order order : orders) {
-            double productDeviation = Math.abs(order.getLength() -
-                                                       solution.getProductionLengthForOrder(order));
-            totalProductDeviation += productDeviation / order.getLength();
-        }
-
-        return totalProductDeviation / orders.size();
+    public double evaluate(Plan plan) {
+        return plan.getAverageUnderProductionRatio(problem) +
+                plan.getAverageOverProductionRatio(problem);
     }
 
     /**

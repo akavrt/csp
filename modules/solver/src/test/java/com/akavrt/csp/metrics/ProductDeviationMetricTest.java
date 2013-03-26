@@ -16,17 +16,15 @@ import static org.junit.Assert.assertEquals;
  */
 public class ProductDeviationMetricTest {
     private static final double DELTA = 1e-15;
-    private int allowedCutsNumber;
     private List<Order> orders;
     private Roll roll1;
     private Roll roll2;
     private Roll roll3;
-    private Problem problem;
     private ProductDeviationMetric metric;
 
     @Before
     public void setUpProblem() {
-        allowedCutsNumber = 10;
+        int allowedCutsNumber = 10;
 
         // preparing orders
         orders = new ArrayList<Order>();
@@ -44,7 +42,7 @@ public class ProductDeviationMetricTest {
         rolls.add(roll2);
         rolls.add(roll3);
 
-        problem = new Problem(orders, rolls, allowedCutsNumber);
+        Problem problem = new Problem(orders, rolls, allowedCutsNumber);
 
         metric = new ProductDeviationMetric(problem);
     }

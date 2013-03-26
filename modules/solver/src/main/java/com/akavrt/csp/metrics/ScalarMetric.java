@@ -1,7 +1,7 @@
 package com.akavrt.csp.metrics;
 
+import com.akavrt.csp.core.Plan;
 import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.core.Solution;
 
 /**
  * <p>Implementation of the objective function used in a previous version. Based on a linear
@@ -42,10 +42,10 @@ public class ScalarMetric extends MinimizationMetric {
      * {@inheritDoc}
      */
     @Override
-    public double evaluate(Solution solution) {
-        return params.getTrimFactor() * trimMetric.evaluate(solution) +
-                params.getPatternsFactor() * patternsMetric.evaluate(solution) +
-                params.getProductionFactor() * productMetric.evaluate(solution);
+    public double evaluate(Plan plan) {
+        return params.getTrimFactor() * trimMetric.evaluate(plan) +
+                params.getPatternsFactor() * patternsMetric.evaluate(plan) +
+                params.getProductionFactor() * productMetric.evaluate(plan);
     }
 
     /**

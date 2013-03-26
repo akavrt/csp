@@ -1,6 +1,6 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.Plan;
 
 /**
  * <p>This class defines ordering of solutions in minimization problems. Should be used as a parent
@@ -16,9 +16,9 @@ public abstract class MinimizationMetric implements Metric {
      * {@inheritDoc}
      */
     @Override
-    public int compare(Solution s1, Solution s2) {
-        double s1eval = evaluate(s1);
-        double s2eval = evaluate(s2);
+    public int compare(Plan p1, Plan p2) {
+        double s1eval = evaluate(p1);
+        double s2eval = evaluate(p2);
 
         return s1eval > s2eval ? -1 : (s1eval < s2eval ? 1 : 0);
     }

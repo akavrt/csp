@@ -1,6 +1,6 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.Plan;
 
 /**
  * <p>This metric corresponds to the pattern reduction objective.</p>
@@ -15,16 +15,16 @@ public class PatternReductionMetric extends MinimizationMetric {
      * <p>If only one roll is used, then the fixed value of zero will be returned. Otherwise
      * evaluated value may vary from 0 to 1. The less is better.</p>
      *
-     * @param solution The evaluated solution.
+     * @param plan The evaluated solution.
      * @return Pattern reduction fractional ratio.
      */
     @Override
-    public double evaluate(Solution solution) {
+    public double evaluate(Plan plan) {
         double ratio = 0;
 
-        int activePatternsCount = solution.getActivePatternsCount();
+        int activePatternsCount = plan.getActivePatternsCount();
         if (activePatternsCount > 1) {
-            ratio = (solution.getUniquePatternsCount() - 1) / (double) (activePatternsCount - 1);
+            ratio = (plan.getUniquePatternsCount() - 1) / (double) (activePatternsCount - 1);
         }
 
         return ratio;

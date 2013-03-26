@@ -1,7 +1,6 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Pattern;
-import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.Plan;
 
 /**
  * <p>This metric corresponds to the trim loss minimization objective.</p>
@@ -14,22 +13,12 @@ public class TrimLossMetric extends MinimizationMetric {
      *
      * <p>Evaluated value may vary from 0 to 1. The less is better.<p/>
      *
-     * @param solution The evaluated solution.
+     * @param plan The evaluated solution.
      * @return Trim loss fractional ratio.
      */
     @Override
-    public double evaluate(Solution solution) {
-        double trimArea = 0;
-        double totalArea = 0;
-
-        for (Pattern pattern : solution.getPatterns()) {
-            if (pattern.isActive()) {
-                trimArea += pattern.getTrimArea();
-                totalArea += pattern.getRoll().getArea();
-            }
-        }
-
-        return totalArea == 0 ? 0 : trimArea / totalArea;
+    public double evaluate(Plan plan) {
+        return plan.getTrimRatio();
     }
 
     /**
