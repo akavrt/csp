@@ -20,6 +20,7 @@ public class PatternTest {
     private Order order2;
     private Order order3;
     private Roll roll;
+    private Problem problem;
 
     @Before
     public void setUpProblem() {
@@ -37,6 +38,12 @@ public class PatternTest {
 
         // preparing roll
         roll = new Roll("roll", 300, 200);
+        
+        ProblemBuilder builder = new ProblemBuilder();
+        builder.addOrders(orders);
+        builder.addRoll(roll);
+        
+        problem = builder.build();
     }
 
     @Test
@@ -44,25 +51,25 @@ public class PatternTest {
         Pattern pattern;
 
         // no cuts or roll at all
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         assertFalse(pattern.isActive());
 
         // no cuts or roll at all
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 0);
         pattern.addCut(order2, 0);
         pattern.addCut(order3, 0);
         assertFalse(pattern.isActive());
 
         // two cuts, no roll
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 0);
         pattern.addCut(order3, 1);
         assertFalse(pattern.isActive());
 
         // everything in place
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 0);
         pattern.addCut(order3, 1);
@@ -76,30 +83,30 @@ public class PatternTest {
         int allowedCutsNumber = 6;
 
         // with no roll assigned
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         assertTrue(pattern.isValid(allowedCutsNumber));
 
         // actual cuts number: 2 + 2 + 2 = 6 == 6
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
         assertTrue(pattern.isValid(allowedCutsNumber));
 
         // actual cuts number: 2 + 3 + 2 = 7 > 6
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 3);
         pattern.addCut(order3, 2);
         assertFalse(pattern.isValid(allowedCutsNumber));
 
         // with assigned roll
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.setRoll(roll);
         assertTrue(pattern.isValid(allowedCutsNumber));
 
         // actual pattern width: 2 *  50 + 2 * 40 + 2 * 30 = 240 > 200
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
@@ -107,7 +114,7 @@ public class PatternTest {
         assertFalse(pattern.isValid(allowedCutsNumber));
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170 < 200
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -115,7 +122,7 @@ public class PatternTest {
         assertTrue(pattern.isValid(allowedCutsNumber));
 
         // actual pattern width: 4 *  50 + 0 * 40 + 0 * 30 = 200 == 200
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 4);
         pattern.addCut(order2, 0);
         pattern.addCut(order3, 0);
@@ -128,11 +135,11 @@ public class PatternTest {
         Pattern pattern;
 
         // let's check pattern width
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         assertEquals(0, pattern.getWidth(), DELTA);
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -145,7 +152,7 @@ public class PatternTest {
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170
         // roll wasn't set -> trim = 0
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -154,7 +161,7 @@ public class PatternTest {
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170
         // trim: 200 - 170 = 30
         // trim area: trim * roll length = 30 * 300 = 9000
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -165,7 +172,7 @@ public class PatternTest {
 
     @Test
     public void calculateNumberOfCuts() {
-        Pattern pattern = new Pattern(orders);
+        Pattern pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -174,7 +181,7 @@ public class PatternTest {
 
     @Test
     public void unknownOrder() {
-        Pattern pattern = new Pattern(orders);
+        Pattern pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -190,7 +197,7 @@ public class PatternTest {
 
     @Test
     public void calculateProduction() {
-        Pattern pattern = new Pattern(orders);
+        Pattern pattern = new Pattern(problem);
         pattern.addCut(order1, 0);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 2);

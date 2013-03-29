@@ -1,8 +1,6 @@
 package com.akavrt.csp.solver.sequential;
 
-import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.core.Roll;
-import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
@@ -199,6 +197,23 @@ public abstract class SequentialProcedure implements Algorithm {
         }
 
         return block;
+    }
+
+    /**
+     * <p>Prepare fully-fledged Pattern equivalent of the pattern defined by an array of integer
+     * multipliers.</p>
+     *
+     * @param pattern Pattern defined by an array of integer multipliers.
+     * @return Equivalent of the pattern converted to an instance of Pattern.
+     */
+    protected Pattern prepareSolutionPattern(int[] pattern) {
+        Pattern solutionPattern = new Pattern(context.getProblem());
+        List<Order> orders = context.getProblem().getOrders();
+        for (int i = 0; i < orders.size(); i++) {
+            solutionPattern.setCut(orders.get(i), pattern[i]);
+        }
+
+        return solutionPattern;
     }
 
     private void debugPatternGeneration(int anchorIndex, int[] demand, BuildingBlock block) {

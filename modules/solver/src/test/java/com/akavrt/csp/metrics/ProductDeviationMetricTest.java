@@ -21,6 +21,7 @@ public class ProductDeviationMetricTest {
     private Roll roll2;
     private Roll roll3;
     private ProductDeviationMetric metric;
+    private Problem problem;
 
     @Before
     public void setUpProblem() {
@@ -42,7 +43,7 @@ public class ProductDeviationMetricTest {
         rolls.add(roll2);
         rolls.add(roll3);
 
-        Problem problem = new Problem(orders, rolls, allowedCutsNumber);
+        problem = new Problem(orders, rolls, allowedCutsNumber);
 
         metric = new ProductDeviationMetric(problem);
     }
@@ -60,21 +61,21 @@ public class ProductDeviationMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 0);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 0);
         pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll2);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 0);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 0);

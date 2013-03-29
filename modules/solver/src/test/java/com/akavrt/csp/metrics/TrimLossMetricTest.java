@@ -19,6 +19,7 @@ public class TrimLossMetricTest {
     private List<Order> orders;
     private Roll roll1;
     private Roll roll2;
+    private Problem problem;
     private TrimLossMetric metric;
 
     @Before
@@ -32,6 +33,13 @@ public class TrimLossMetricTest {
         // preparing rolls
         roll1 = new Roll("roll1", 300, 200);
         roll2 = new Roll("roll2", 500, 300);
+
+        ProblemBuilder builder = new ProblemBuilder();
+        builder.addOrders(orders);
+        builder.addRoll(roll1);
+        builder.addRoll(roll2);
+
+        problem = builder.build();
 
         metric = new TrimLossMetric();
     }
@@ -50,7 +58,7 @@ public class TrimLossMetricTest {
         Pattern pattern;
 
         // 2 *  50 + 1 * 40 + 2 * 30 = 200
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 2);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 2);
@@ -58,7 +66,7 @@ public class TrimLossMetricTest {
         solution.addPattern(pattern);
 
         // 3 * 50 + 0 * 40 + 5 * 30 = 300
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 3);
         pattern.addCut(orders.get(1), 0);
         pattern.addCut(orders.get(2), 5);

@@ -5,7 +5,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.math.DoubleMath;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -27,20 +29,9 @@ public class Pattern {
     /**
      * <p>Creates an empty pattern.</p>
      */
-    public Pattern(List<Order> orders) {
-        // list of orders can be immutable:
-        // let's create a copy and sort orders in ascending order of width
-        List<Order> sorted = Lists.newArrayList(orders);
-        Collections.sort(sorted, new Comparator<Order>() {
-            @Override
-            public int compare(Order lhs, Order rhs) {
-                return lhs.getWidth() < rhs.getWidth() ? -1 :
-                        (lhs.getWidth() > rhs.getWidth() ? 1 : 0);
-            }
-        });
-
+    public Pattern(Problem problem) {
         cuts = Maps.newLinkedHashMap();
-        for (Order order : sorted) {
+        for (Order order : problem.getOrders()) {
             cuts.put(order.getInternalId(), new MultiCut(order));
         }
     }
@@ -179,11 +170,15 @@ public class Pattern {
      * @return The length of produced strip.
      */
     public double getProductionLengthForOrder(Order order) {
+        if (roll == null) {
+            return 0;
+        }
+
         double productionLength = 0;
 
         // orders with unknown id should be ignored
         MultiCut cut = cuts.get(order.getInternalId());
-        if (cut != null && roll != null) {
+        if (cut != null) {
             productionLength = roll.getLength() * cut.getQuantity();
         }
 
@@ -233,9 +228,8 @@ public class Pattern {
      * <p>Utility method which is used to discover repeating patterns in cutting plan.</p>
      *
      * <p>The idea behind this check is that all patterns within the same cutting plan are based on
-     * the same set of orders. This means that if we sort orders in ascending order of width (this
-     * is done during pattern creation), than any specific position within two different patterns
-     * will point us to the same order.</p>
+     * the same set of orders. This means that any specific position within two different patterns
+     * is pointing to the same order.</p>
      *
      * <p>In future we should switch to something more reliable. For instance, we can replace
      * array of quantities with array of hashes. These hashes can be calculated based on both

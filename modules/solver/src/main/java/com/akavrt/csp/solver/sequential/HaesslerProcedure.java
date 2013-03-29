@@ -104,7 +104,7 @@ public class HaesslerProcedure extends SequentialProcedure {
 
                 // add pattern to the partial solution
                 for (Roll roll : block.group) {
-                    Pattern pattern = orderManager.prepareSolutionPattern(block.pattern);
+                    Pattern pattern = prepareSolutionPattern(block.pattern);
                     pattern.setRoll(roll);
 
                     solution.addPattern(pattern);
@@ -115,7 +115,7 @@ public class HaesslerProcedure extends SequentialProcedure {
         return solution;
     }
 
-    private BuildingBlock trimStep() {
+    protected BuildingBlock trimStep() {
         BuildingBlock block = null;
 
         double allowedTrimRatio = params.getTrimRatioLowerBound();

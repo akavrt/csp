@@ -108,7 +108,7 @@ public class VahrenkampProcedure extends SequentialProcedure {
 
                 // add pattern to the partial solution
                 for (Roll roll : block.group) {
-                    Pattern pattern = orderManager.prepareSolutionPattern(block.pattern);
+                    Pattern pattern = prepareSolutionPattern(block.pattern);
                     pattern.setRoll(roll);
 
                     solution.addPattern(pattern);

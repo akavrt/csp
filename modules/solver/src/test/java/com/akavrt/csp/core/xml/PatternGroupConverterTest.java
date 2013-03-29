@@ -51,7 +51,7 @@ public class PatternGroupConverterTest {
 
     @Test
     public void singleRoll() {
-        Pattern pattern = new Pattern(orders);
+        Pattern pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 2);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
@@ -70,7 +70,7 @@ public class PatternGroupConverterTest {
         assertNotNull(actual.getRolls().get(0));
         assertEquals(pattern.getRoll().getId(), actual.getRolls().get(0).getId());
 
-        Pattern actualPattern = new Pattern(problem.getOrders());
+        Pattern actualPattern = new Pattern(problem);
         actualPattern.setCuts(actual.getCuts());
         actualPattern.setRoll(actual.getRolls().get(0));
 
@@ -92,7 +92,7 @@ public class PatternGroupConverterTest {
 
     @Test
     public void multipleRolls() {
-        Pattern pattern = new Pattern(orders);
+        Pattern pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 2);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);

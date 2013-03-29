@@ -1,8 +1,8 @@
 package com.akavrt.csp.core;
 
 import com.akavrt.csp.metrics.MetricProvider;
+import com.google.common.collect.Sets;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +69,7 @@ public class SolutionMetricProvider implements MetricProvider {
      */
     @Override
     public int getUniquePatternsCount() {
-        Set<Integer> set = new HashSet<Integer>();
+        Set<Integer> set = Sets.newHashSet();
 
         for (Pattern pattern : solution.getPatterns()) {
             if (pattern.isActive()) {

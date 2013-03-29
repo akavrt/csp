@@ -57,14 +57,14 @@ public class CspConverterTest {
         Pattern pattern;
 
         // valid solution
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 0);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 2);
         pattern.addCut(orders.get(2), 2);
@@ -74,14 +74,14 @@ public class CspConverterTest {
         solution1 = new Solution(patterns);
 
         patterns.clear();
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 0);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 0);
         pattern.addCut(orders.get(1), 2);
         pattern.addCut(orders.get(2), 0);

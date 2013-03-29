@@ -2,6 +2,7 @@ package com.akavrt.csp.solver.sequential;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Pattern;
+import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
 import com.google.common.collect.Lists;
 
@@ -165,27 +166,6 @@ public class OrderManager {
         for (int i = 0; i < orders.size(); i++) {
             orders.get(i).addProducedLength(groupLength * pattern[i]);
         }
-    }
-
-    /**
-     * <p>Prepare fully-fledged Pattern equivalent of the pattern defined by an array of integer
-     * multipliers.</p>
-     *
-     * @param pattern Pattern defined by an array of integer multipliers.
-     * @return Equivalent of the pattern converted to an instance of Pattern.
-     */
-    public Pattern prepareSolutionPattern(int[] pattern) {
-        List<Order> problemOrders = Lists.newArrayList();
-        for (MutableOrder mutableOrder : orders) {
-            problemOrders.add(mutableOrder.getOrder());
-        }
-
-        Pattern solutionPattern = new Pattern(problemOrders);
-        for (int i = 0; i < orders.size(); i++) {
-            solutionPattern.setCut(orders.get(i).getOrder(), pattern[i]);
-        }
-
-        return solutionPattern;
     }
 
 }

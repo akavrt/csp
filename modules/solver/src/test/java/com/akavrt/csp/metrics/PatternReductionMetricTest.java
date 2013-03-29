@@ -20,7 +20,8 @@ public class PatternReductionMetricTest {
     private Roll roll1;
     private Roll roll2;
     private PatternReductionMetric metric;
-
+    private Problem problem;
+    
     @Before
     public void setUpProblem() {
         // preparing orders
@@ -33,6 +34,13 @@ public class PatternReductionMetricTest {
         roll1 = new Roll("roll1", 300, 200);
         roll2 = new Roll("roll2", 500, 300);
 
+        ProblemBuilder builder = new ProblemBuilder();
+        builder.addOrders(orders);
+        builder.addRoll(roll1);
+        builder.addRoll(roll2);
+        
+        problem = builder.build();
+                
         metric = new PatternReductionMetric();
     }
 
@@ -50,7 +58,7 @@ public class PatternReductionMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
@@ -65,14 +73,14 @@ public class PatternReductionMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
@@ -87,14 +95,14 @@ public class PatternReductionMetricTest {
         Solution solution = new Solution();
         Pattern pattern;
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         solution.addPattern(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 2);
         pattern.addCut(orders.get(1), 2);
         pattern.addCut(orders.get(2), 2);

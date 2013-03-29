@@ -1,7 +1,6 @@
 package com.akavrt.csp.solver.sequential;
 
 import com.akavrt.csp.core.Order;
-import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Roll;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -117,18 +116,4 @@ public class OrderManagerTest {
         assertTrue(manager.isOrdersFulfilled());
     }
 
-    @Test
-    public void conversion() {
-        Pattern pattern = manager.prepareSolutionPattern(new int[]{1, 3, 5});
-        assertEquals(9, pattern.getTotalNumberOfCuts());
-
-        assertFalse(pattern.isValid(8));
-        assertTrue(pattern.isValid(9));
-        assertTrue(pattern.isValid(10));
-
-        assertFalse(pattern.isActive());
-
-        double expected = manager.getPatternWidth(new int[]{1, 3, 5});
-        assertEquals(expected, pattern.getWidth(), DELTA);
-    }
 }

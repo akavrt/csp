@@ -62,14 +62,14 @@ public class SolutionTest {
         List<Pattern> patterns = new ArrayList<Pattern>();
 
         Pattern pattern;
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 0);
         pattern.addCut(order2, 0);
         pattern.addCut(order3, 0);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -92,7 +92,7 @@ public class SolutionTest {
         Pattern pattern;
 
         // 1 * 50 + 1 * 40 + 1 * 30 = 120
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -101,7 +101,7 @@ public class SolutionTest {
         double trimArea1 = pattern.getTrimArea();
 
         // 2 * 50 + 2 * 40 + 2 * 30 = 240
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
@@ -121,14 +121,14 @@ public class SolutionTest {
         Solution solution;
 
         // two different patterns is used
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
@@ -141,14 +141,14 @@ public class SolutionTest {
         // same pattern added twice
         patterns.clear();
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -167,14 +167,14 @@ public class SolutionTest {
         Solution solution;
 
         // the third order isn't produced
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 0);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 0);
@@ -187,14 +187,14 @@ public class SolutionTest {
 
         // the first order is produced in insufficient length
         patterns.clear();
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 0);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 0);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 0);
@@ -214,14 +214,14 @@ public class SolutionTest {
         Solution solution;
 
         // the first order is produced with exact length
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 0);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
@@ -241,14 +241,14 @@ public class SolutionTest {
         Solution solution;
 
         // the first order is produced with excess
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
@@ -268,14 +268,14 @@ public class SolutionTest {
         Solution solution;
 
         // valid solution
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 0);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
@@ -294,7 +294,7 @@ public class SolutionTest {
         Solution solution;
 
         // patterns validity is broken
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 0);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
@@ -302,7 +302,7 @@ public class SolutionTest {
         patterns.add(pattern);
 
         // too much cuts: 12 > 10
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 4);
         pattern.addCut(order2, 4);
         pattern.addCut(order3, 4);
@@ -321,14 +321,14 @@ public class SolutionTest {
         Solution solution;
 
         // same roll used twice
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 0);
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(order1, 1);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);

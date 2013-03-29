@@ -2,8 +2,6 @@ package com.akavrt.csp.core.xml;
 
 import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
-import com.akavrt.csp.core.xml.SolutionConverter;
-import com.akavrt.csp.metrics.MetricProvider;
 import org.jdom2.Element;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +18,6 @@ import static org.junit.Assert.*;
  */
 public class SolutionConverterTest {
     private static final double DELTA = 1e-15;
-    private int allowedCutsNumber;
     private List<Order> orders;
     private Roll roll1;
     private Roll roll2;
@@ -29,7 +26,7 @@ public class SolutionConverterTest {
 
     @Before
     public void setUpProblem() {
-        allowedCutsNumber = 10;
+        int allowedCutsNumber = 10;
 
         // preparing orders
         orders = new ArrayList<Order>();
@@ -57,14 +54,14 @@ public class SolutionConverterTest {
         Pattern pattern;
 
         // valid solution
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 0);
         pattern.addCut(orders.get(1), 1);
         pattern.addCut(orders.get(2), 1);
         pattern.setRoll(roll1);
         patterns.add(pattern);
 
-        pattern = new Pattern(orders);
+        pattern = new Pattern(problem);
         pattern.addCut(orders.get(0), 1);
         pattern.addCut(orders.get(1), 2);
         pattern.addCut(orders.get(2), 2);

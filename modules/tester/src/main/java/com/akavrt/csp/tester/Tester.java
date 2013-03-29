@@ -1,6 +1,8 @@
 package com.akavrt.csp.tester;
 
-import com.akavrt.csp.analyzer.*;
+import com.akavrt.csp.analyzer.Average;
+import com.akavrt.csp.analyzer.SimpleCollector;
+import com.akavrt.csp.analyzer.StandardDeviation;
 import com.akavrt.csp.analyzer.xml.RunResultWriter;
 import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.core.Problem;
@@ -13,8 +15,7 @@ import com.akavrt.csp.solver.MultistartSolver;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
-import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
-import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
+import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
 import com.akavrt.csp.tester.tracer.TraceUtils;
 import org.apache.logging.log4j.LogManager;
@@ -53,11 +54,11 @@ public class Tester {
         generatorParams.setGenerationTrialsLimit(20);
         PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
 
-        VahrenkampProcedureParameters methodParams = new VahrenkampProcedureParameters();
-        methodParams.setPatternUsageUpperBound(0.5);
-        methodParams.setGoalmix(0.5);
-        methodParams.setTrimRatioUpperBound(1);
-        Algorithm method = new VahrenkampProcedure(generator, methodParams);
+//        VahrenkampProcedureParameters methodParams = new VahrenkampProcedureParameters();
+//        methodParams.setPatternUsageUpperBound(0.5);
+//        methodParams.setGoalmix(0.5);
+//        methodParams.setTrimRatioUpperBound(1);
+        Algorithm method = new SimplifiedProcedure(generator);
 
         ScalarMetric metric = new ScalarMetric(problem, new ScalarMetricParameters());
 

@@ -170,10 +170,20 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
         return bestPattern.clone();
     }
 
+    /**
+     * <p>TODO Possible improvement:</p>
+     *
+     * <p>If no constraint on the number of cuts is imposed, then we should use simplified version.
+     * Otherwise we should solve corresponding knapsack problem to get the best greedy placement
+     * available.</p>
+     */
     private void greedyPlacement(int[] demand) {
         Arrays.fill(bestPattern, 0);
         int addedItems = 0;
         boolean isCutsUnconstrained = allowedCutsNumber == 0;
+
+        // if no fight sorting was applied to the list of orders,
+        // then no need to start form the last element
         int i = widths.length - 1;
         while (i >= 0 && (isCutsUnconstrained || addedItems < allowedCutsNumber)) {
             int j = 1;

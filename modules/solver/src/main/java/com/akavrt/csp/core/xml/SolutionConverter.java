@@ -92,7 +92,7 @@ public class SolutionConverter implements XmlConverter<Solution> {
                 PatternGroup group = converter.extract(patternElm);
 
                 for (Roll roll : group.getRolls()) {
-                    Pattern pattern = new Pattern(problem.getOrders());
+                    Pattern pattern = new Pattern(problem);
                     pattern.setCuts(group.getCuts());
                     pattern.setRoll(roll);
 
