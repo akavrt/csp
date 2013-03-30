@@ -1,7 +1,10 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.genetic;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.genetic.Chromosome;
+import com.akavrt.csp.solver.genetic.Gene;
+import com.akavrt.csp.solver.genetic.GeneticUnaryOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -41,7 +44,7 @@ public class Mutation implements GeneticUnaryOperator {
         Roll roll = mutated.removeGene(index).getRoll();
 
         if (roll != null && getRatio(mutated) > getRatio(chromosome)) {
-            // calculate remaining demands for orders' length
+            // calculate residual demands for orders' length
             int[] demand = calcDemand(roll, mutated);
 
             // generate new pattern
@@ -66,7 +69,7 @@ public class Mutation implements GeneticUnaryOperator {
             Roll roll = pickRoll(mutated);
 
             if (roll != null) {
-                // calculate remaining demands for orders' length
+                // calculate residual demands for orders' length
                 int[] demand = calcDemand(roll, mutated);
 
                 // generate new pattern

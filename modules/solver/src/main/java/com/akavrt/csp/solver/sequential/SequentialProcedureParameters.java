@@ -1,5 +1,6 @@
 package com.akavrt.csp.solver.sequential;
 
+import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
@@ -24,6 +25,7 @@ public class SequentialProcedureParameters implements ParameterSet {
     private double trimRatioUpperBound = DEFAULT_TRIM_RATIO_UPPER_BOUND;
     private double patternUsageRatioUpperBound = DEFAULT_PATTER_USAGE_UPPER_BOUND;
     private int patternUsageRelaxStep = DEFAULT_PATTERN_USAGE_RELAX_STEP;
+    private String description;
 
     /**
      * <p>The fractional value by which aspiration level corresponding to trim loss is relaxed if
@@ -131,8 +133,31 @@ public class SequentialProcedureParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Element save() {
         Element paramsElm = new Element(XmlTags.PARAMETERS);
+
+        // optional description
+        if (!Utils.isEmpty(description)) {
+            Element descriptionElm = new Element(XmlTags.DESCRIPTION);
+            descriptionElm.setText(description);
+            paramsElm.addContent(descriptionElm);
+        }
 
         // trim ratio parameters
         Element trimRatioElm = new Element(XmlTags.TRIM_RATIO);
@@ -170,6 +195,11 @@ public class SequentialProcedureParameters implements ParameterSet {
      */
     @Override
     public void load(Element rootElm) {
+        String description = rootElm.getChildText(XmlTags.DESCRIPTION);
+        if (!Utils.isEmpty(description)) {
+            setDescription(description);
+        }
+
         Element trimRatioElm = rootElm.getChild(XmlTags.TRIM_RATIO);
         if (trimRatioElm != null) {
             double relaxStep = XmlUtils.getDoubleFromText(trimRatioElm, XmlTags.RELAX_STEP,
@@ -204,6 +234,7 @@ public class SequentialProcedureParameters implements ParameterSet {
         String RELAX_STEP = "relax-step";
         String LOWER_BOUND = "lower-bound";
         String UPPER_BOUND = "upper-bound";
+        String DESCRIPTION = "description";
     }
 
 }

@@ -30,13 +30,13 @@ import java.io.InputStream;
  * Date: 17.03.13
  * Time: 19:41
  */
-public class Tester {
-    private static final Logger LOGGER = LogManager.getLogger(Tester.class);
+public class SequentialTester {
+    private static final Logger LOGGER = LogManager.getLogger(SequentialTester.class);
 
     public static void main(String[] args) throws IOException {
         CspReader reader = new CspReader();
         try {
-            InputStream is = Tester.class.getClassLoader().getResourceAsStream("optimal_10.xml");
+            InputStream is = SequentialTester.class.getClassLoader().getResourceAsStream("optimal_10.xml");
             reader.read(is);
         } catch (CspParseException e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.akavrt.csp.metrics;
 
+import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
@@ -16,6 +17,7 @@ public class ScalarMetricParameters implements ParameterSet {
     private double trimFactor = DEFAULT_TRIM_FACTOR;
     private double patternsFactor = DEFAULT_PATTERNS_FACTOR;
     private double productionFactor = DEFAULT_PRODUCTION_FACTOR;
+    private String description;
 
     /**
      * <p>Weight associated with trim loss fractional ratio.</p>
@@ -63,8 +65,31 @@ public class ScalarMetricParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Element save() {
         Element scalarElm = new Element(XmlTags.SCALAR);
+
+        // optional description
+        if (!Utils.isEmpty(description)) {
+            Element descriptionElm = new Element(XmlTags.DESCRIPTION);
+            descriptionElm.setText(description);
+            scalarElm.addContent(descriptionElm);
+        }
 
         Element trimWeightElm = new Element(XmlTags.TRIM_WEIGHT);
         trimWeightElm.setText(XmlUtils.formatDouble(getTrimFactor()));
@@ -85,20 +110,21 @@ public class ScalarMetricParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
-    public void load(Element element) {
-        if (element == null) {
-            return;
+    public void load(Element rootElm) {
+        String description = rootElm.getChildText(XmlTags.DESCRIPTION);
+        if (!Utils.isEmpty(description)) {
+            setDescription(description);
         }
 
-        double trimWeight = XmlUtils.getDoubleFromText(element, XmlTags.TRIM_WEIGHT,
+        double trimWeight = XmlUtils.getDoubleFromText(rootElm, XmlTags.TRIM_WEIGHT,
                                                        DEFAULT_TRIM_FACTOR);
         setTrimFactor(trimWeight);
 
-        double patternWeight = XmlUtils.getDoubleFromText(element, XmlTags.PATTERN_WEIGHT,
+        double patternWeight = XmlUtils.getDoubleFromText(rootElm, XmlTags.PATTERN_WEIGHT,
                                                           DEFAULT_PATTERNS_FACTOR);
         setPatternsFactor(patternWeight);
 
-        double productWeight = XmlUtils.getDoubleFromText(element, XmlTags.PRODUCT_WEIGHT,
+        double productWeight = XmlUtils.getDoubleFromText(rootElm, XmlTags.PRODUCT_WEIGHT,
                                                           DEFAULT_PRODUCTION_FACTOR);
         setProductionFactor(productWeight);
 
@@ -109,6 +135,7 @@ public class ScalarMetricParameters implements ParameterSet {
         String TRIM_WEIGHT = "trim-weight";
         String PATTERN_WEIGHT = "pattern-weight";
         String PRODUCT_WEIGHT = "product-weight";
+        String DESCRIPTION = "description";
     }
 
 }

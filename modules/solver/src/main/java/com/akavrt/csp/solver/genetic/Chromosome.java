@@ -60,6 +60,15 @@ public class Chromosome implements Plan {
         commit();
     }
 
+    public Solution convert() {
+        Solution solution = new Solution();
+        for (Gene gene : genes) {
+            solution.addPattern(gene.convert(context));
+        }
+
+        return solution;
+    }
+
     public GeneticExecutionContext getContext() {
         return context;
     }

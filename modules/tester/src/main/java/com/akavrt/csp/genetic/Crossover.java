@@ -1,5 +1,8 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.genetic;
 
+import com.akavrt.csp.solver.genetic.Chromosome;
+import com.akavrt.csp.solver.genetic.Gene;
+import com.akavrt.csp.solver.genetic.GeneticBinaryOperator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 

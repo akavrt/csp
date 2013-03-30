@@ -1,5 +1,6 @@
 package com.akavrt.csp.solver.pattern;
 
+import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
@@ -16,6 +17,7 @@ import org.jdom2.Element;
 public class PatternGeneratorParameters implements ParameterSet {
     private static final int DEFAULT_GENERATION_TRIALS_LIMIT = 100;
     private int generationTrialsLimit = DEFAULT_GENERATION_TRIALS_LIMIT;
+    private String description;
 
     /**
      * <p>Maximum number of trials can be used by procedure while generating pattern.</p>
@@ -37,8 +39,31 @@ public class PatternGeneratorParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Element save() {
         Element paramsElm = new Element(XmlTags.PARAMETERS);
+
+        // optional description
+        if (!Utils.isEmpty(description)) {
+            Element descriptionElm = new Element(XmlTags.DESCRIPTION);
+            descriptionElm.setText(description);
+            paramsElm.addContent(descriptionElm);
+        }
 
         Element generationTrialsLimitElm = new Element(XmlTags.GENERATION_TRIALS_LIMIT);
         generationTrialsLimitElm.setText(Integer.toString(getGenerationTrialsLimit()));
@@ -52,6 +77,11 @@ public class PatternGeneratorParameters implements ParameterSet {
      */
     @Override
     public void load(Element rootElm) {
+        String description = rootElm.getChildText(XmlTags.DESCRIPTION);
+        if (!Utils.isEmpty(description)) {
+            setDescription(description);
+        }
+
         Element limitElm = rootElm.getChild(XmlTags.GENERATION_TRIALS_LIMIT);
         if (limitElm != null) {
             int limit = XmlUtils.getIntegerFromText(limitElm, DEFAULT_GENERATION_TRIALS_LIMIT);
@@ -62,6 +92,7 @@ public class PatternGeneratorParameters implements ParameterSet {
     private interface XmlTags {
         String PARAMETERS = "pattern";
         String GENERATION_TRIALS_LIMIT = "generation-trials-limit";
+        String DESCRIPTION = "description";
     }
 
 }

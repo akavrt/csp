@@ -1,12 +1,15 @@
 package com.akavrt.csp.solver.genetic;
 
+import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.ExecutionContext;
 import com.akavrt.csp.utils.Constants;
 import com.google.common.base.Objects;
 import com.google.common.math.DoubleMath;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: akavrt
@@ -33,6 +36,16 @@ public class Gene {
 
     public Gene(Gene gene) {
         this(gene.pattern.clone(), gene.roll);
+    }
+
+    public Pattern convert(ExecutionContext context) {
+        Pattern solutionPattern = new Pattern(context.getProblem());
+        List<Order> orders = context.getProblem().getOrders();
+        for (int i = 0; i < orders.size(); i++) {
+            solutionPattern.setCut(orders.get(i), pattern[i]);
+        }
+
+        return solutionPattern;
     }
 
     public int[] getPattern() {

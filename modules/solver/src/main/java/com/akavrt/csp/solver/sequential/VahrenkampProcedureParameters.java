@@ -19,6 +19,7 @@ import org.jdom2.Element;
 public class VahrenkampProcedureParameters extends SequentialProcedureParameters {
     private static final double DEFAULT_GOALMIX = 0.5;
     private double goalmix = DEFAULT_GOALMIX;
+    private String description;
 
     /**
      * <p>Goalmix defines relative priority between trim loss and pattern reduction by setting a

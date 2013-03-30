@@ -1,8 +1,8 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
-import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
 import com.google.common.collect.Lists;
 
 import java.util.Collections;
@@ -18,28 +18,38 @@ import java.util.Random;
 public class Population {
     private final GeneticExecutionContext context;
     private final GeneticAlgorithmParameters parameters;
-    private final GeneticBinaryOperator crossover;
-    private final GeneticUnaryOperator mutation;
+    private final Metric objectiveFunction;
     private final Random rGen;
     private List<Chromosome> chromosomes;
 
-    public Population(GeneticExecutionContext context) {
+    public Population(GeneticExecutionContext context, GeneticAlgorithmParameters parameters,
+                      Metric objectiveFunction) {
         this.context = context;
-        this.parameters = context.getMethodParameters();
-        this.crossover = context.getCrossover();
-        this.mutation = context.getMutation();
+        this.parameters = parameters;
+        this.objectiveFunction = objectiveFunction;
 
         rGen = new Random();
     }
 
-    public void initialize() {
+    public List<Solution> getSolutions() {
+        List<Solution> solutions = Lists.newArrayList();
+
+        if (chromosomes != null && chromosomes.size() > 0) {
+            for (Chromosome chromosome : chromosomes) {
+                solutions.add(chromosome.convert());
+            }
+        }
+
+        return solutions;
+    }
+
+    public void initialize(Algorithm initializationProcedure) {
         chromosomes = Lists.newArrayList();
 
-        // fill population with solutions generated using simplified SHP
-        Algorithm procedure = new SimplifiedProcedure(context.getPatternGenerator());
+        // fill population with solutions generated using auxiliary algorithm
         while (!context.isCancelled() && chromosomes.size() < parameters.getPopulationSize()) {
-            // run SHP
-            List<Solution> solutions = procedure.execute(context);
+            // run auxiliary algorithm
+            List<Solution> solutions = initializationProcedure.execute(context);
 
             if (solutions.size() > 0 && solutions.get(0) != null) {
                 // add new chromosome:
@@ -56,7 +66,7 @@ public class Population {
 
             @Override
             public int compare(Chromosome lhs, Chromosome rhs) {
-                return context.getObjectiveFunction().compare(lhs, rhs);
+                return objectiveFunction.compare(lhs, rhs);
             }
         });
     }
@@ -64,7 +74,7 @@ public class Population {
     /**
      * <p>ModGA generation scheme is used.</p>
      */
-    public void generation() {
+    public void generation(GeneticBinaryOperator crossover, GeneticUnaryOperator mutation) {
         sort();
 
         // pick the first 'GeneticAlgorithmParameters.getExchangeSize()' chromosomes
@@ -75,7 +85,7 @@ public class Population {
         }
 
         // replace content of the exchange list with new chromosomes
-        prepareExchange(exchangeList);
+        prepareExchange(exchangeList, crossover, mutation);
 
         // exchange the last 'GeneticAlgorithmParameters.getExchangeSize()' chromosomes
         // (the worst fitted part of the population) with new chromosomes
@@ -85,7 +95,9 @@ public class Population {
         }
     }
 
-    private List<Chromosome> prepareExchange(List<Chromosome> exchangeList) {
+    private List<Chromosome> prepareExchange(List<Chromosome> exchangeList,
+                                             GeneticBinaryOperator crossover,
+                                             GeneticUnaryOperator mutation) {
         // let's produce exactly GeneticAlgorithmParameters.getExchangeSize()
         // new chromosomes iteratively applying crossover and mutation operators
         List<Chromosome> matingPool = Lists.newArrayList();
