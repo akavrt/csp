@@ -18,8 +18,8 @@ import java.util.Random;
 public class Population {
     private final GeneticExecutionContext context;
     private final GeneticAlgorithmParameters parameters;
-    private final BinaryOperator crossover;
-    private final UnaryOperator mutation;
+    private final GeneticBinaryOperator crossover;
+    private final GeneticUnaryOperator mutation;
     private final Random rGen;
     private List<Chromosome> chromosomes;
 
@@ -100,7 +100,6 @@ public class Population {
                 // then replace current chromosome with mutated one inside the exchange list
                 Chromosome original = exchangeList.get(i);
 
-                // TODO  mutation.apply should return new instance
                 Chromosome mutated = mutation.apply(original);
                 exchangeList.set(i, mutated);
 
@@ -113,7 +112,6 @@ public class Population {
             int index = rGen.nextInt(matingPool.size());
             Chromosome original = matingPool.remove(index);
 
-            // TODO  mutation.apply should return new instance
             Chromosome mutated = mutation.apply(original);
             exchangeList.add(mutated);
         }
@@ -137,4 +135,5 @@ public class Population {
 
         return exchangeList;
     }
+
 }

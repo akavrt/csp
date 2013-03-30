@@ -3,10 +3,10 @@ package com.akavrt.csp.core;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.metrics.MetricProvider;
 import com.akavrt.csp.utils.Constants;
+import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -119,7 +119,7 @@ public class Solution implements Plan {
      * @return true if plan doesn't contain rolls which are used more than once, false otherwise.
      */
     public boolean isRollsValid() {
-        Set<Integer> rollIds = new HashSet<Integer>();
+        Set<Integer> rollIds = Sets.newHashSet();
         boolean isRepeatedRollFound = false;
         for (Pattern pattern : patterns) {
             if (pattern.isActive() && !rollIds.add(pattern.getRoll().getInternalId())) {

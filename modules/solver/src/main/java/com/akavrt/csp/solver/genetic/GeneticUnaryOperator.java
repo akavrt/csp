@@ -5,6 +5,6 @@ package com.akavrt.csp.solver.genetic;
  * Date: 27.03.13
  * Time: 17:51
  */
-public interface UnaryOperator {
+public interface GeneticUnaryOperator {
     Chromosome apply(Chromosome chromosome);
 }

@@ -101,11 +101,7 @@ public class ChromosomeMetricProvider implements MetricProvider {
         return cachedUniquePatternsCount;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getAverageUnderProductionRatio(Problem problem) {
+    public double getAverageUnderProductionRatio() {
         if (cachedAverageUnderProductionRatio < 0) {
             double underProductionRatio = 0;
 
@@ -128,7 +124,11 @@ public class ChromosomeMetricProvider implements MetricProvider {
      * {@inheritDoc}
      */
     @Override
-    public double getAverageOverProductionRatio(Problem problem) {
+    public double getAverageUnderProductionRatio(Problem problem) {
+        return getAverageUnderProductionRatio();
+    }
+
+    public double getAverageOverProductionRatio() {
         if (cachedAverageOverProductionRatio < 0) {
             double overProductionRatio = 0;
 
@@ -145,6 +145,14 @@ public class ChromosomeMetricProvider implements MetricProvider {
         }
 
         return cachedAverageOverProductionRatio;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAverageOverProductionRatio(Problem problem) {
+        return getAverageOverProductionRatio();
     }
 
     public void resetCachedValues() {

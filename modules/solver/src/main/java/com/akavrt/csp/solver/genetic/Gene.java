@@ -2,6 +2,9 @@ package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.utils.Constants;
+import com.google.common.base.Objects;
+import com.google.common.math.DoubleMath;
 
 import java.util.Arrays;
 
@@ -28,6 +31,10 @@ public class Gene {
         roll = solutionPattern.getRoll();
     }
 
+    public Gene(Gene gene) {
+        this(gene.pattern.clone(), gene.roll);
+    }
+
     public int[] getPattern() {
         return pattern;
     }
@@ -46,8 +53,8 @@ public class Gene {
         this.roll = roll;
     }
 
-    public double getTrim(GeneticExecutionContext context) {
-        if (roll == null || pattern == null) {
+    public double getWidth(GeneticExecutionContext context) {
+        if (pattern == null) {
             return 0;
         }
 
@@ -56,7 +63,15 @@ public class Gene {
             totalWidth += pattern[i] * context.getOrderWidth(i);
         }
 
-        return roll.getWidth() - totalWidth;
+        return totalWidth;
+    }
+
+    public double getTrim(GeneticExecutionContext context) {
+        if (roll == null || pattern == null) {
+            return 0;
+        }
+
+        return roll.getWidth() - getWidth(context);
     }
 
     public double getTrimArea(GeneticExecutionContext context) {
@@ -75,8 +90,36 @@ public class Gene {
         return roll.getLength() * pattern[index];
     }
 
+    public int getTotalNumberOfCuts() {
+        int totalCuts = 0;
+
+        for (int cuts : pattern) {
+            totalCuts = +cuts;
+        }
+
+        return totalCuts;
+    }
+
+    public boolean isValid(GeneticExecutionContext context) {
+        int allowedCutsNumber = context.getProblem().getAllowedCutsNumber();
+        boolean isCutsValid = allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber;
+
+        boolean isPatternWidthValid = true;
+        if (roll != null) {
+            isPatternWidthValid = DoubleMath.fuzzyCompare(getWidth(context), roll.getWidth(),
+                                                          Constants.TOLERANCE) <= 0;
+        }
+
+        return isCutsValid && isPatternWidthValid;
+    }
+
     public int getPatternHashCode() {
         return Arrays.hashCode(pattern);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(Arrays.hashCode(pattern), roll == null ? null : roll.getId());
     }
 
 }

@@ -13,8 +13,8 @@ public interface GeneticExecutionContext extends ExecutionContext {
     GeneticAlgorithmParameters getMethodParameters();
     PatternGenerator getPatternGenerator();
     Metric getObjectiveFunction();
-    BinaryOperator getCrossover();
-    UnaryOperator getMutation();
+    GeneticBinaryOperator getCrossover();
+    GeneticUnaryOperator getMutation();
     double getOrderWidth(int index);
     double getOrderLength(int index);
     int getOrdersSize();

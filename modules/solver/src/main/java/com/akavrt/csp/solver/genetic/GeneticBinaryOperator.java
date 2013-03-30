@@ -5,6 +5,6 @@ package com.akavrt.csp.solver.genetic;
  * Date: 27.03.13
  * Time: 17:52
  */
-public interface BinaryOperator {
+public interface GeneticBinaryOperator {
     Chromosome apply(Chromosome ch1, Chromosome ch2);
 }

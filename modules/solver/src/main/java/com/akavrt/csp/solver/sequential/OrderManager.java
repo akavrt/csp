@@ -1,12 +1,9 @@
 package com.akavrt.csp.solver.sequential;
 
 import com.akavrt.csp.core.Order;
-import com.akavrt.csp.core.Pattern;
-import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
 import com.google.common.collect.Lists;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -70,8 +67,6 @@ public class OrderManager {
         }
 
         int[] demand = new int[orders.size()];
-        Arrays.fill(demand, 0);
-
         for (int i = 0; i < orders.size(); i++) {
             if (!orders.get(i).isFulfilled()) {
                 double unfulfilledLength = orders.get(i).getUnfulfilledLength();

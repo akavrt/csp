@@ -19,9 +19,8 @@ public class GeneticAlgorithm implements Algorithm, GeneticExecutionContext {
     protected ExecutionContext context;
     private GeneticAlgorithmParameters parameters;
     private PatternGenerator patternGenerator;
-    private BinaryOperator crossover;
-    private UnaryOperator mutation;
-    private UnaryOperator heuristic;
+    private GeneticBinaryOperator crossover;
+    private GeneticUnaryOperator mutation;
     private Population population;
     private Metric objectiveFunction;
     private double[] orderWidth;
@@ -59,12 +58,12 @@ public class GeneticAlgorithm implements Algorithm, GeneticExecutionContext {
     }
 
     @Override
-    public BinaryOperator getCrossover() {
+    public GeneticBinaryOperator getCrossover() {
         return null;
     }
 
     @Override
-    public UnaryOperator getMutation() {
+    public GeneticUnaryOperator getMutation() {
         return null;
     }
 
