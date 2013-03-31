@@ -2,6 +2,8 @@ package com.akavrt.csp.metrics;
 
 import com.akavrt.csp.core.Plan;
 
+import java.util.Comparator;
+
 /**
  * <p>This interface is introduced to decouple solution from evaluation of the objective function.
  * We can easily implement several evaluators - each one with different objective function - and
@@ -47,4 +49,22 @@ public interface Metric {
      * @return Full name of the metric.
      */
     String name();
+
+    /**
+     * <p>Natural ordering defined in the following way: given two cutting plans p1 and p2, plan p2
+     * will be preceded by plan p1 in a sorted collection if plan p2 is better than plan p1.</p>
+     *
+     * @return A comparator which imposes natural ordering on a collection of cutting plans.
+     */
+    Comparator<Plan> getComparator();
+
+    /**
+     * <p>The reverse of the natural ordering defined in the following way: given two cutting plans
+     * p1 and p2, plan p2 will be preceded by plan p1 in a sorted collection if plan p2 is worse
+     * than plan p1.</p>
+     *
+     * @return A comparator that imposes the reverse of the natural ordering on a collection of
+     *         cutting plans.
+     */
+    Comparator<Plan> getReverseComparator();
 }

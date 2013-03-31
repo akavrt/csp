@@ -140,7 +140,7 @@ public class Pattern {
      *
      * @return The unused width of the roll.
      */
-    public double getTrim() {
+    public double getTrimWidth() {
         if (roll == null) {
             return 0;
         }
@@ -159,7 +159,7 @@ public class Pattern {
             return 0;
         }
 
-        return (roll.getWidth() - getWidth()) * roll.getLength();
+        return roll.getLength() * getTrimWidth();
     }
 
     /**
@@ -275,6 +275,8 @@ public class Pattern {
 
         if (roll != null) {
             builder.append(" -> ").append(roll.getId());
+        } else {
+            builder.append(" -> unset");
         }
 
         return builder.toString();

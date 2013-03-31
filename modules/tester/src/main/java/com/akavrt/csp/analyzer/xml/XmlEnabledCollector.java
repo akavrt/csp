@@ -20,6 +20,7 @@ public class XmlEnabledCollector extends SimpleCollector {
         }
 
         Element rootElm = new Element(XmlTags.METRICS);
+
         // process solution-specific metrics
         for (Metric metric : metrics) {
             Element metricElm = new Element(XmlTags.METRIC);

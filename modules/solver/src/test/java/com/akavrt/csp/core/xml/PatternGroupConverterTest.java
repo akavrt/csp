@@ -80,7 +80,7 @@ public class PatternGroupConverterTest {
         assertEquals(pattern.isValid(allowedCutsNumber), actualPattern.isValid(allowedCutsNumber));
         assertEquals(pattern.isActive(), actualPattern.isActive());
 
-        assertEquals(pattern.getTrim(), actualPattern.getTrim(), DELTA);
+        assertEquals(pattern.getTrimWidth(), actualPattern.getTrimWidth(), DELTA);
         assertEquals(pattern.getTrimArea(), actualPattern.getTrimArea(), DELTA);
         for (Order order : orders) {
             assertEquals(pattern.getProductionLengthForOrder(order),

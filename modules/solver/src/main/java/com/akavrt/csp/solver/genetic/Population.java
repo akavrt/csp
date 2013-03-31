@@ -62,13 +62,13 @@ public class Population {
     public void sort() {
         // TODO implement mechanism to sort population only when it needed
         // (if population structure left unchanged - no need to resort it)
-        Collections.sort(chromosomes, new Comparator<Chromosome>() {
 
-            @Override
-            public int compare(Chromosome lhs, Chromosome rhs) {
-                return objectiveFunction.compare(lhs, rhs);
-            }
-        });
+        // here we are using reverse ordering: in a sorted list of chromosomes
+        // the best solution found will be the first element of the list,
+        // while the worst solution found will be located exactly at the end of the list
+
+        // TODO switch to reusable instance of Comparator
+        Collections.sort(chromosomes, objectiveFunction.getReverseComparator());
     }
 
     /**

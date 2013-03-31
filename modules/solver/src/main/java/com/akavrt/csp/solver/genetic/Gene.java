@@ -40,10 +40,15 @@ public class Gene {
 
     public Pattern convert(ExecutionContext context) {
         Pattern solutionPattern = new Pattern(context.getProblem());
+
+        // add cuts
         List<Order> orders = context.getProblem().getOrders();
         for (int i = 0; i < orders.size(); i++) {
             solutionPattern.setCut(orders.get(i), pattern[i]);
         }
+
+        // set roll
+        solutionPattern.setRoll(roll);
 
         return solutionPattern;
     }
@@ -79,7 +84,7 @@ public class Gene {
         return totalWidth;
     }
 
-    public double getTrim(GeneticExecutionContext context) {
+    public double getTrimWidth(GeneticExecutionContext context) {
         if (roll == null || pattern == null) {
             return 0;
         }
@@ -92,7 +97,7 @@ public class Gene {
             return 0;
         }
 
-        return roll.getLength() * getTrim(context);
+        return roll.getLength() * getTrimWidth(context);
     }
 
     public double getProductionLengthForOrder(int index) {
@@ -107,7 +112,7 @@ public class Gene {
         int totalCuts = 0;
 
         for (int cuts : pattern) {
-            totalCuts = +cuts;
+            totalCuts += cuts;
         }
 
         return totalCuts;

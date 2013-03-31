@@ -36,7 +36,7 @@ public class SequentialTester {
     public static void main(String[] args) throws IOException {
         CspReader reader = new CspReader();
         try {
-            InputStream is = SequentialTester.class.getClassLoader().getResourceAsStream("optimal_10.xml");
+            InputStream is = SequentialTester.class.getClassLoader().getResourceAsStream("optimal_01.xml");
             reader.read(is);
         } catch (CspParseException e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class SequentialTester {
 
             writer.write(file, true);
             */
-            File file = new File("/Users/akavrt/Sandbox/output-opt10run.xml");
+            File file = new File("/Users/akavrt/Sandbox/output-opt01run.xml");
 
             RunResultWriter writer = new RunResultWriter();
 

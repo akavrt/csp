@@ -5,6 +5,8 @@ import com.akavrt.csp.solver.genetic.Gene;
 import com.akavrt.csp.solver.genetic.GeneticBinaryOperator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Random;
@@ -16,10 +18,11 @@ import java.util.Set;
  * Time: 02:10
  */
 public class Crossover implements GeneticBinaryOperator {
+    private static final Logger LOGGER = LogManager.getLogger(Crossover.class);
     private final Random rGen;
 
     public Crossover() {
-        rGen = new Random();
+        this.rGen = new Random();
     }
 
     @Override
@@ -60,11 +63,13 @@ public class Crossover implements GeneticBinaryOperator {
         }
         while (currentRatio <= previousRatio && pool.size() > 0);
 
-        if (currentRatio > previousRatio && child.size() > 0) {
+        if (currentRatio > previousRatio && child.size() > 1) {
             // TODO in future we should apply a simple heuristic rule to refine child here
             // remove last gene
             child.removeGene(child.size() - 1);
         }
+
+        LOGGER.info("CX");
 
         return child;
     }

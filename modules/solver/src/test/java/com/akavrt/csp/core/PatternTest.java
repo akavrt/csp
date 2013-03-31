@@ -156,7 +156,7 @@ public class PatternTest {
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
-        assertEquals(0, pattern.getTrim(), DELTA);
+        assertEquals(0, pattern.getTrimWidth(), DELTA);
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170
         // trim: 200 - 170 = 30
@@ -166,7 +166,7 @@ public class PatternTest {
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
         pattern.setRoll(roll);
-        assertEquals(30, pattern.getTrim(), DELTA);
+        assertEquals(30, pattern.getTrimWidth(), DELTA);
         assertEquals(9000, pattern.getTrimArea(), DELTA);
     }
 

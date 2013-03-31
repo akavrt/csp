@@ -8,6 +8,8 @@ import com.akavrt.csp.solver.genetic.GeneticUnaryOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Random;
@@ -19,6 +21,7 @@ import java.util.Set;
  * Time: 02:10
  */
 public class Mutation implements GeneticUnaryOperator {
+    private static final Logger LOGGER = LogManager.getLogger(Mutation.class);
     private final PatternGenerator generator;
     private final Random rGen;
 
@@ -38,6 +41,7 @@ public class Mutation implements GeneticUnaryOperator {
     }
 
     private Chromosome useExistingRoll(Chromosome chromosome) {
+        LOGGER.info("MT: replacing pattern for existing roll.");
         Chromosome mutated = new Chromosome(chromosome);
 
         int index = rGen.nextInt(mutated.size());
@@ -48,7 +52,8 @@ public class Mutation implements GeneticUnaryOperator {
             int[] demand = calcDemand(roll, mutated);
 
             // generate new pattern
-            int[] pattern = generator.generate(roll.getWidth(), demand, 0);
+            // TODO move allowed trim ratio to algorithm parameters
+            int[] pattern = generator.generate(roll.getWidth(), demand, 0.1);
 
             // insert new gene into mutated chromosome
             Gene replacement = new Gene(pattern, roll);
@@ -59,6 +64,7 @@ public class Mutation implements GeneticUnaryOperator {
     }
 
     private Chromosome useNewRoll(Chromosome chromosome) {
+        LOGGER.info("MT: replacing pattern for a new roll.");
         Chromosome mutated = new Chromosome(chromosome);
 
         int index = rGen.nextInt(mutated.size());
@@ -73,7 +79,8 @@ public class Mutation implements GeneticUnaryOperator {
                 int[] demand = calcDemand(roll, mutated);
 
                 // generate new pattern
-                int[] pattern = generator.generate(roll.getWidth(), demand, 0);
+                // TODO move allowed trim ratio to algorithm parameters
+                int[] pattern = generator.generate(roll.getWidth(), demand, 0.1);
 
                 // insert new gene into mutated chromosome
                 Gene replacement = new Gene(pattern, roll);
@@ -119,7 +126,7 @@ public class Mutation implements GeneticUnaryOperator {
         return picked;
     }
 
-    public int[] calcDemand(Roll roll, Chromosome chromosome) {
+    private int[] calcDemand(Roll roll, Chromosome chromosome) {
         List<Order> orders = chromosome.getContext().getProblem().getOrders();
 
         int[] demand = new int[orders.size()];

@@ -100,8 +100,8 @@ public class GeneticAlgorithm implements Algorithm {
 
     private static class GeneticContext implements GeneticExecutionContext {
         private final ExecutionContext parentContext;
-        private double[] orderWidth;
-        private double[] orderLength;
+        private final double[] orderWidth;
+        private final double[] orderLength;
 
         public GeneticContext(ExecutionContext parentContext) {
             this.parentContext = parentContext;
