@@ -59,15 +59,15 @@ public class TraceUtils {
         } else {
             builder.append("  INVALID:");
             if (!solution.isPatternsValid(problem)) {
-                builder.append("\n    infeasible patterns found;");
+                builder.append("\n      infeasible patterns found;");
             }
 
             if (!solution.isRollsValid()) {
-                builder.append("\n    repeated rolls found;");
+                builder.append("\n      repeated rolls found;");
             }
 
             if (!solution.isOrdersFulfilled(problem.getOrders())) {
-                builder.append("\n    unfulfilled orders found;");
+                builder.append("\n      unfulfilled orders found;");
             }
         }
 

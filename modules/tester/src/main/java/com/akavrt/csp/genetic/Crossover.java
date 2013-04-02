@@ -22,7 +22,7 @@ public class Crossover implements GeneticBinaryOperator {
     private final Random rGen;
 
     public Crossover() {
-        this.rGen = new Random();
+        rGen = new Random();
     }
 
     @Override
@@ -59,7 +59,6 @@ public class Crossover implements GeneticBinaryOperator {
                 // child left unchanged
                 currentRatio = previousRatio;
             }
-
         }
         while (currentRatio <= previousRatio && pool.size() > 0);
 
@@ -69,7 +68,8 @@ public class Crossover implements GeneticBinaryOperator {
             child.removeGene(child.size() - 1);
         }
 
-        LOGGER.info("CX");
+        LOGGER.debug("CX: ch1({} genes), ch2({} genes) -> child({} genes)", firstParent.size(),
+                     secondParent.size(), child.size());
 
         return child;
     }

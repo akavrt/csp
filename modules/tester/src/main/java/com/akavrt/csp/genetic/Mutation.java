@@ -41,10 +41,11 @@ public class Mutation implements GeneticUnaryOperator {
     }
 
     private Chromosome useExistingRoll(Chromosome chromosome) {
-        LOGGER.info("MT: replacing pattern for existing roll.");
         Chromosome mutated = new Chromosome(chromosome);
 
         int index = rGen.nextInt(mutated.size());
+        LOGGER.debug("MT: remove gene {}/{}", index + 1, mutated.size());
+
         Roll roll = mutated.removeGene(index).getRoll();
 
         if (roll != null && getRatio(mutated) > getRatio(chromosome)) {
@@ -58,16 +59,20 @@ public class Mutation implements GeneticUnaryOperator {
             // insert new gene into mutated chromosome
             Gene replacement = new Gene(pattern, roll);
             mutated.addGene(index, replacement);
+
+            LOGGER.debug("MT: insert gene {}/{} (existing roll, new pattern)", index + 1,
+                         mutated.size());
         }
 
         return mutated;
     }
 
     private Chromosome useNewRoll(Chromosome chromosome) {
-        LOGGER.info("MT: replacing pattern for a new roll.");
         Chromosome mutated = new Chromosome(chromosome);
 
         int index = rGen.nextInt(mutated.size());
+        LOGGER.debug("MT: remove gene {}/{}", index + 1, mutated.size());
+
         mutated.removeGene(index);
 
         if (getRatio(mutated) > getRatio(chromosome)) {
@@ -85,6 +90,9 @@ public class Mutation implements GeneticUnaryOperator {
                 // insert new gene into mutated chromosome
                 Gene replacement = new Gene(pattern, roll);
                 mutated.addGene(index, replacement);
+
+                LOGGER.debug("MT: insert gene {}/{} (new roll, new pattern)", index + 1,
+                             mutated.size());
             }
         }
 

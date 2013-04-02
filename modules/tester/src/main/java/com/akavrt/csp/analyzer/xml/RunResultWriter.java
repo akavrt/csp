@@ -3,9 +3,9 @@ package com.akavrt.csp.analyzer.xml;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspWriter;
-import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.utils.ParameterSet;
+import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.xml.XmlWriter;
 import com.google.common.collect.Lists;
 import org.jdom2.Element;
@@ -119,9 +119,11 @@ public class RunResultWriter extends XmlWriter {
             }
         }
 
-        Element executionsElm = new Element(XmlTags.EXECUTIONS);
-        executionsElm.setText(Integer.toString(numberOfExecutions));
-        runElm.addContent(executionsElm);
+        if (numberOfExecutions > 0) {
+            Element executionsElm = new Element(XmlTags.EXECUTIONS);
+            executionsElm.setText(Integer.toString(numberOfExecutions));
+            runElm.addContent(executionsElm);
+        }
 
         if (collector != null) {
             collector.process();

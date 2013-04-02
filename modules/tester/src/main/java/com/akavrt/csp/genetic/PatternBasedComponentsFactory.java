@@ -6,6 +6,7 @@ import com.akavrt.csp.solver.genetic.GeneticComponentsFactory;
 import com.akavrt.csp.solver.genetic.GeneticUnaryOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
 
 /**
  * User: akavrt

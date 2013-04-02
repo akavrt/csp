@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
  * Time: 14:33
  */
 public class ChromosomeTest {
-    private GeneticContext context;
+    private GeneticTestContext context;
     private Roll roll1;
     private Roll roll2;
     private Roll roll3;
@@ -48,7 +48,7 @@ public class ChromosomeTest {
         rolls.add(roll4);
 
         Problem problem = new Problem(orders, rolls);
-        context = new GeneticContext(problem);
+        context = new GeneticTestContext(problem);
     }
 
     @Test

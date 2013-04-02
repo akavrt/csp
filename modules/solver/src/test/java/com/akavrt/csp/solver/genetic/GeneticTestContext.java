@@ -1,20 +1,19 @@
-package com.akavrt.csp.tester;
+package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
 
 /**
  * User: akavrt
  * Date: 31.03.13
  * Time: 14:59
  */
-public class GeneticContext implements GeneticExecutionContext {
+public class GeneticTestContext implements GeneticExecutionContext {
     private final Problem problem;
     private final double[] orderWidth;
     private final double[] orderLength;
 
-    public GeneticContext(Problem problem) {
+    public GeneticTestContext(Problem problem) {
         this.problem = problem;
 
         orderWidth = new double[problem.getOrders().size()];

@@ -98,7 +98,7 @@ public class GeneticAlgorithm implements Algorithm {
         return population.getSolutions();
     }
 
-    private static class GeneticContext implements GeneticExecutionContext {
+    public static class GeneticContext implements GeneticExecutionContext {
         private final ExecutionContext parentContext;
         private final double[] orderWidth;
         private final double[] orderLength;

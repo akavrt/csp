@@ -8,11 +8,12 @@ import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;
 import com.akavrt.csp.solver.Algorithm;
-import com.akavrt.csp.solver.genetic.*;
+import com.akavrt.csp.solver.SimpleSolver;
+import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
+import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
-import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
 import com.akavrt.csp.tester.tracer.TraceUtils;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,57 +61,51 @@ public class GeneticTester {
         GeneticAlgorithmParameters params = new GeneticAlgorithmParameters();
         params.setPopulationSize(30);
         params.setExchangeSize(20);
-        params.setRunSteps(20000);
+        params.setRunSteps(10000);
         params.setCrossoverRate(0.5);
 
-        GeneticExecutionContext context = new GeneticContext(problem);
-        Population population = new Population(context, params, metric);
-
-        Algorithm initProcedure = new SimplifiedProcedure(generator);
-        population.initialize(initProcedure);
-        population.sort();
-
-        System.out.println("*** INITIAL ***");
-        tracePopulation(population, problem, tracer);
-
-        GeneticBinaryOperator crossover = factory.createCrossoverOperator();
-        GeneticUnaryOperator mutation = factory.createMutationOperator();
-
-        for (int i = 0; i < params.getRunSteps(); i++) {
-            population.generation(crossover, mutation);
-
-            if (i == params.getRunSteps() - 1) {
-                population.sort();
-
-                System.out.println("*** GENERATION #" + (i + 1) + "***");
-                tracePopulation(population, problem, tracer);
-            }
-        }
-
-
-        /*
+        long start = System.currentTimeMillis();
         Algorithm method = new GeneticAlgorithm(factory, metric, params);
         SimpleSolver solver = new SimpleSolver(problem, method);
         solver.solve();
+        long end = System.currentTimeMillis();
 
+        List<Solution> solutions = solver.getSolutions();
+        Collections.sort(solutions, metric.getReverseComparator());
+
+        System.out.println("*** RESULTS ***");
+        tracePopulation(solutions, problem, tracer);
+        System.out.println(String.format("Run time: %.2f second", 0.001 * (end - start)));
+
+        /*
         Solution best = solver.getBestSolution(metric);
 
         if (best != null) {
-            ScalarTracer tracer = new ScalarTracer(metric, problem);
             String trace = TraceUtils.traceSolution(best, problem, tracer, true);
             System.out.println("*** OVERALL BEST solution found:\n" + trace);
+
+            File file = new File("/Users/akavrt/Sandbox/output-opt10-ga.xml");
+
+            RunResultWriter writer = new RunResultWriter();
+
+            writer.setAlgorithm(method);
+            writer.setNumberOfExecutions(1);
+//            writer.setCollector(collector);
+            writer.setProblem(problem);
+            writer.addSolution(best);
+
+            writer.write(file, true);
         } else {
             System.out.println("Best is null.");
         }
         */
     }
 
-    private static void tracePopulation(Population population, Problem problem,
+    private static void tracePopulation(List<Solution> solutions, Problem problem,
                                         ScalarTracer tracer) {
-        List<Solution> solutions = population.getSolutions();
         int i = 0;
         for (Solution solution : solutions) {
-            String trace = TraceUtils.traceSolution(solution, problem, tracer, true);
+            String trace = TraceUtils.traceSolution(solution, problem, tracer, i == 0);
             System.out.println(String.format("*** Chromosome #%d:\n%s", ++i, trace));
         }
 
