@@ -1,8 +1,8 @@
 package com.akavrt.csp.solver.pattern;
 
+import com.akavrt.csp.utils.BaseParameters;
 import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;
-import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
 
 /**
@@ -14,10 +14,9 @@ import org.jdom2.Element;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class PatternGeneratorParameters implements ParameterSet {
+public class PatternGeneratorParameters extends BaseParameters {
     private static final int DEFAULT_GENERATION_TRIALS_LIMIT = 100;
     private int generationTrialsLimit = DEFAULT_GENERATION_TRIALS_LIMIT;
-    private String description;
 
     /**
      * <p>Maximum number of trials can be used by procedure while generating pattern.</p>
@@ -39,29 +38,13 @@ public class PatternGeneratorParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Element save() {
         Element paramsElm = new Element(XmlTags.PARAMETERS);
 
         // optional description
-        if (!Utils.isEmpty(description)) {
+        if (!Utils.isEmpty(getDescription())) {
             Element descriptionElm = new Element(XmlTags.DESCRIPTION);
-            descriptionElm.setText(description);
+            descriptionElm.setText(getDescription());
             paramsElm.addContent(descriptionElm);
         }
 

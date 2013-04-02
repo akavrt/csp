@@ -1,8 +1,8 @@
 package com.akavrt.csp.metrics;
 
+import com.akavrt.csp.utils.BaseParameters;
 import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;
-import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
 
 /**
@@ -10,14 +10,13 @@ import org.jdom2.Element;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class ScalarMetricParameters implements ParameterSet {
+public class ScalarMetricParameters extends BaseParameters {
     private static final double DEFAULT_TRIM_FACTOR = 0.33;
     private static final double DEFAULT_PATTERNS_FACTOR = 0.33;
     private static final double DEFAULT_PRODUCTION_FACTOR = 0.33;
     private double trimFactor = DEFAULT_TRIM_FACTOR;
     private double patternsFactor = DEFAULT_PATTERNS_FACTOR;
     private double productionFactor = DEFAULT_PRODUCTION_FACTOR;
-    private String description;
 
     /**
      * <p>Weight associated with trim loss fractional ratio.</p>
@@ -65,29 +64,13 @@ public class ScalarMetricParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Element save() {
         Element scalarElm = new Element(XmlTags.SCALAR);
 
         // optional description
-        if (!Utils.isEmpty(description)) {
+        if (!Utils.isEmpty(getDescription())) {
             Element descriptionElm = new Element(XmlTags.DESCRIPTION);
-            descriptionElm.setText(description);
+            descriptionElm.setText(getDescription());
             scalarElm.addContent(descriptionElm);
         }
 

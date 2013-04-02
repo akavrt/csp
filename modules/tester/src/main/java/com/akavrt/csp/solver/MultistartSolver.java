@@ -18,6 +18,10 @@ public class MultistartSolver extends SimpleSolver {
     private int numberOfRuns = DEFAULT_NUMBER_OF_RUNS;
     private List<Collector> collectors;
 
+    public MultistartSolver(Algorithm algorithm, int numberOfRuns) {
+        this(null, algorithm, numberOfRuns);
+    }
+
     public MultistartSolver(Problem problem, Algorithm algorithm, int numberOfRuns) {
         super(problem, algorithm);
         this.numberOfRuns = numberOfRuns;

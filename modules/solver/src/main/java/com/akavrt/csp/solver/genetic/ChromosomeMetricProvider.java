@@ -7,9 +7,12 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 /**
- * User: akavrt
- * Date: 27.03.13
- * Time: 23:43
+ * <p>Implements all base metrics defined within MetricProvider interface for Chromosome.</p>
+ *
+ * <p>Simple caching strategy is used to speed up evaluations: metric value is recalculated only if
+ * there is no cached value or chromosome structure has been changed since last evaluation.</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class ChromosomeMetricProvider implements MetricProvider {
     private final GeneticExecutionContext context;
@@ -21,6 +24,14 @@ public class ChromosomeMetricProvider implements MetricProvider {
     private double cachedAverageUnderProductionRatio;
     private double cachedAverageOverProductionRatio;
 
+    /**
+     * <p>Creates context-aware instance of ChromosomeMetricProvider tied with specific instance of
+     * Chromosome.</p>
+     *
+     * @param context    Context provides access to the problem definition (information about
+     *                   orders is required to evaluate a number of basic metrics).
+     * @param chromosome The chromosome to be evaluated using predefined set of basic metrics.
+     */
     public ChromosomeMetricProvider(GeneticExecutionContext context, Chromosome chromosome) {
         this.context = context;
         this.chromosome = chromosome;
@@ -101,6 +112,30 @@ public class ChromosomeMetricProvider implements MetricProvider {
         return cachedUniquePatternsCount;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAverageUnderProductionRatio(Problem problem) {
+        return getAverageUnderProductionRatio();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAverageOverProductionRatio(Problem problem) {
+        return getAverageOverProductionRatio();
+    }
+
+    /**
+     * <p>Same as getAverageUnderProductionRatio(Problem problem).</p>
+     *
+     * <p>Each instance of ChromosomeMetricProvider is context-aware (it stores reference to an
+     * instance of GeneticExecutionContext). It means that access to the Problem can be obtained
+     * through context - there is no need to supply a reference to an instance of Problem through
+     * the list of arguments explicitly.</p>
+     */
     public double getAverageUnderProductionRatio() {
         if (cachedAverageUnderProductionRatio < 0) {
             double underProductionRatio = 0;
@@ -121,13 +156,13 @@ public class ChromosomeMetricProvider implements MetricProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * <p>Same as getAverageOverProductionRatio(Problem problem).</p>
+     *
+     * <p>Each instance of ChromosomeMetricProvider is context-aware (it stores reference to an
+     * instance of GeneticExecutionContext). It means that access to the Problem can be obtained
+     * through context - there is no need to supply a reference to an instance of Problem through
+     * the list of arguments explicitly.</p>
      */
-    @Override
-    public double getAverageUnderProductionRatio(Problem problem) {
-        return getAverageUnderProductionRatio();
-    }
-
     public double getAverageOverProductionRatio() {
         if (cachedAverageOverProductionRatio < 0) {
             double overProductionRatio = 0;
@@ -148,13 +183,9 @@ public class ChromosomeMetricProvider implements MetricProvider {
     }
 
     /**
-     * {@inheritDoc}
+     * <p>Resets cached values, should be manually called every time when chromosome structure is
+     * changed.</p>
      */
-    @Override
-    public double getAverageOverProductionRatio(Problem problem) {
-        return getAverageOverProductionRatio();
-    }
-
     public void resetCachedValues() {
         cachedTrimArea = -1;
         cachedTrimRatio = -1;

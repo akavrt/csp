@@ -17,8 +17,8 @@ import java.util.Set;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Solution implements Plan {
-    private List<Pattern> patterns;
     private final SolutionMetricProvider metricProvider;
+    private List<Pattern> patterns;
     private SolutionMetadata metadata;
 
     /**
@@ -30,7 +30,7 @@ public class Solution implements Plan {
     }
 
     /**
-     * <p>Create an instance of Solution with array of patterns provided as a parameter.</p>.
+     * <p>Create an instance of Solution with array of patterns provided as a parameter.</p>
      *
      * @param patterns The list of patters assigned to the solution.
      */

@@ -5,16 +5,18 @@ import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 
 /**
- * User: akavrt
- * Date: 27.03.13
- * Time: 16:03
+ * <p></p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Population {
     private static final Logger LOGGER = LogManager.getLogger(Population.class);
@@ -24,7 +26,6 @@ public class Population {
     private final Comparator<Plan> comparator;
     private List<Chromosome> chromosomes;
     private int age;
-    private int cleanupFrequency;
 
     public Population(GeneticExecutionContext context, GeneticAlgorithmParameters parameters,
                       Metric objectiveFunction) {
@@ -33,6 +34,10 @@ public class Population {
 
         rGen = new Random();
         comparator = objectiveFunction.getReverseComparator();
+    }
+
+    public int getAge() {
+        return age;
     }
 
     public List<Solution> getSolutions() {
@@ -56,14 +61,22 @@ public class Population {
             // run auxiliary algorithm
             List<Solution> solutions = initializationProcedure.execute(context);
 
-            if (solutions.size() > 0 && solutions.get(0) != null) {
-                // add new chromosome:
-                // conversion from solution to chromosome is done automatically
-                chromosomes.add(new Chromosome(context, solutions.get(0)));
+            if (solutions != null && solutions.size() > 0) {
+                // some of the methods constructs multiple solutions in a single run
+                for (Solution solution : solutions) {
+                    if (solution != null) {
+                        // add new chromosome:
+                        // conversion from solution to chromosome is done automatically
+                        chromosomes.add(new Chromosome(context, solutions.get(0)));
+
+                        // exit early if number of the chromosomes is sufficient
+                        if (chromosomes.size() == parameters.getPopulationSize()) {
+                            break;
+                        }
+                    }
+                }
             }
         }
-
-        cleanupFrequency = calculateAverageChromosomeLength();
     }
 
     public void sort() {
@@ -79,7 +92,7 @@ public class Population {
     /**
      * <p>ModGA generation scheme is used.</p>
      */
-    public void generation(GeneticBinaryOperator crossover, GeneticUnaryOperator mutation) {
+    public void generation(GeneticOperator crossover, GeneticOperator mutation) {
         age++;
         LOGGER.debug("*** GENERATION {} ***", age);
 
@@ -101,20 +114,11 @@ public class Population {
         for (int j = 0; j < exchangeList.size(); j++) {
             chromosomes.set(offset + j, exchangeList.get(j));
         }
-
-        if (cleanupFrequency > 0 && age % cleanupFrequency == 0) {
-            // do clean up
-            cleanUp(mutation);
-        }
-    }
-
-    public int getAge() {
-        return age;
     }
 
     private List<Chromosome> prepareExchange(List<Chromosome> exchangeList,
-                                             GeneticBinaryOperator crossover,
-                                             GeneticUnaryOperator mutation) {
+                                             GeneticOperator crossover,
+                                             GeneticOperator mutation) {
         // let's produce exactly GeneticAlgorithmParameters.getExchangeSize()
         // new chromosomes iteratively applying crossover and mutation operators
         List<Chromosome> matingPool = Lists.newArrayList();
@@ -165,58 +169,4 @@ public class Population {
         return exchangeList;
     }
 
-    private void cleanUp(GeneticUnaryOperator mutation) {
-        if (chromosomes == null || chromosomes.size() == 0) {
-            return;
-        }
-
-        cleanupFrequency = calculateAverageChromosomeLength();
-        LOGGER.debug("CLEAN UP at generation #{}, frequency is {}", age, cleanupFrequency);
-
-        Set<Chromosome> unique = Sets.newHashSet();
-        for (Chromosome chromosome : chromosomes) {
-            unique.add(chromosome);
-        }
-
-        if (unique.size() < chromosomes.size()) {
-            List<Chromosome> replacement = Lists.newArrayList();
-
-            for (int i = 0; i < chromosomes.size() - unique.size(); i++) {
-                int index = rGen.nextInt(chromosomes.size());
-                Chromosome original = chromosomes.get(index);
-
-                Chromosome mutated = mutation.apply(original);
-                replacement.add(mutated);
-            }
-
-            // replace repeating plans
-            chromosomes.clear();
-
-            // previously constructed plans
-            for (Chromosome chromosome : unique) {
-                chromosomes.add(chromosome);
-            }
-
-            // mutated plans (replacement for repeating plans)
-            for (Chromosome chromosome : replacement) {
-                chromosomes.add(chromosome);
-            }
-
-            LOGGER.debug("CLEAN UP at generation #{}, {} repeating plans were replaced", age,
-                        replacement.size());
-        }
-    }
-
-    private int calculateAverageChromosomeLength() {
-        if (chromosomes == null || chromosomes.size() == 0) {
-            return 0;
-        }
-
-        int totalLength = 0;
-        for (Chromosome chromosome : chromosomes) {
-            totalLength += chromosome.size();
-        }
-
-        return (int) Math.ceil(totalLength / (double) chromosomes.size());
-    }
 }

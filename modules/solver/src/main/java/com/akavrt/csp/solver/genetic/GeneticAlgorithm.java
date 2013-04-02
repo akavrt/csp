@@ -23,16 +23,16 @@ public class GeneticAlgorithm implements Algorithm {
     private static final String SHORT_METHOD_NAME = "modGA";
     private final GeneticAlgorithmParameters parameters;
     private final Metric objectiveFunction;
-    private final GeneticBinaryOperator crossover;
-    private final GeneticUnaryOperator mutation;
+    private final GeneticOperator crossover;
+    private final GeneticOperator mutation;
     private final Algorithm initializationProcedure;
 
     public GeneticAlgorithm(GeneticComponentsFactory componentsFactory, Metric objectiveFunction,
                             GeneticAlgorithmParameters parameters) {
         this.parameters = parameters;
         this.objectiveFunction = objectiveFunction;
-        this.crossover = componentsFactory.createCrossoverOperator();
-        this.mutation = componentsFactory.createMutationOperator();
+        this.crossover = componentsFactory.createCrossover();
+        this.mutation = componentsFactory.createMutation();
         this.initializationProcedure = componentsFactory.createInitializationProcedure();
     }
 
@@ -85,15 +85,17 @@ public class GeneticAlgorithm implements Algorithm {
 
     protected List<Solution> search(GeneticExecutionContext geneticContext,
                                     GeneticAlgorithmParameters parameters) {
+        crossover.initialize(geneticContext);
+        mutation.initialize(geneticContext);
+
         Population population = new Population(geneticContext, parameters, objectiveFunction);
         population.initialize(initializationProcedure);
 
-        int generation = 0;
-        while (!geneticContext.isCancelled() && generation < parameters.getRunSteps()) {
+        while (!geneticContext.isCancelled() && population.getAge() < parameters.getRunSteps()) {
             population.generation(crossover, mutation);
-
-            generation++;
         }
+
+        population.sort();
 
         return population.getSolutions();
     }

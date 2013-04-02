@@ -1,8 +1,6 @@
 package com.akavrt.csp.genetic;
 
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.Gene;
-import com.akavrt.csp.solver.genetic.GeneticBinaryOperator;
+import com.akavrt.csp.solver.genetic.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +15,7 @@ import java.util.Set;
  * Date: 29.03.13
  * Time: 02:10
  */
-public class Crossover implements GeneticBinaryOperator {
+public class Crossover implements GeneticOperator {
     private static final Logger LOGGER = LogManager.getLogger(Crossover.class);
     private final Random rGen;
 
@@ -26,10 +24,19 @@ public class Crossover implements GeneticBinaryOperator {
     }
 
     @Override
-    public Chromosome apply(Chromosome firstParent, Chromosome secondParent) {
-        if (firstParent == null || secondParent == null) {
+    public void initialize(GeneticExecutionContext context) {
+        // should be used to initialize pattern generator or
+        // anything else which depends on problem definition
+    }
+
+    @Override
+    public Chromosome apply(Chromosome... parents) {
+        if (parents.length < 2 || parents[0] == null || parents[1] == null) {
             return null;
         }
+
+        Chromosome firstParent = parents[0];
+        Chromosome secondParent = parents[1];
 
         Chromosome child = new Chromosome(firstParent.getContext());
 

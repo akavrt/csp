@@ -2,9 +2,7 @@ package com.akavrt.csp.genetic;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Roll;
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.Gene;
-import com.akavrt.csp.solver.genetic.GeneticUnaryOperator;
+import com.akavrt.csp.solver.genetic.*;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -20,7 +18,7 @@ import java.util.Set;
  * Date: 29.03.13
  * Time: 02:10
  */
-public class Mutation implements GeneticUnaryOperator {
+public class Mutation implements GeneticOperator {
     private static final Logger LOGGER = LogManager.getLogger(Mutation.class);
     private final PatternGenerator generator;
     private final Random rGen;
@@ -31,13 +29,22 @@ public class Mutation implements GeneticUnaryOperator {
     }
 
     @Override
-    public Chromosome apply(Chromosome chromosome) {
-        if (chromosome == null) {
+    public void initialize(GeneticExecutionContext context) {
+        LOGGER.debug("MT: initializing pattern generator, allowed number of cuts is {}",
+                     context.getProblem().getAllowedCutsNumber());
+        generator.initialize(context.getProblem());
+    }
+
+    @Override
+    public Chromosome apply(Chromosome... chromosomes) {
+        if (chromosomes.length < 1 || chromosomes[0] == null) {
             return null;
         }
 
+        Chromosome original = chromosomes[0];
+
         double draw = rGen.nextDouble();
-        return draw < 0.5 ? useExistingRoll(chromosome) : useNewRoll(chromosome);
+        return draw < 0.5 ? useExistingRoll(original) : useNewRoll(original);
     }
 
     private Chromosome useExistingRoll(Chromosome chromosome) {

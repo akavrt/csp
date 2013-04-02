@@ -1,8 +1,8 @@
 package com.akavrt.csp.solver.sequential;
 
+import com.akavrt.csp.utils.BaseParameters;
 import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;
-import com.akavrt.csp.utils.ParameterSet;
 import org.jdom2.Element;
 
 /**
@@ -14,7 +14,7 @@ import org.jdom2.Element;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class SequentialProcedureParameters implements ParameterSet {
+public class SequentialProcedureParameters extends BaseParameters {
     private static final double DEFAULT_TRIM_RATIO_RELAX_STEP = 0.01;
     private static final double DEFAULT_TRIM_RATIO_LOWER_BOUND = 0;
     private static final double DEFAULT_TRIM_RATIO_UPPER_BOUND = 1;
@@ -25,7 +25,6 @@ public class SequentialProcedureParameters implements ParameterSet {
     private double trimRatioUpperBound = DEFAULT_TRIM_RATIO_UPPER_BOUND;
     private double patternUsageRatioUpperBound = DEFAULT_PATTER_USAGE_UPPER_BOUND;
     private int patternUsageRelaxStep = DEFAULT_PATTERN_USAGE_RELAX_STEP;
-    private String description;
 
     /**
      * <p>The fractional value by which aspiration level corresponding to trim loss is relaxed if
@@ -133,29 +132,13 @@ public class SequentialProcedureParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Element save() {
         Element paramsElm = new Element(XmlTags.PARAMETERS);
 
         // optional description
-        if (!Utils.isEmpty(description)) {
+        if (!Utils.isEmpty(getDescription())) {
             Element descriptionElm = new Element(XmlTags.DESCRIPTION);
-            descriptionElm.setText(description);
+            descriptionElm.setText(getDescription());
             paramsElm.addContent(descriptionElm);
         }
 

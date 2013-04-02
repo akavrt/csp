@@ -13,9 +13,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * User: akavrt
- * Date: 27.03.13
- * Time: 16:02
+ * <p>Genetic algorithm uses pretty straightforward representation scheme: genes corresponds to
+ * cutting patterns with rolls attached to them (see Pattern), while chromosomes corresponds to
+ * cutting plans (see Solution) - i.e. no additional coding is used.</p>
+ *
+ * <p>Chromosome mimics Pattern and internally stores cutting plan as an ordered list of cutting
+ * patterns (chain of genes in this case).</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Chromosome implements Plan {
     private final List<Gene> genes;
@@ -24,10 +29,21 @@ public class Chromosome implements Plan {
     private int cachedHashCode;
     private boolean useCachedHashCode;
 
+    /**
+     * <p>Creates context-aware instance of Chromosome with empty chain of genes.</p>
+     *
+     * @param context Context provides access to the problem definition.
+     */
     public Chromosome(GeneticExecutionContext context) {
         this(context, null);
     }
 
+    /**
+     * <p>Converts an instance of Solution into new context-aware instance of Chromosome.</p>
+     *
+     * @param context  Context provides access to the problem definition.
+     * @param solution Solution to be converted into chromosome.
+     */
     public Chromosome(GeneticExecutionContext context, Solution solution) {
         this.context = context;
 
@@ -41,9 +57,13 @@ public class Chromosome implements Plan {
 
             commit();
         }
-
     }
 
+    /**
+     * <p>Copy constructor.</p>
+     *
+     * @param chromosome Chromosome to be copied.
+     */
     public Chromosome(Chromosome chromosome) {
         this.context = chromosome.context;
 
@@ -60,6 +80,11 @@ public class Chromosome implements Plan {
         commit();
     }
 
+    /**
+     * <p>Converts chromosome into equivalent instance of Solution.</p>
+     *
+     * @return An instance of Solution equivalent to the current chromosome.
+     */
     public Solution convert() {
         Solution solution = new Solution();
         for (Gene gene : genes) {
@@ -114,6 +139,13 @@ public class Chromosome implements Plan {
         return gene;
     }
 
+    /**
+     * <p>Calculate the length of the finished product we will get for specific order after
+     * executing cutting plan. Measured in abstract units.</p>
+     *
+     * @param index Position of the order in the list of orders provided by problem definition.
+     * @return The length of produced strip.
+     */
     public double getProductionLengthForOrder(int index) {
         double productionLength = 0;
 
@@ -124,7 +156,13 @@ public class Chromosome implements Plan {
         return productionLength;
     }
 
-    public boolean isPatternsValid() {
+    /**
+     * <p>Check validity of used patterns.</p>
+     *
+     * @return true if plan represented by this chromosome consists of valid patterns only, false
+     *         otherwise.
+     */
+    private boolean isPatternsValid() {
         boolean isPatternValid = true;
 
         // exit on the first invalid pattern
@@ -138,7 +176,14 @@ public class Chromosome implements Plan {
         return isPatternValid;
     }
 
-    public boolean isRollsValid() {
+    /**
+     * <p>Valid plans can cut each roll (attach it to the pattern) only once. Multiple usage of the
+     * rolls isn't allowed.</p>
+     *
+     * @return true if plan represented by this chromosome doesn't contain rolls which are used
+     *         more than once, false otherwise.
+     */
+    private boolean isRollsValid() {
         Set<Integer> rollIds = Sets.newHashSet();
         boolean isRepeatedRollFound = false;
         for (Gene gene : genes) {
@@ -152,6 +197,12 @@ public class Chromosome implements Plan {
         return !isRepeatedRollFound;
     }
 
+    /**
+     * <p>Check whether all requirements for order's length are met. If any order with insufficient
+     * length can be found, solution should be treated as invalid one.</p>
+     *
+     * @return true if strip of sufficient length will be produced for all orders, false otherwise.
+     */
     public boolean isOrdersFulfilled() {
         boolean isOrderFulfilled = true;
 
@@ -170,24 +221,48 @@ public class Chromosome implements Plan {
         return isOrderFulfilled;
     }
 
+    /**
+     * <p>Check all characteristics of the cutting plan represented by this chromosome to determine
+     * whether it is valid or not.</p>
+     *
+     * @return true if cutting plan is valid, false otherwise.
+     */
     public boolean isValid() {
         return isPatternsValid() && isRollsValid() && isOrdersFulfilled();
     }
 
     /**
-     * <p>Commit changes, reset previously calculated (cached) values of the base metrics and
+     * <p>Commit changes, reset previously calculated (cached) values of the basic metrics and
      * chromosome's hash code.</p>
      */
-    public void commit() {
+    private void commit() {
         useCachedHashCode = false;
         metricProvider.resetCachedValues();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ChromosomeMetricProvider getMetricProvider() {
         return metricProvider;
     }
 
+    /**
+     * <p>Hash code is extensively used to discover repeating cutting plans represented by a
+     * different chromosomes, eliminate them and preserve diversity in the population.</p>
+     *
+     * <p>Calculation of the hash code intentionally designed to ignore the order of genes in the
+     * chain. This way we can ensure that original chromosome and chromosome obtained by applying
+     * any number of permutations to the chain of genes stored within original chromosome will have
+     * same hash code.</p>
+     *
+     * <p>To speed up calculation of hash code simple caching is used: fresh hash code value is
+     * calculated only if there is no cached value or chromosome structure has been changed since
+     * last calculation.</p>
+     *
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         if (!useCachedHashCode) {
@@ -211,6 +286,9 @@ public class Chromosome implements Plan {
         return cachedHashCode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

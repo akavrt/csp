@@ -21,12 +21,12 @@ public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
     }
 
     @Override
-    public GeneticBinaryOperator createCrossoverOperator() {
+    public GeneticBinaryOperator createCrossover() {
         return new Crossover();
     }
 
     @Override
-    public GeneticUnaryOperator createMutationOperator() {
+    public GeneticUnaryOperator createMutation() {
         return new Mutation(patternGenerator);
     }
 

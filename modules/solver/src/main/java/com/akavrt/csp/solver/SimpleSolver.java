@@ -3,6 +3,7 @@ package com.akavrt.csp.solver;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.metrics.Metric;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.List;
 
@@ -14,9 +15,13 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SimpleSolver implements Solver {
-    private final Problem problem;
+    private Problem problem;
     private final Algorithm algorithm;
     private List<Solution> solutions;
+
+    public SimpleSolver(Algorithm algorithm) {
+        this(null, algorithm);
+    }
 
     public SimpleSolver(Problem problem, Algorithm algorithm) {
         this.problem = problem;
@@ -44,8 +49,15 @@ public class SimpleSolver implements Solver {
     /**
      * <p>Problem associated with solver.</p>
      */
-    protected Problem getProblem() {
+    public Problem getProblem() {
         return problem;
+    }
+
+    /**
+     * <p>Set the problem to be solved.</p>
+     */
+    public void setProblem(Problem problem) {
+        this.problem = problem;
     }
 
     /**

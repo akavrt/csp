@@ -1,6 +1,6 @@
 package com.akavrt.csp.solver.genetic;
 
-import com.akavrt.csp.utils.ParameterSet;
+import com.akavrt.csp.utils.BaseParameters;
 import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;
 import org.jdom2.Element;
@@ -10,7 +10,7 @@ import org.jdom2.Element;
  * Date: 27.03.13
  * Time: 16:12
  */
-public class GeneticAlgorithmParameters implements ParameterSet {
+public class GeneticAlgorithmParameters extends BaseParameters {
     private static final int DEFAULT_POPULATION_SIZE = 30;
     private static final int DEFAULT_EXCHANGE_SIZE = 20;
     private static final int DEFAULT_RUN_STEPS = 1000;
@@ -19,7 +19,6 @@ public class GeneticAlgorithmParameters implements ParameterSet {
     private int exchangeSize = DEFAULT_EXCHANGE_SIZE;
     private int runSteps = DEFAULT_RUN_STEPS;
     private double crossoverRate = DEFAULT_CROSSOVER_RATE;
-    private String description;
 
     public int getPopulationSize() {
         return populationSize;
@@ -57,29 +56,13 @@ public class GeneticAlgorithmParameters implements ParameterSet {
      * {@inheritDoc}
      */
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Element save() {
         Element paramsElm = new Element(XmlTags.PARAMETERS);
 
         // optional description
-        if (!Utils.isEmpty(description)) {
+        if (!Utils.isEmpty(getDescription())) {
             Element descriptionElm = new Element(XmlTags.DESCRIPTION);
-            descriptionElm.setText(description);
+            descriptionElm.setText(getDescription());
             paramsElm.addContent(descriptionElm);
         }
 

@@ -99,7 +99,11 @@ public abstract class SequentialProcedure implements Algorithm {
      */
     @Override
     public List<ParameterSet> getParameters() {
-        return Lists.newArrayList(getMethodParameters(), patternGenerator.getParameters());
+        List<ParameterSet> parameters = Lists.newArrayList();
+        parameters.add(getMethodParameters());
+        parameters.add(patternGenerator.getParameters());
+
+        return parameters;
     }
 
     /**
