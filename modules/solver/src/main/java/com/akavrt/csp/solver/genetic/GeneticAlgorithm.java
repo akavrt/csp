@@ -102,36 +102,24 @@ public class GeneticAlgorithm implements Algorithm {
 
     public static class GeneticContext implements GeneticExecutionContext {
         private final ExecutionContext parentContext;
-        private final double[] orderWidth;
-        private final double[] orderLength;
 
         public GeneticContext(ExecutionContext parentContext) {
             this.parentContext = parentContext;
-
-            Problem problem = parentContext.getProblem();
-
-            orderWidth = new double[problem.getOrders().size()];
-            orderLength = new double[problem.getOrders().size()];
-            for (int i = 0; i < problem.getOrders().size(); i++) {
-                Order order = problem.getOrders().get(i);
-                orderWidth[i] = order.getWidth();
-                orderLength[i] = order.getLength();
-            }
         }
 
         @Override
         public double getOrderWidth(int index) {
-            return orderWidth[index];
+            return parentContext.getProblem().getOrders().get(index).getWidth();
         }
 
         @Override
         public double getOrderLength(int index) {
-            return orderLength[index];
+            return parentContext.getProblem().getOrders().get(index).getLength();
         }
 
         @Override
         public int getOrdersSize() {
-            return orderWidth.length;
+            return parentContext.getProblem().getOrders().size();
         }
 
         @Override

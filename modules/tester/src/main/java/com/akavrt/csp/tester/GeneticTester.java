@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,7 +60,7 @@ public class GeneticTester {
         GeneticAlgorithmParameters params = new GeneticAlgorithmParameters();
         params.setPopulationSize(30);
         params.setExchangeSize(20);
-        params.setRunSteps(10000);
+        params.setRunSteps(1000);
         params.setCrossoverRate(0.5);
 
         long start = System.currentTimeMillis();
@@ -71,7 +70,7 @@ public class GeneticTester {
         long end = System.currentTimeMillis();
 
         List<Solution> solutions = solver.getSolutions();
-        Collections.sort(solutions, metric.getReverseComparator());
+//        Collections.sort(solutions, metric.getReverseComparator());
 
         System.out.println("*** RESULTS ***");
         tracePopulation(solutions, problem, tracer);

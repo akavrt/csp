@@ -1,12 +1,10 @@
 package com.akavrt.csp.genetic;
 
 import com.akavrt.csp.solver.Algorithm;
-import com.akavrt.csp.solver.genetic.GeneticBinaryOperator;
 import com.akavrt.csp.solver.genetic.GeneticComponentsFactory;
-import com.akavrt.csp.solver.genetic.GeneticUnaryOperator;
+import com.akavrt.csp.solver.genetic.GeneticOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
-import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
 
 /**
  * User: akavrt
@@ -21,12 +19,12 @@ public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
     }
 
     @Override
-    public GeneticBinaryOperator createCrossover() {
+    public GeneticOperator createCrossover() {
         return new Crossover();
     }
 
     @Override
-    public GeneticUnaryOperator createMutation() {
+    public GeneticOperator createMutation() {
         return new Mutation(patternGenerator);
     }
 
