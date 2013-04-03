@@ -57,7 +57,11 @@ public class MultistartSolver extends SimpleSolver {
         List<Solution> solutions = Lists.newArrayList();
 
         for (Collector collector : collectors) {
-            collector.clear();
+            // global collectors collect values across different runs,
+            // thus resetting of global collectors has to be managed externally
+            if (!collector.isGlobal()) {
+                collector.clear();
+            }
         }
 
         ScalarMetric metric = new ScalarMetric(getProblem(), new ScalarMetricParameters());

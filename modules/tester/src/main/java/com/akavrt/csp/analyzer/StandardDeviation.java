@@ -31,7 +31,8 @@ public class StandardDeviation implements Measure {
         double mean = average.calculate(solutions, metric);
         double result = 0;
         for (Solution solution : solutions) {
-            result += (metric.evaluate(solution) - mean) * (metric.evaluate(solution) - mean);
+            double evaluated = metric.evaluate(solution);
+            result += (evaluated - mean) * (evaluated - mean);
         }
 
         return Math.sqrt(result / solutions.size());

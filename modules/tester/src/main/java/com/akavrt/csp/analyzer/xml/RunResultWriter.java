@@ -24,6 +24,7 @@ public class RunResultWriter extends XmlWriter {
     private List<Solution> solutions;
     private Algorithm algorithm;
     private int numberOfExecutions;
+    private int numberOfProblemsSolved;
     private XmlEnabledCollector collector;
 
     /**
@@ -80,6 +81,19 @@ public class RunResultWriter extends XmlWriter {
     }
 
     /**
+     * <p>Set number of problems solved in test run.</p>
+     *
+     * <p>We can run same algorithm to solve different problems (representing a class of problems
+     * with similar characteristics, for example). In this case it's useful to store the number of
+     * problems solved in test run.</p>
+     *
+     * @param numberOfProblemsSolved Number of problems solved in test run.
+     */
+    public void setNumberOfProblemsSolved(int numberOfProblemsSolved) {
+        this.numberOfProblemsSolved = numberOfProblemsSolved;
+    }
+
+    /**
      * <p>Set an instance of collector used to collect and prepare run results.</p>
      *
      * @param collector Collector used to collect and prepare run results.
@@ -119,6 +133,12 @@ public class RunResultWriter extends XmlWriter {
             }
         }
 
+        if (numberOfProblemsSolved > 0) {
+            Element executionsElm = new Element(XmlTags.PROBLEMS);
+            executionsElm.setText(Integer.toString(numberOfProblemsSolved));
+            runElm.addContent(executionsElm);
+        }
+
         if (numberOfExecutions > 0) {
             Element executionsElm = new Element(XmlTags.EXECUTIONS);
             executionsElm.setText(Integer.toString(numberOfExecutions));
@@ -126,7 +146,7 @@ public class RunResultWriter extends XmlWriter {
         }
 
         if (collector != null) {
-            collector.process();
+            collector.process(problem);
             Element metrics = collector.getResult();
 
             runElm.addContent(metrics);
@@ -152,6 +172,7 @@ public class RunResultWriter extends XmlWriter {
         problem = null;
         solutions.clear();
         algorithm = null;
+        numberOfProblemsSolved = 0;
         numberOfExecutions = 0;
         collector = null;
     }
@@ -163,6 +184,7 @@ public class RunResultWriter extends XmlWriter {
         String METHOD = "method";
         String NAME = "name";
         String PARAMETERS = "parameters";
+        String PROBLEMS = "problems";
         String EXECUTIONS = "executions";
     }
 }

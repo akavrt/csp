@@ -2,6 +2,8 @@ package com.akavrt.csp.analyzer.xml;
 
 import com.akavrt.csp.analyzer.Measure;
 import com.akavrt.csp.analyzer.SimpleCollector;
+import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.xml.XmlUtils;
 import com.akavrt.csp.metrics.Metric;
 import org.jdom2.Element;
@@ -13,8 +15,16 @@ import org.jdom2.Element;
 public class XmlEnabledCollector extends SimpleCollector {
     private Element result;
 
+    public XmlEnabledCollector() {
+        this(false);
+    }
+
+    public XmlEnabledCollector(boolean isGlobal) {
+        super(isGlobal);
+    }
+
     @Override
-    public void process() {
+    public void process(Problem problem) {
         if (solutions.size() == 0) {
             return;
         }
@@ -54,6 +64,29 @@ public class XmlEnabledCollector extends SimpleCollector {
             metricElm.addContent(measureElm);
         }
 
+        // calculate feasibility ratio
+        if (problem != null) {
+            int valid = 0;
+            for (Solution solution : solutions) {
+                if (solution.isValid(problem)) {
+                    valid++;
+                }
+            }
+
+            double feasibilityRatio = 100 * valid / (double) solutions.size();
+
+            Element feasibilityMetricElm = new Element(XmlTags.METRIC);
+            rootElm.addContent(feasibilityMetricElm);
+
+            Element feasibilityNameElm = new Element(XmlTags.NAME);
+            feasibilityNameElm.setText("Feasibility ratio");
+            feasibilityMetricElm.addContent(feasibilityNameElm);
+
+            Element feasibilityValueElm = new Element(XmlTags.VALUE);
+            feasibilityValueElm.setText(XmlUtils.formatDouble(feasibilityRatio) + "%");
+            feasibilityMetricElm.addContent(feasibilityValueElm);
+        }
+
         result = rootElm;
     }
 
@@ -65,6 +98,7 @@ public class XmlEnabledCollector extends SimpleCollector {
         String METRICS = "metrics";
         String METRIC = "metric";
         String NAME = "name";
+        String VALUE = "value";
     }
 
 }

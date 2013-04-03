@@ -1,5 +1,6 @@
 package com.akavrt.csp.analyzer;
 
+import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.metrics.Metric;
 import com.google.common.collect.Lists;
@@ -15,13 +16,19 @@ import java.util.List;
  */
 public class SimpleCollector implements Collector {
     private static final Logger LOGGER = LogManager.getFormatterLogger(SimpleCollector.class);
-
+    protected final boolean isGlobal;
     protected final List<Metric> metrics;
     protected final List<Measure> measures;
     protected final List<Solution> solutions;
     protected final List<Long> executionTimeInMillis;
 
     public SimpleCollector() {
+        this(false);
+    }
+
+    public SimpleCollector(boolean isGlobal) {
+        this.isGlobal = isGlobal;
+
         metrics = Lists.newArrayList();
         measures = Lists.newArrayList();
         solutions = Lists.newArrayList();
@@ -73,7 +80,7 @@ public class SimpleCollector implements Collector {
     }
 
     @Override
-    public void process() {
+    public void process(Problem problem) {
         if (solutions.size() == 0) {
             return;
         }
@@ -96,6 +103,25 @@ public class SimpleCollector implements Collector {
 
             LOGGER.info("  %s = %.4f", measure.name(), value);
         }
+
+        // calculate feasibility ratio
+        if (problem != null) {
+            int valid = 0;
+            for (Solution solution : solutions) {
+                if (solution.isValid(problem)) {
+                    valid++;
+                }
+            }
+
+            double feasibilityRatio = 100 * valid / (double) solutions.size();
+            LOGGER.info("Feasibility ratio:");
+            LOGGER.info("  %.0f%% of solutions are feasible", feasibilityRatio);
+        }
+    }
+
+    @Override
+    public boolean isGlobal() {
+        return isGlobal;
     }
 
 }

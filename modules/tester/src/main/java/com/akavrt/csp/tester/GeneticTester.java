@@ -1,5 +1,6 @@
 package com.akavrt.csp.tester;
 
+import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
