@@ -6,9 +6,12 @@ import com.akavrt.csp.xml.XmlUtils;
 import org.jdom2.Element;
 
 /**
- * User: akavrt
- * Date: 27.03.13
- * Time: 16:12
+ * <p>Base set of parameters used by genetic algorithm.</p>
+ *
+ * <p>An instance of this class can be saved to XML and extracted from it using methods defined in
+ * XmlCompatible interface.</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class GeneticAlgorithmParameters extends BaseParameters {
     private static final int DEFAULT_POPULATION_SIZE = 30;

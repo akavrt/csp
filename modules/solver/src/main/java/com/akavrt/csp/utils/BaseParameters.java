@@ -1,9 +1,10 @@
 package com.akavrt.csp.utils;
 
 /**
- * User: akavrt
- * Date: 02.04.13
- * Time: 20:34
+ * <p>Utility class which should be used as base class for classes representing parameter sets with
+ * description defined as a simple textual field.</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public abstract class BaseParameters implements ParameterSet {
     private String description;

@@ -14,7 +14,15 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * <p></p>
+ * <p>In genetic algorithm all operators including selection, reproduction and mutation are applied
+ * to chromosomes on the population level.</p>
+ *
+ * <p>Here we are rejecting generation scheme used in canonical genetic algorithm in favour of the
+ * so called modGA - modification proposed by Michalewicz. For more information on this subject
+ * check out this reference (pp. 62–65, in particular):</p>
+ *
+ * <p>Michalewicz Z. Genetic algorithms + data structures = evolution programs / Z. Michalewicz. —
+ * 3rd ed. — Berlin [etc.] : Springer-Verlag, 1998. — 387 p.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
@@ -24,22 +32,45 @@ public class Population {
     private final GeneticAlgorithmParameters parameters;
     private final Random rGen;
     private final Comparator<Plan> comparator;
-    private List<Chromosome> chromosomes;
+    private final List<Chromosome> chromosomes;
     private int age;
 
+    /**
+     * <p>Creates empty population. Initialization of the population has to be done separately by
+     * explicit call to initialize() method.</p>
+     *
+     * @param context           Context is needed to create context-aware chromosomes.
+     * @param parameters        Parameters of genetic algorithm.
+     * @param objectiveFunction Metric used to evaluate fitness and compare chromosomes with each
+     *                          other.
+     */
     public Population(GeneticExecutionContext context, GeneticAlgorithmParameters parameters,
                       Metric objectiveFunction) {
         this.context = context;
         this.parameters = parameters;
 
+        chromosomes = Lists.newArrayList();
+
         rGen = new Random();
         comparator = objectiveFunction.getReverseComparator();
     }
 
+    /**
+     * <p>Age of the population is defined as a number of full generation cycles the population has
+     * undergone since last initialization.</p>
+     *
+     * @return Age of the population.
+     */
     public int getAge() {
         return age;
     }
 
+    /**
+     * <p>Converts each chromosome stored within population into corresponding instance of Solution
+     * and returns them in a list.</p>
+     *
+     * @return Content of the population converted into the list of solutions.
+     */
     public List<Solution> getSolutions() {
         List<Solution> solutions = Lists.newArrayList();
 
@@ -52,8 +83,15 @@ public class Population {
         return solutions;
     }
 
+    /**
+     * <p>Fills in population with chromosomes obtained with a help of auxiliary algorithm and
+     * resets age counter to zero.</p>
+     *
+     * @param initializationProcedure Algorithm used to construct solutions. Conversion to
+     *                                chromosomes is handled by the population itself.
+     */
     public void initialize(Algorithm initializationProcedure) {
-        chromosomes = Lists.newArrayList();
+        chromosomes.clear();
         age = 0;
 
         // fill population with solutions generated using auxiliary algorithm
@@ -79,18 +117,20 @@ public class Population {
         }
     }
 
+    /**
+     * <p>On the population level of genetic algorithm we are using the following ordering: in a
+     * sorted list of chromosomes the best solution found will be the first element of the list,
+     * while the worst solution found will be located exactly at the end of the list.</p>
+     */
     public void sort() {
-        // TODO implement mechanism to sort population only when it needed
-        // (if population structure left unchanged - no need to resort it)
-
-        // here we are using reverse ordering: in a sorted list of chromosomes
-        // the best solution found will be the first element of the list,
-        // while the worst solution found will be located exactly at the end of the list
         Collections.sort(chromosomes, comparator);
     }
 
     /**
-     * <p>ModGA generation scheme is used.</p>
+     * <p>ModGA generation scheme is used to produce next generation of chromosomes.</p>
+     *
+     * @param crossover Implementation of crossover operator.
+     * @param mutation  Implementation of mutation operator.
      */
     public void generation(GeneticOperator crossover, GeneticOperator mutation) {
         age++;

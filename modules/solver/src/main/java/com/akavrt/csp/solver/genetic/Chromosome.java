@@ -94,22 +94,50 @@ public class Chromosome implements Plan {
         return solution;
     }
 
+    /**
+     * <p>Returns context provided to the chromosome on creation.</p>
+     *
+     * @return Associated context.
+     */
     public GeneticExecutionContext getContext() {
         return context;
     }
 
+    /**
+     * <p>Returns length of the chain of genes.</p>
+     *
+     * @return Length of the chain of genes.
+     */
     public int size() {
         return genes.size();
     }
 
+    /**
+     * <p>Returns list of genes added to the chromosome's chain.</p>
+     *
+     * @return List of genes.
+     */
     public List<Gene> getGenes() {
         return genes;
     }
 
+    /**
+     * <p>Returns the gene at the specified position in this chain.</p>
+     *
+     * @param index Index of the gene to return.
+     * @return The gene at the specified position in this chain.
+     */
     public Gene getGene(int index) {
         return index < genes.size() ? genes.get(index) : null;
     }
 
+    /**
+     * <p>Replaces the gene at the specified position in the chromosome's chain of genes with the
+     * specified gene.</p>
+     *
+     * @param index Index of the gene to replace.
+     * @param gene  Gene to be stored at the specified position.
+     */
     public void setGene(int index, Gene gene) {
         if (index < genes.size()) {
             genes.set(index, gene);
@@ -117,11 +145,24 @@ public class Chromosome implements Plan {
         }
     }
 
+    /**
+     * <p>Appends the specified gene to the end of the chromosome's chain og genes.</p>
+     *
+     * @param gene Gene to be appended to the chain.
+     */
     public void addGene(Gene gene) {
         genes.add(gene);
         commit();
     }
 
+    /**
+     * <p>Inserts the specified gene at the specified position in the chromosome's chain of genes.
+     * Shifts the gene currently at that position (if any) and any subsequent genes to the right
+     * (adds one to their indices).</p>
+     *
+     * @param index Index at which the specified gene is to be inserted.
+     * @param gene  Gene to be inserted.
+     */
     public void addGene(int index, Gene gene) {
         if (index <= genes.size()) {
             genes.add(index, gene);
@@ -129,6 +170,14 @@ public class Chromosome implements Plan {
         }
     }
 
+    /**
+     * <p>Removes the gene at the specified position in the chromosome's chain of genes. Shifts any
+     * subsequent genes to the left (subtracts one from their indices). Returns the gene that was
+     * removed from the chain.</p>
+     *
+     * @param index The index of the gene to be removed.
+     * @return The gene previously at the specified position.
+     */
     public Gene removeGene(int index) {
         Gene gene = null;
         if (index < genes.size()) {

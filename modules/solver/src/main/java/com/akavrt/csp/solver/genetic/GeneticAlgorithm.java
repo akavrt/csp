@@ -1,6 +1,5 @@
 package com.akavrt.csp.solver.genetic;
 
-import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
@@ -14,13 +13,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * User: akavrt
- * Date: 27.03.13
- * Time: 16:11
+ * <p>Generic implementation of genetic algorithm which conforms to the contract defined by the
+ * Algorithm interface.</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class GeneticAlgorithm implements Algorithm {
     private static final String METHOD_NAME = "Genetic algorithm based on modGA generation scheme";
-    private static final String SHORT_METHOD_NAME = "modGA";
+    private static final String SHORT_METHOD_NAME = "GA";
     private final GeneticAlgorithmParameters parameters;
     private final Metric objectiveFunction;
     private final GeneticOperator crossover;
@@ -36,11 +36,17 @@ public class GeneticAlgorithm implements Algorithm {
         this.initializationProcedure = componentsFactory.createInitializationProcedure();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String name() {
         return METHOD_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ParameterSet> getParameters() {
         List<ParameterSet> params = Lists.newArrayList();
@@ -56,6 +62,9 @@ public class GeneticAlgorithm implements Algorithm {
         return params;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Solution> execute(ExecutionContext context) {
         if (context.getProblem() == null) {
@@ -83,6 +92,13 @@ public class GeneticAlgorithm implements Algorithm {
         return metadata;
     }
 
+    /**
+     * <p>Represents single run of the genetic algorithm. Supports early termination.</p>
+     *
+     * @param geneticContext The context to run with.
+     * @param parameters     Parameters of genetic algorithm.
+     * @return Sorted list of solutions representing state of the population on the end of the run.
+     */
     protected List<Solution> search(GeneticExecutionContext geneticContext,
                                     GeneticAlgorithmParameters parameters) {
         crossover.initialize(geneticContext);
@@ -100,7 +116,7 @@ public class GeneticAlgorithm implements Algorithm {
         return population.getSolutions();
     }
 
-    public static class GeneticContext implements GeneticExecutionContext {
+    private static class GeneticContext implements GeneticExecutionContext {
         private final ExecutionContext parentContext;
 
         public GeneticContext(ExecutionContext parentContext) {
