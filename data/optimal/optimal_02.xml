@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <problem>
+        <metadata>
+            <name>optimal_02</name>
+            <author>Victor Balabanov</author>
+            <description>1.5D-CSP test case with proven optimal solution.</description>
+        </metadata>
+        <orders>
+            <order id="order1">
+                <strip>
+                    <width>0.1</width>
+                    <length>5300</length>
+                </strip>
+            </order>
+            <order id="order2">
+                <strip>
+                    <width>0.11</width>
+                    <length>5300</length>
+                </strip>
+            </order>
+            <order id="order3">
+                <strip>
+                    <width>0.14</width>
+                    <length>7950</length>
+                </strip>
+            </order>
+            <order id="order4">
+                <strip>
+                    <width>0.16</width>
+                    <length>2650</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll1" quantity="5">
+                <strip>
+                    <width>1</width>
+                    <length>600</length>
+                </strip>
+            </roll>
+            <roll id="roll2" quantity="1">
+                <strip>
+                    <width>1</width>
+                    <length>650</length>
+                </strip>
+            </roll>
+            <roll id="roll3" quantity="4">
+                <strip>
+                    <width>1</width>
+                    <length>800</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+    <solutions>
+        <solution id="solution1">
+            <metadata>
+                <description>Proven optimal solution: TL = 0; PD = 0; PR = 0.</description>
+            </metadata>
+            <patterns>
+                <pattern id="pattern1">
+                    <rolls>
+                        <roll quantity="2" ref="roll1" />
+                        <roll quantity="1" ref="roll2" />
+                        <roll quantity="1" ref="roll3" />
+                    </rolls>
+                    <cuts>
+                        <cut quantity="2" ref="order1" />
+                        <cut quantity="2" ref="order2" />
+                        <cut quantity="3" ref="order3" />
+                        <cut quantity="1" ref="order4" />
+                    </cuts>
+                </pattern>
+            </patterns>
+        </solution>
+    </solutions>
+</csp>

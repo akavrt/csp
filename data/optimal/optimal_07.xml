@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <problem>
+        <metadata>
+            <name>optimal_07</name>
+            <author>Victor Balabanov</author>
+            <description>1.5D-CSP test case with proven optimal solution.</description>
+        </metadata>
+        <orders>
+            <order id="order1">
+                <strip>
+                    <width>0.195</width>
+                    <length>4410</length>
+                </strip>
+            </order>
+            <order id="order2">
+                <strip>
+                    <width>0.225</width>
+                    <length>4400</length>
+                </strip>
+            </order>
+            <order id="order3">
+                <strip>
+                    <width>0.255</width>
+                    <length>1470</length>
+                </strip>
+            </order>
+            <order id="order4">
+                <strip>
+                    <width>0.29</width>
+                    <length>1470</length>
+                </strip>
+            </order>
+            <order id="order5">
+                <strip>
+                    <width>0.305</width>
+                    <length>4400</length>
+                </strip>
+            </order>
+            <order id="order6">
+                <strip>
+                    <width>0.335</width>
+                    <length>2940</length>
+                </strip>
+            </order>
+            <order id="order7">
+                <strip>
+                    <width>0.37</width>
+                    <length>4400</length>
+                </strip>
+            </order>
+            <order id="order8">
+                <strip>
+                    <width>0.4</width>
+                    <length>2200</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll01" quantity="5">
+                <strip>
+                    <width>1.5</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll02" quantity="5">
+                <strip>
+                    <width>1.5</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll03" quantity="5">
+                <strip>
+                    <width>1.5</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll04" quantity="5">
+                <strip>
+                    <width>1.5</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll05" quantity="5">
+                <strip>
+                    <width>1.5</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll06" quantity="5">
+                <strip>
+                    <width>1.55</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll07" quantity="5">
+                <strip>
+                    <width>1.55</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll08" quantity="5">
+                <strip>
+                    <width>1.55</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll09" quantity="5">
+                <strip>
+                    <width>1.55</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll10" quantity="5">
+                <strip>
+                    <width>1.55</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll11" quantity="5">
+                <strip>
+                    <width>1.6</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll12" quantity="5">
+                <strip>
+                    <width>1.6</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll13" quantity="5">
+                <strip>
+                    <width>1.6</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll14" quantity="5">
+                <strip>
+                    <width>1.6</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll15" quantity="5">
+                <strip>
+                    <width>1.6</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll16" quantity="5">
+                <strip>
+                    <width>1.7</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll17" quantity="5">
+                <strip>
+                    <width>1.7</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll18" quantity="5">
+                <strip>
+                    <width>1.7</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll19" quantity="5">
+                <strip>
+                    <width>1.7</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll20" quantity="5">
+                <strip>
+                    <width>1.7</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll21" quantity="5">
+                <strip>
+                    <width>1.75</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll22" quantity="5">
+                <strip>
+                    <width>1.75</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll23" quantity="5">
+                <strip>
+                    <width>1.75</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll24" quantity="5">
+                <strip>
+                    <width>1.75</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll25" quantity="5">
+                <strip>
+                    <width>1.75</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll26" quantity="5">
+                <strip>
+                    <width>1.8</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll27" quantity="5">
+                <strip>
+                    <width>1.8</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll28" quantity="5">
+                <strip>
+                    <width>1.8</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll29" quantity="5">
+                <strip>
+                    <width>1.8</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll30" quantity="5">
+                <strip>
+                    <width>1.8</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll31" quantity="5">
+                <strip>
+                    <width>1.9</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll32" quantity="5">
+                <strip>
+                    <width>1.9</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll33" quantity="5">
+                <strip>
+                    <width>1.9</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll34" quantity="5">
+                <strip>
+                    <width>1.9</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll35" quantity="5">
+                <strip>
+                    <width>1.9</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll36" quantity="5">
+                <strip>
+                    <width>2</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll37" quantity="5">
+                <strip>
+                    <width>2</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll38" quantity="5">
+                <strip>
+                    <width>2</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll39" quantity="5">
+                <strip>
+                    <width>2</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll40" quantity="5">
+                <strip>
+                    <width>2</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll41" quantity="5">
+                <strip>
+                    <width>2.05</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll42" quantity="5">
+                <strip>
+                    <width>2.05</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll43" quantity="5">
+                <strip>
+                    <width>2.05</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll44" quantity="5">
+                <strip>
+                    <width>2.05</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll45" quantity="5">
+                <strip>
+                    <width>2.05</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll46" quantity="5">
+                <strip>
+                    <width>2.1</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll47" quantity="5">
+                <strip>
+                    <width>2.1</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll48" quantity="5">
+                <strip>
+                    <width>2.1</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll49" quantity="5">
+                <strip>
+                    <width>2.1</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll50" quantity="5">
+                <strip>
+                    <width>2.1</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll51" quantity="5">
+                <strip>
+                    <width>2.2</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll52" quantity="5">
+                <strip>
+                    <width>2.2</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll53" quantity="5">
+                <strip>
+                    <width>2.2</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll54" quantity="5">
+                <strip>
+                    <width>2.2</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll55" quantity="5">
+                <strip>
+                    <width>2.2</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+            <roll id="roll56" quantity="5">
+                <strip>
+                    <width>2.3</width>
+                    <length>200</length>
+                </strip>
+            </roll>
+            <roll id="roll57" quantity="5">
+                <strip>
+                    <width>2.3</width>
+                    <length>220</length>
+                </strip>
+            </roll>
+            <roll id="roll58" quantity="5">
+                <strip>
+                    <width>2.3</width>
+                    <length>290</length>
+                </strip>
+            </roll>
+            <roll id="roll59" quantity="5">
+                <strip>
+                    <width>2.3</width>
+                    <length>340</length>
+                </strip>
+            </roll>
+            <roll id="roll60" quantity="5">
+                <strip>
+                    <width>2.3</width>
+                    <length>410</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+    <solutions>
+        <solution id="solution1">
+            <metadata>
+                <description>Supposed optimal solution: TL = 0; PD = 0; PR = 0.08.</description>
+            </metadata>
+            <patterns>
+                <pattern id="pattern1">
+                    <rolls>
+                        <roll quantity="2" ref="roll26" />
+                        <roll quantity="3" ref="roll27" />
+                        <roll quantity="1" ref="roll30" />
+                    </rolls>
+                    <cuts>
+                        <cut quantity="3" ref="order1" />
+                        <cut quantity="1" ref="order3" />
+                        <cut quantity="1" ref="order4" />
+                        <cut quantity="2" ref="order6" />
+                    </cuts>
+                </pattern>
+                <pattern id="pattern2">
+                    <rolls>
+                        <roll quantity="1" ref="roll52" />
+                        <roll quantity="4" ref="roll53" />
+                        <roll quantity="2" ref="roll55" />
+                    </rolls>
+                    <cuts>
+                        <cut quantity="2" ref="order2" />
+                        <cut quantity="2" ref="order5" />
+                        <cut quantity="2" ref="order7" />
+                        <cut quantity="1" ref="order8" />
+                    </cuts>
+                </pattern>
+            </patterns>
+        </solution>
+    </solutions>
+</csp>

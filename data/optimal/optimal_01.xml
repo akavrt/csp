@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <problem>
+        <metadata>
+            <name>optimal_01</name>
+            <author>Victor Balabanov</author>
+            <description>1.5D-CSP test case with proven optimal solution.</description>
+        </metadata>
+        <orders>
+            <order id="order1">
+                <strip>
+                    <width>0.1</width>
+                    <length>6400</length>
+                </strip>
+            </order>
+            <order id="order2">
+                <strip>
+                    <width>0.11</width>
+                    <length>6400</length>
+                </strip>
+            </order>
+            <order id="order3">
+                <strip>
+                    <width>0.14</width>
+                    <length>9600</length>
+                </strip>
+            </order>
+            <order id="order4">
+                <strip>
+                    <width>0.16</width>
+                    <length>3200</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll1" quantity="10">
+                <strip>
+                    <width>1</width>
+                    <length>800</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+    <solutions>
+        <solution id="solution1">
+            <metadata>
+                <description>Proven optimal solution: TL = 0; PD = 0; PR = 0.</description>
+            </metadata>
+            <patterns>
+                <pattern id="pattern1">
+                    <rolls>
+                        <roll quantity="4" ref="roll1" />
+                    </rolls>
+                    <cuts>
+                        <cut quantity="2" ref="order1" />
+                        <cut quantity="2" ref="order2" />
+                        <cut quantity="3" ref="order3" />
+                        <cut quantity="1" ref="order4" />
+                    </cuts>
+                </pattern>
+            </patterns>
+        </solution>
+    </solutions>
+</csp>
