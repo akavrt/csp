@@ -27,8 +27,8 @@ import java.util.Locale;
  */
 public class BatchProcessor {
     private static final Logger LOGGER = LogManager.getLogger(BatchProcessor.class);
-    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd-HH-mm";
-    private static final String RESULTS_DIRECTORY_PREFIX = "csp-run-";
+    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd_HH-mm";
+    private static final String RESULTS_DIRECTORY_PREFIX = "csp-run_";
     private static final String RESULTS_SUFFIX = "_run";
     private static final String RESULTS_EXTENSION = "xml";
     private static final String RUN_RESULTS_FILE_NAME = "csp-run-results" + "." + RESULTS_EXTENSION;
@@ -58,31 +58,6 @@ public class BatchProcessor {
 
     public void clearProblems() {
         problemPaths.clear();
-    }
-
-    private List<LoadedProblem> loadProblems() {
-        CspReader reader = new CspReader();
-        List<LoadedProblem> problems = Lists.newArrayList();
-        for (String problemPath : problemPaths) {
-            File file = new File(problemPath);
-
-            if (file.exists() && file.isFile() && file.canRead()) {
-                try {
-                    reader.read(file);
-
-                    Problem problem = reader.getProblem();
-                    if (problem == null) {
-                        LOGGER.error("Couldn't load problem using path '{}'", problemPath);
-                    } else {
-                        problems.add(new LoadedProblem(problemPath, problem));
-                    }
-                } catch (CspParseException e) {
-                    LOGGER.catching(e);
-                }
-            }
-        }
-
-        return problems;
     }
 
     public void process(XmlEnabledCollector globalCollector, String outputPath) {
@@ -137,6 +112,31 @@ public class BatchProcessor {
         if (globalCollector != null) {
             writeGlobalResults(outputDirectory, globalCollector, loadedProblems.size());
         }
+    }
+
+    private List<LoadedProblem> loadProblems() {
+        CspReader reader = new CspReader();
+        List<LoadedProblem> problems = Lists.newArrayList();
+        for (String problemPath : problemPaths) {
+            File file = new File(problemPath);
+
+            if (file.exists() && file.isFile() && file.canRead()) {
+                try {
+                    reader.read(file);
+
+                    Problem problem = reader.getProblem();
+                    if (problem == null) {
+                        LOGGER.error("Couldn't load problem using path '{}'", problemPath);
+                    } else {
+                        problems.add(new LoadedProblem(problemPath, problem));
+                    }
+                } catch (CspParseException e) {
+                    LOGGER.catching(e);
+                }
+            }
+        }
+
+        return problems;
     }
 
     private File createOutputDirectory(String outputPath) {

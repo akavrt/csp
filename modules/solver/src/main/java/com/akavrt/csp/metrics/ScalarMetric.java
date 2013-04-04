@@ -17,6 +17,15 @@ public class ScalarMetric extends MinimizationMetric {
     private final ScalarMetricParameters params;
 
     /**
+     * <p>Creates an instance of evaluator with default set of parameters. Can be reused to
+     * evaluate different solutions against problem and objective function with specific parameters
+     * provided during creation.</p>
+     */
+    public ScalarMetric() {
+        this(new ScalarMetricParameters());
+    }
+
+    /**
      * <p>Creates an instance of evaluator. Can be reused to evaluate different solutions against
      * problem and objective function with specific parameters provided during creation.</p>
      *

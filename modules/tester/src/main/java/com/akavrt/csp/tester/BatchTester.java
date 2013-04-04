@@ -1,5 +1,18 @@
 package com.akavrt.csp.tester;
 
+import com.akavrt.csp.analyzer.Average;
+import com.akavrt.csp.analyzer.StandardDeviation;
+import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
+import com.akavrt.csp.metrics.*;
+import com.akavrt.csp.solver.Algorithm;
+import com.akavrt.csp.solver.BatchProcessor;
+import com.akavrt.csp.solver.MultistartSolver;
+import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
+import com.akavrt.csp.solver.pattern.PatternGenerator;
+import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
+
 /**
  * User: akavrt
  * Date: 04.04.13
@@ -7,6 +20,68 @@ package com.akavrt.csp.tester;
  */
 public class BatchTester {
     public static void main(String[] args) {
+        PatternGenerator generator = createPatternGenerator();
+        Algorithm method = createAlgorithm(generator);
 
+        MultistartSolver solver = new MultistartSolver(method, 10);
+        BatchProcessor processor = new BatchProcessor(solver);
+
+        processor.addProblem("/Users/akavrt/Sandbox/csp/optimal_01.xml");
+        processor.addProblem("/Users/akavrt/Sandbox/csp/optimal_10.xml");
+
+        XmlEnabledCollector globalCollector = createGlobalCollector();
+        XmlEnabledCollector problemCollector = createProblemCollector();
+
+        String outputPath = "/Users/akavrt/Sandbox/csp";
+        processor.process(globalCollector, problemCollector, outputPath);
     }
+
+    private static PatternGenerator createPatternGenerator() {
+        PatternGeneratorParameters generatorParams = new PatternGeneratorParameters();
+        generatorParams.setGenerationTrialsLimit(20);
+        PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
+
+        return generator;
+    }
+
+    private static Algorithm createAlgorithm(PatternGenerator generator) {
+        VahrenkampProcedureParameters methodParams = new VahrenkampProcedureParameters();
+        methodParams.setPatternUsageUpperBound(0.5);
+        methodParams.setGoalmix(0.5);
+        methodParams.setTrimRatioUpperBound(1);
+        Algorithm method = new VahrenkampProcedure(generator, methodParams);
+
+        return method;
+    }
+
+    private static XmlEnabledCollector createProblemCollector() {
+        XmlEnabledCollector collector = new XmlEnabledCollector();
+        collector.addMeasure(new Average());
+        collector.addMeasure(new StandardDeviation());
+
+        ScalarMetric scalarMetric = new ScalarMetric();
+        collector.addMetric(scalarMetric);
+        collector.addMetric(new TrimLossMetric());
+        collector.addMetric(new PatternReductionMetric());
+        collector.addMetric(new UniquePatternsMetric());
+        collector.addMetric(new ActivePatternsMetric());
+        collector.addMetric(new ProductDeviationMetric());
+
+        return collector;
+    }
+
+    private static XmlEnabledCollector createGlobalCollector() {
+        XmlEnabledCollector collector = new XmlEnabledCollector();
+        collector.addMeasure(new Average());
+        collector.addMeasure(new StandardDeviation());
+
+        ScalarMetric scalarMetric = new ScalarMetric(new ScalarMetricParameters());
+        collector.addMetric(scalarMetric);
+        collector.addMetric(new ProductDeviationMetric());
+
+        return collector;
+    }
+
 }
+
+
