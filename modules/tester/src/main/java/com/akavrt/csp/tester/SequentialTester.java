@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * User: akavrt
@@ -38,10 +37,10 @@ public class SequentialTester {
     public static void main(String[] args) throws IOException {
         CspReader reader = new CspReader();
         try {
-            InputStream is = SequentialTester.class.getClassLoader().getResourceAsStream("optimal_10.xml");
-            reader.read(is);
+            File problemFile = new File("/Users/akavrt/Sandbox/csp/optimal_10.xml");
+            reader.read(problemFile);
         } catch (CspParseException e) {
-            e.printStackTrace();
+            LOGGER.catching(e);
         }
 
         Problem problem = reader.getProblem();

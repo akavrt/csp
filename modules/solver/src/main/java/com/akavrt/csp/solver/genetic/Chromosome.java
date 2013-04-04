@@ -206,33 +206,33 @@ public class Chromosome implements Plan {
     }
 
     /**
-     * <p>Check validity of used patterns.</p>
+     * <p>Check feasibility of used patterns.</p>
      *
-     * @return true if plan represented by this chromosome consists of valid patterns only, false
+     * @return true if plan represented by this chromosome consists of feasible patterns only, false
      *         otherwise.
      */
-    private boolean isPatternsValid() {
-        boolean isPatternValid = true;
+    private boolean isPatternsFeasible() {
+        boolean isPatternFeasible = true;
 
-        // exit on the first invalid pattern
+        // exit on the first infeasible pattern
         for (Gene gene : genes) {
-            if (!gene.isValid(context)) {
-                isPatternValid = false;
+            if (!gene.isFeasible(context)) {
+                isPatternFeasible = false;
                 break;
             }
         }
 
-        return isPatternValid;
+        return isPatternFeasible;
     }
 
     /**
-     * <p>Valid plans can cut each roll (attach it to the pattern) only once. Multiple usage of the
-     * rolls isn't allowed.</p>
+     * <p>Feasible plans can cut each roll (attach it to the pattern) only once. Multiple usage of
+     * the rolls isn't allowed.</p>
      *
      * @return true if plan represented by this chromosome doesn't contain rolls which are used
      *         more than once, false otherwise.
      */
-    private boolean isRollsValid() {
+    private boolean isRollUsageFeasible() {
         Set<Integer> rollIds = Sets.newHashSet();
         boolean isRepeatedRollFound = false;
         for (Gene gene : genes) {
@@ -248,7 +248,7 @@ public class Chromosome implements Plan {
 
     /**
      * <p>Check whether all requirements for order's length are met. If any order with insufficient
-     * length can be found, solution should be treated as invalid one.</p>
+     * length can be found, solution should be treated as infeasible one.</p>
      *
      * @return true if strip of sufficient length will be produced for all orders, false otherwise.
      */
@@ -272,12 +272,12 @@ public class Chromosome implements Plan {
 
     /**
      * <p>Check all characteristics of the cutting plan represented by this chromosome to determine
-     * whether it is valid or not.</p>
+     * whether it is feasible or not.</p>
      *
-     * @return true if cutting plan is valid, false otherwise.
+     * @return true if cutting plan is feasible, false otherwise.
      */
-    public boolean isValid() {
-        return isPatternsValid() && isRollsValid() && isOrdersFulfilled();
+    public boolean isFeasible() {
+        return isPatternsFeasible() && isRollUsageFeasible() && isOrdersFulfilled();
     }
 
     /**

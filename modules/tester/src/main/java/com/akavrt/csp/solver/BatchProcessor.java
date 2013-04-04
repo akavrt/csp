@@ -3,6 +3,7 @@ package com.akavrt.csp.solver;
 import com.akavrt.csp.analyzer.xml.RunResultWriter;
 import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
 import com.akavrt.csp.utils.Utils;
@@ -13,7 +14,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * User: akavrt
@@ -21,9 +26,12 @@ import java.util.List;
  * Time: 16:24
  */
 public class BatchProcessor {
-    private static final String RESULTS_EXTENSION = "xml";
-    private static final String RESULTS_SUFFIX= "_run";
     private static final Logger LOGGER = LogManager.getLogger(BatchProcessor.class);
+    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd-HH-mm";
+    private static final String RESULTS_DIRECTORY_PREFIX = "csp-run-";
+    private static final String RESULTS_SUFFIX = "_run";
+    private static final String RESULTS_EXTENSION = "xml";
+    private static final String RUN_RESULTS_FILE_NAME = "csp-run-results" + "." + RESULTS_EXTENSION;
     private final List<String> problemPaths;
     private final MultistartSolver solver;
 
@@ -31,12 +39,12 @@ public class BatchProcessor {
         this(solver, null);
     }
 
-    public BatchProcessor(MultistartSolver solver, List<String> paths) {
+    public BatchProcessor(MultistartSolver solver, List<String> problemPaths) {
         this.solver = solver;
-        this.problemPaths = Lists.newArrayList();
 
-        if (paths != null) {
-            problemPaths.addAll(paths);
+        this.problemPaths = Lists.newArrayList();
+        if (problemPaths != null) {
+            this.problemPaths.addAll(problemPaths);
         }
     }
 
@@ -77,22 +85,23 @@ public class BatchProcessor {
         return problems;
     }
 
-    public void process(XmlEnabledCollector globalCollector, String globalPath) {
-        process(globalCollector, globalPath, null);
+    public void process(XmlEnabledCollector globalCollector, String outputPath) {
+        process(globalCollector, null, outputPath);
     }
 
-    public void process(XmlEnabledCollector problemCollector) {
-        process(null, null, problemCollector);
-    }
-
-    public void process(XmlEnabledCollector globalCollector, String globalPath,
-                        XmlEnabledCollector problemCollector) {
+    public void process(XmlEnabledCollector globalCollector, XmlEnabledCollector problemCollector,
+                        String outputPath) {
         if (solver == null || (globalCollector == null && problemCollector == null)) {
             return;
         }
 
         List<LoadedProblem> loadedProblems = loadProblems();
         if (loadedProblems.size() == 0) {
+            return;
+        }
+
+        File outputDirectory = createOutputDirectory(outputPath);
+        if (outputDirectory == null) {
             return;
         }
 
@@ -115,22 +124,40 @@ public class BatchProcessor {
                 problemCollector.clear();
             }
 
+            LOGGER.info("Solving problem {},loaded from '{}'",
+                        extractProblemName(loadedProblem), loadedProblem.path);
             solver.setProblem(loadedProblem.problem);
             solver.solve();
 
             if (problemCollector != null) {
-                writeProblemResults(loadedProblem.path, loadedProblem.problem, problemCollector);
+                writeProblemResults(outputDirectory, loadedProblem, problemCollector);
             }
         }
 
         if (globalCollector != null) {
-            writeGlobalResults(globalPath, globalCollector, loadedProblems.size());
+            writeGlobalResults(outputDirectory, globalCollector, loadedProblems.size());
         }
     }
 
-    private boolean writeProblemResults(String path, Problem problem,
+    private File createOutputDirectory(String outputPath) {
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.ENGLISH);
+        String directoryName = RESULTS_DIRECTORY_PREFIX + dateFormat.format(new Date());
+
+        File outputDirectory = new File(outputPath, directoryName);
+        outputDirectory.mkdirs();
+
+        LOGGER.info("Creating output directory '{}'", outputDirectory.getPath());
+
+        if (!outputDirectory.exists() || !outputDirectory.canWrite()) {
+            return null;
+        }
+
+        return outputDirectory;
+    }
+
+    private boolean writeProblemResults(File outputDirectory, LoadedProblem loadedProblem,
                                         XmlEnabledCollector problemCollector) {
-        File problemFile = new File(path);
+        File problemFile = new File(loadedProblem.path);
 
         // remove extension from original name
         String problemFileName = FilenameUtils.removeExtension(problemFile.getName());
@@ -138,14 +165,17 @@ public class BatchProcessor {
         // and suffix and extension
         String resultsFileName = problemFileName + RESULTS_SUFFIX + "." + RESULTS_EXTENSION;
 
-        File resultsFile = new File(problemFile.getParent(), resultsFileName);
+        File resultsFile = new File(outputDirectory, resultsFileName);
         try {
+            LOGGER.info("Writing results for problem {}, into '{}'",
+                        extractProblemName(loadedProblem), resultsFile.getPath());
+
             RunResultWriter writer = new RunResultWriter();
 
             writer.setAlgorithm(solver.getAlgorithm());
             writer.setNumberOfExecutions(solver.getNumberOfRuns());
             writer.setCollector(problemCollector);
-            writer.setProblem(problem);
+            writer.setProblem(loadedProblem.problem);
 
             writer.write(resultsFile, true);
         } catch (IOException e) {
@@ -156,14 +186,12 @@ public class BatchProcessor {
         return true;
     }
 
-    private boolean writeGlobalResults(String globalPath, XmlEnabledCollector globalCollector,
+    private boolean writeGlobalResults(File outputDirectory, XmlEnabledCollector globalCollector,
                                        int numberOfProblemsSolved) {
-        if (Utils.isEmpty(globalPath)) {
-            return false;
-        }
-
-        File resultsFile = new File(globalPath);
+        File resultsFile = new File(outputDirectory, RUN_RESULTS_FILE_NAME);
         try {
+            LOGGER.info("Writing run results into '{}'", resultsFile.getPath());
+
             RunResultWriter writer = new RunResultWriter();
 
             writer.setAlgorithm(solver.getAlgorithm());
@@ -178,6 +206,21 @@ public class BatchProcessor {
         }
 
         return true;
+    }
+
+    private String extractProblemName(LoadedProblem loadedProblem) {
+        String problemName = null;
+        ProblemMetadata metadata = loadedProblem.problem.getMetadata();
+        if (metadata != null) {
+            problemName = metadata.getName();
+        }
+
+        if (Utils.isEmpty(problemName)) {
+            File problemFile = new File(loadedProblem.path);
+            problemName = FilenameUtils.removeExtension(problemFile.getName());
+        }
+
+        return problemName;
     }
 
     private static class LoadedProblem {

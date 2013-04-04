@@ -18,9 +18,9 @@ import java.util.Set;
  */
 public class Solution implements Plan {
     private final SolutionMetricProvider metricProvider;
+    private final Problem problem;
     private List<Pattern> patterns;
     private SolutionMetadata metadata;
-    private final Problem problem;
 
     /**
      * <p>Create an instance of Solution with empty array of patterns</p>.
@@ -96,32 +96,32 @@ public class Solution implements Plan {
     }
 
     /**
-     * <p>Check validity of used patterns.</p>
+     * <p>Check feasibility of used patterns.</p>
      *
-     * @return true if plan consists of valid patterns only, false otherwise.
+     * @return true if plan consists of feasible patterns only, false otherwise.
      */
-    public boolean isPatternsValid() {
-        boolean isPatternValid = true;
+    public boolean isPatternsFeasible() {
+        boolean isPatternFeasible = true;
 
-        // exit on the first invalid pattern
+        // exit on the first infeasible pattern
         int allowedCutsNumber = problem.getAllowedCutsNumber();
         for (Pattern pattern : patterns) {
-            if (!pattern.isValid(allowedCutsNumber)) {
-                isPatternValid = false;
+            if (!pattern.isFeasible(allowedCutsNumber)) {
+                isPatternFeasible = false;
                 break;
             }
         }
 
-        return isPatternValid;
+        return isPatternFeasible;
     }
 
     /**
-     * <p>Valid plans can cut each roll (attach it to the pattern) only once. Multiple usage of the
-     * rolls isn't allowed.</p>
+     * <p>Feasible plans can cut each roll (attach it to the pattern) only once. Multiple usage of
+     * the rolls isn't allowed.</p>
      *
      * @return true if plan doesn't contain rolls which are used more than once, false otherwise.
      */
-    public boolean isRollsValid() {
+    public boolean isRollUsageFeasible() {
         Set<Integer> rollIds = Sets.newHashSet();
         boolean isRepeatedRollFound = false;
         for (Pattern pattern : patterns) {
@@ -137,7 +137,7 @@ public class Solution implements Plan {
 
     /**
      * <p>Check whether all requirements for order's length are met. If any order with insufficient
-     * length can be found, solution should be treated as invalid one.</p>
+     * length can be found, solution should be treated as infeasible one.</p>
      *
      * @return true if strip of sufficient length will be produced for all orders, false otherwise.
      */
@@ -158,12 +158,12 @@ public class Solution implements Plan {
     }
 
     /**
-     * <p>Check all characteristics of the solution to determine whether it is valid or not.</p>
+     * <p>Check all characteristics of the solution to determine whether it is feasible or not.</p>
      *
-     * @return true if solution is valid, false otherwise.
+     * @return true if solution is feasible, false otherwise.
      */
-    public boolean isValid() {
-        return isPatternsValid() && isRollsValid() && isOrdersFulfilled();
+    public boolean isFeasible() {
+        return isPatternsFeasible() && isRollUsageFeasible() && isOrdersFulfilled();
     }
 
     /**

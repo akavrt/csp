@@ -280,7 +280,7 @@ public class SolutionTest {
         patterns.add(pattern);
 
         solution = new Solution(problem, patterns);
-        assertTrue(solution.isValid());
+        assertTrue(solution.isFeasible());
     }
 
     @Test
@@ -307,7 +307,7 @@ public class SolutionTest {
         patterns.add(pattern);
 
         solution = new Solution(problem, patterns);
-        assertFalse(solution.isValid());
+        assertFalse(solution.isFeasible());
     }
 
     @Test
@@ -333,6 +333,6 @@ public class SolutionTest {
         patterns.add(pattern);
 
         solution = new Solution(problem, patterns);
-        assertFalse(solution.isValid());
+        assertFalse(solution.isFeasible());
     }
 }

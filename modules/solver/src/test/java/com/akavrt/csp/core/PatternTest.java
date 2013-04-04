@@ -84,26 +84,26 @@ public class PatternTest {
 
         // with no roll assigned
         pattern = new Pattern(problem);
-        assertTrue(pattern.isValid(allowedCutsNumber));
+        assertTrue(pattern.isFeasible(allowedCutsNumber));
 
         // actual cuts number: 2 + 2 + 2 = 6 == 6
         pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
-        assertTrue(pattern.isValid(allowedCutsNumber));
+        assertTrue(pattern.isFeasible(allowedCutsNumber));
 
         // actual cuts number: 2 + 3 + 2 = 7 > 6
         pattern = new Pattern(problem);
         pattern.addCut(order1, 2);
         pattern.addCut(order2, 3);
         pattern.addCut(order3, 2);
-        assertFalse(pattern.isValid(allowedCutsNumber));
+        assertFalse(pattern.isFeasible(allowedCutsNumber));
 
         // with assigned roll
         pattern = new Pattern(problem);
         pattern.setRoll(roll);
-        assertTrue(pattern.isValid(allowedCutsNumber));
+        assertTrue(pattern.isFeasible(allowedCutsNumber));
 
         // actual pattern width: 2 *  50 + 2 * 40 + 2 * 30 = 240 > 200
         pattern = new Pattern(problem);
@@ -111,7 +111,7 @@ public class PatternTest {
         pattern.addCut(order2, 2);
         pattern.addCut(order3, 2);
         pattern.setRoll(roll);
-        assertFalse(pattern.isValid(allowedCutsNumber));
+        assertFalse(pattern.isFeasible(allowedCutsNumber));
 
         // actual pattern width: 2 *  50 + 1 * 40 + 1 * 30 = 170 < 200
         pattern = new Pattern(problem);
@@ -119,7 +119,7 @@ public class PatternTest {
         pattern.addCut(order2, 1);
         pattern.addCut(order3, 1);
         pattern.setRoll(roll);
-        assertTrue(pattern.isValid(allowedCutsNumber));
+        assertTrue(pattern.isFeasible(allowedCutsNumber));
 
         // actual pattern width: 4 *  50 + 0 * 40 + 0 * 30 = 200 == 200
         pattern = new Pattern(problem);
@@ -127,7 +127,7 @@ public class PatternTest {
         pattern.addCut(order2, 0);
         pattern.addCut(order3, 0);
         pattern.setRoll(roll);
-        assertTrue(pattern.isValid(allowedCutsNumber));
+        assertTrue(pattern.isFeasible(allowedCutsNumber));
     }
 
     @Test

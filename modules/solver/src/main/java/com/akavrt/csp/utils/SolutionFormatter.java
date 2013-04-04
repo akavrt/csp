@@ -105,21 +105,21 @@ public class SolutionFormatter {
     private static String formatFeasibility(Solution solution) {
         StringBuilder builder = new StringBuilder();
 
-        boolean isValid = solution.isValid();
+        boolean isValid = solution.isFeasible();
         if (isValid) {
             builder.append(FIRST_LEVEL_INDENT);
-            builder.append("VALID.");
+            builder.append("FEASIBLE.");
         } else {
             builder.append(FIRST_LEVEL_INDENT);
-            builder.append("INVALID:");
-            if (!solution.isPatternsValid()) {
+            builder.append("INFEASIBLE:");
+            if (!solution.isPatternsFeasible()) {
                 builder.append("\n");
                 builder.append(FIRST_LEVEL_INDENT);
                 builder.append(SECOND_LEVEL_INDENT);
                 builder.append("infeasible patterns found;");
             }
 
-            if (!solution.isRollsValid()) {
+            if (!solution.isRollUsageFeasible()) {
                 builder.append("\n");
                 builder.append(FIRST_LEVEL_INDENT);
                 builder.append(SECOND_LEVEL_INDENT);

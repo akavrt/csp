@@ -69,13 +69,13 @@ public class XmlEnabledCollector extends SimpleCollector {
     }
 
     private Element calculateFeasibilityRatio(List<Solution> solutions) {
-        int valid = 0;
+        int feasible = 0;
         for (Solution solution : solutions) {
-            if (solution.isValid()) {
-                valid++;
+            if (solution.isFeasible()) {
+                feasible++;
             }
         }
-        double feasibilityRatio = 100 * valid / (double) solutions.size();
+        double feasibilityRatio = 100 * feasible / (double) solutions.size();
 
         Element metricElm = new Element(XmlTags.METRIC);
 

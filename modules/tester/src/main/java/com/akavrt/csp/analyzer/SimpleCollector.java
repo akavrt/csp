@@ -99,7 +99,7 @@ public class SimpleCollector implements Collector {
         // calculate feasibility ratio
         int valid = 0;
         for (Solution solution : solutions) {
-            if (solution.isValid()) {
+            if (solution.isFeasible()) {
                 valid++;
             }
         }

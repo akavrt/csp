@@ -170,7 +170,7 @@ public class CspConverterTest {
         assertEquals(2, extractedSolutions.size());
 
         Solution solution = extractedSolutions.get(0);
-        assertTrue(solution.isValid());
+        assertTrue(solution.isFeasible());
 
         Order targetOrder = null;
         for (Order order : extractedProblem.getOrders()) {
@@ -187,7 +187,7 @@ public class CspConverterTest {
         assertTrue(solution.isOrdersFulfilled());
 
         solution = extractedSolutions.get(1);
-        assertFalse(solution.isValid());
+        assertFalse(solution.isFeasible());
         assertEquals(300, solution.getProductionLengthForOrder(targetOrder), DELTA);
         assertFalse(solution.isOrdersFulfilled());
     }

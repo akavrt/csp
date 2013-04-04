@@ -201,13 +201,13 @@ public class Pattern {
     }
 
     /**
-     * <p>Check whether cutting pattern is valid or not. Invalid patterns can't be cut from rolls
-     * due to exceeded width or technical limitation.</p>
+     * <p>Check whether cutting pattern is feasible or not. Infeasible patterns can't be cut from
+     * rolls due to exceeded width or technical limitation.</p>
      *
      * @param allowedCutsNumber The maximum number of cuts allowed within pattern.
-     * @return true if pattern is valid, false otherwise.
+     * @return true if pattern is feasible, false otherwise.
      */
-    public boolean isValid(int allowedCutsNumber) {
+    public boolean isFeasible(int allowedCutsNumber) {
         boolean isCutsValid = allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber;
         boolean isPatternWidthValid = roll == null
                 || DoubleMath.fuzzyCompare(getWidth(), roll.getWidth(), Constants.TOLERANCE) <= 0;

@@ -206,13 +206,13 @@ public class Gene {
     }
 
     /**
-     * <p>Check whether cutting pattern is valid or not. Invalid patterns can't be cut from rolls
-     * due to exceeded width or technical limitation.</p>
+     * <p>Check whether cutting pattern is feasible or not. Infeasible patterns can't be cut from
+     * rolls due to exceeded width or technical limitation.</p>
      *
      * @param context Context provides access to the problem definition.
      * @return true if pattern is valid, false otherwise.
      */
-    public boolean isValid(GeneticExecutionContext context) {
+    public boolean isFeasible(GeneticExecutionContext context) {
         int allowedCutsNumber = context.getProblem().getAllowedCutsNumber();
         boolean isCutsValid = allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber;
 

@@ -77,7 +77,7 @@ public class PatternGroupConverterTest {
         assertEquals(pattern.getCuts().size(), actualPattern.getCuts().size());
 
         int allowedCutsNumber = problem.getAllowedCutsNumber();
-        assertEquals(pattern.isValid(allowedCutsNumber), actualPattern.isValid(allowedCutsNumber));
+        assertEquals(pattern.isFeasible(allowedCutsNumber), actualPattern.isFeasible(allowedCutsNumber));
         assertEquals(pattern.isActive(), actualPattern.isActive());
 
         assertEquals(pattern.getTrimWidth(), actualPattern.getTrimWidth(), DELTA);

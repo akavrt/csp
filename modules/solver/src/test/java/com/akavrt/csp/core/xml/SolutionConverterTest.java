@@ -69,7 +69,7 @@ public class SolutionConverterTest {
         patterns.add(pattern);
 
         Solution solution = new Solution(problem, patterns);
-        assertTrue(solution.isValid());
+        assertTrue(solution.isFeasible());
 
         Element solutionElm = converter.export(solution);
         Solution extracted = converter.extract(solutionElm);
@@ -84,7 +84,7 @@ public class SolutionConverterTest {
         }
 
         assertEquals(solution.isOrdersFulfilled(), extracted.isOrdersFulfilled());
-        assertEquals(solution.isValid(), extracted.isValid());
+        assertEquals(solution.isFeasible(), extracted.isFeasible());
 
     }
 
