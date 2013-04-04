@@ -13,8 +13,10 @@ import java.util.Set;
  */
 public class SolutionMetricProvider implements MetricProvider {
     private final Solution solution;
+    private final Problem problem;
 
-    public SolutionMetricProvider(Solution solution) {
+    public SolutionMetricProvider(Problem problem, Solution solution) {
+        this.problem = problem;
         this.solution = solution;
     }
 
@@ -84,7 +86,7 @@ public class SolutionMetricProvider implements MetricProvider {
      * {@inheritDoc}
      */
     @Override
-    public double getAverageUnderProductionRatio(Problem problem) {
+    public double getAverageUnderProductionRatio() {
         double underProductionRatio = 0;
 
         List<Order> orders = problem.getOrders();
@@ -102,7 +104,7 @@ public class SolutionMetricProvider implements MetricProvider {
      * {@inheritDoc}
      */
     @Override
-    public double getAverageOverProductionRatio(Problem problem) {
+    public double getAverageOverProductionRatio() {
         double overProductionRatio = 0;
 
         List<Order> orders = problem.getOrders();

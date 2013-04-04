@@ -46,7 +46,7 @@ public class TrimLossMetricTest {
 
     @Test
     public void emptySolution() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
 
         // no active patterns -> no trim
         assertEquals(0, metric.evaluate(solution), DELTA);
@@ -54,7 +54,7 @@ public class TrimLossMetricTest {
 
     @Test
     public void solutionWithoutTrim() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
         Pattern pattern;
 
         // 2 *  50 + 1 * 40 + 2 * 30 = 200

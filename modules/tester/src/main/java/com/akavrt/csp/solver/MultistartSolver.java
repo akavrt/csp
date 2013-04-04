@@ -6,7 +6,7 @@ import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
-import com.akavrt.csp.tester.tracer.TraceUtils;
+import com.akavrt.csp.utils.SolutionFormatter;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,20 +56,8 @@ public class MultistartSolver extends SimpleSolver {
     protected List<Solution> run() {
         List<Solution> solutions = Lists.newArrayList();
 
-        for (Collector collector : collectors) {
-            // global collectors collect values across different runs,
-            // thus resetting of global collectors has to be managed externally
-            if (!collector.isGlobal()) {
-                collector.clear();
-            }
-        }
-
-        ScalarMetric metric = new ScalarMetric(getProblem(), new ScalarMetricParameters());
-
-        ScalarTracer tracer = new ScalarTracer(metric, getProblem());
-
         for (int i = 1; i <= numberOfRuns; i++) {
-            LOGGER.info("*** run {}", i);
+            LOGGER.info("*** run #{}", i);
 
             long start = System.currentTimeMillis();
             List<Solution> runResult = super.run();
@@ -80,13 +68,6 @@ public class MultistartSolver extends SimpleSolver {
 
                 for (Collector collector : collectors) {
                     collector.collect(solution, end - start);
-                }
-
-                if (LOGGER.isInfoEnabled()) {
-                    String trace = TraceUtils.traceSolution(solution, getProblem(), tracer, false);
-
-                    LOGGER.info("Best solution found in run:");
-                    LOGGER.info(trace);
                 }
             }
 

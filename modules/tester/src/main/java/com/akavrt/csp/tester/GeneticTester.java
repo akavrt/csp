@@ -1,6 +1,5 @@
 package com.akavrt.csp.tester;
 
-import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
@@ -16,7 +15,9 @@ import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
-import com.akavrt.csp.tester.tracer.TraceUtils;
+import com.akavrt.csp.tester.tracer.Tracer;
+import com.akavrt.csp.utils.ProblemFormatter;
+import com.akavrt.csp.utils.SolutionFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,15 +49,15 @@ public class GeneticTester {
             return;
         }
 
-        System.out.println(TraceUtils.traceProblem(problem, true, true));
+        System.out.println(ProblemFormatter.format(problem));
 
         PatternGeneratorParameters generatorParams = new PatternGeneratorParameters();
         generatorParams.setGenerationTrialsLimit(20);
         PatternGenerator generator = new ConstrainedPatternGenerator(problem, generatorParams);
 
         PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
-        ScalarMetric metric = new ScalarMetric(problem, new ScalarMetricParameters());
-        ScalarTracer tracer = new ScalarTracer(metric, problem);
+        ScalarMetric metric = new ScalarMetric(new ScalarMetricParameters());
+        ScalarTracer tracer = new ScalarTracer(metric);
 
         GeneticAlgorithmParameters params = new GeneticAlgorithmParameters();
         params.setPopulationSize(30);
@@ -71,10 +72,10 @@ public class GeneticTester {
         long end = System.currentTimeMillis();
 
         List<Solution> solutions = solver.getSolutions();
-//        Collections.sort(solutions, metric.getReverseComparator());
+        //        Collections.sort(solutions, metric.getReverseComparator());
 
         System.out.println("*** RESULTS ***");
-        tracePopulation(solutions, problem, tracer);
+        tracePopulation(solutions, tracer);
         System.out.println(String.format("Run time: %.2f second", 0.001 * (end - start)));
 
         /*
@@ -101,12 +102,14 @@ public class GeneticTester {
         */
     }
 
-    private static void tracePopulation(List<Solution> solutions, Problem problem,
-                                        ScalarTracer tracer) {
+    private static void tracePopulation(List<Solution> solutions, Tracer<Solution> tracer) {
         int i = 0;
         for (Solution solution : solutions) {
-            String trace = TraceUtils.traceSolution(solution, problem, tracer, i == 0);
-            System.out.println(String.format("*** Chromosome #%d:\n%s", ++i, trace));
+            String caption = String.format("*** Chromosome #%d:", ++i);
+            String trace = tracer.trace(solution);
+            String formatted = SolutionFormatter.format(solution, caption, trace, i == 1);
+
+            System.out.println(formatted);
         }
 
     }

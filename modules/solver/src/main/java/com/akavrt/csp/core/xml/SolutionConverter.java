@@ -1,13 +1,19 @@
 package com.akavrt.csp.core.xml;
 
-import com.akavrt.csp.core.*;
+import com.akavrt.csp.core.Pattern;
+import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.xml.XmlConverter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.jdom2.Element;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Converter class used to transform an instance of Solution to its XML representation and vice
@@ -70,7 +76,7 @@ public class SolutionConverter implements XmlConverter<Solution> {
      */
     @Override
     public Solution extract(Element rootElm) {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
 
         // process metadata
         Element metadataElm = rootElm.getChild(XmlTags.METADATA);

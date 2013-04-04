@@ -1,7 +1,6 @@
 package com.akavrt.csp.metrics;
 
 import com.akavrt.csp.core.Plan;
-import com.akavrt.csp.core.Problem;
 
 /**
  * <p>This metric corresponds to the minimization of the both under and overproduction of the final
@@ -10,18 +9,6 @@ import com.akavrt.csp.core.Problem;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class ProductDeviationMetric extends MinimizationMetric {
-    private final Problem problem;
-
-    /**
-     * <p>Creates an instance of evaluator. Can be reused to evaluate different solutions against
-     * same problem provided during creation.</p>
-     *
-     * @param problem The problem in question.
-     */
-    public ProductDeviationMetric(Problem problem) {
-        this.problem = problem;
-    }
-
     /**
      * <p>Calculates product deviation ratio.</p>
      *
@@ -33,8 +20,8 @@ public class ProductDeviationMetric extends MinimizationMetric {
      */
     @Override
     public double evaluate(Plan plan) {
-        return plan.getMetricProvider().getAverageUnderProductionRatio(problem) +
-                plan.getMetricProvider().getAverageOverProductionRatio(problem);
+        return plan.getMetricProvider().getAverageUnderProductionRatio() +
+                plan.getMetricProvider().getAverageOverProductionRatio();
     }
 
     /**

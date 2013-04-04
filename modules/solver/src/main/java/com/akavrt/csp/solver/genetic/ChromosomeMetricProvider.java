@@ -1,6 +1,5 @@
 package com.akavrt.csp.solver.genetic;
 
-import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.metrics.MetricProvider;
 import com.google.common.collect.Sets;
 
@@ -116,26 +115,6 @@ public class ChromosomeMetricProvider implements MetricProvider {
      * {@inheritDoc}
      */
     @Override
-    public double getAverageUnderProductionRatio(Problem problem) {
-        return getAverageUnderProductionRatio();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getAverageOverProductionRatio(Problem problem) {
-        return getAverageOverProductionRatio();
-    }
-
-    /**
-     * <p>Same as getAverageUnderProductionRatio(Problem problem).</p>
-     *
-     * <p>Each instance of ChromosomeMetricProvider is context-aware (it stores reference to an
-     * instance of GeneticExecutionContext). It means that access to the Problem can be obtained
-     * through context - there is no need to supply a reference to an instance of Problem through
-     * the list of arguments explicitly.</p>
-     */
     public double getAverageUnderProductionRatio() {
         if (cachedAverageUnderProductionRatio < 0) {
             double underProductionRatio = 0;
@@ -156,13 +135,9 @@ public class ChromosomeMetricProvider implements MetricProvider {
     }
 
     /**
-     * <p>Same as getAverageOverProductionRatio(Problem problem).</p>
-     *
-     * <p>Each instance of ChromosomeMetricProvider is context-aware (it stores reference to an
-     * instance of GeneticExecutionContext). It means that access to the Problem can be obtained
-     * through context - there is no need to supply a reference to an instance of Problem through
-     * the list of arguments explicitly.</p>
+     * {@inheritDoc}
      */
+    @Override
     public double getAverageOverProductionRatio() {
         if (cachedAverageOverProductionRatio < 0) {
             double overProductionRatio = 0;

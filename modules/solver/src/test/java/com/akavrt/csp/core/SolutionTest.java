@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * User: akavrt
@@ -16,8 +15,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class SolutionTest {
     private static final double DELTA = 1e-15;
-    private int allowedCutsNumber;
-    private List<Order> orders;
     private Order order1;
     private Order order2;
     private Order order3;
@@ -27,10 +24,10 @@ public class SolutionTest {
 
     @Before
     public void setUpProblem() {
-        allowedCutsNumber = 10;
+        int allowedCutsNumber = 10;
 
         // preparing orders
-        orders = new ArrayList<Order>();
+        List<Order> orders = new ArrayList<Order>();
 
         order1 = new Order("order1", 500, 50);
         orders.add(order1);
@@ -56,7 +53,7 @@ public class SolutionTest {
     @Test
     public void managePatterns() {
         // create new empty instance
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
         assertEquals(0, solution.getPatterns().size());
 
         List<Pattern> patterns = new ArrayList<Pattern>();
@@ -77,7 +74,7 @@ public class SolutionTest {
         patterns.add(pattern);
 
         // create new instance with 2 patterns
-        solution = new Solution(patterns);
+        solution = new Solution(problem, patterns);
         assertEquals(2, solution.getPatterns().size());
 
         // clear patterns
@@ -109,7 +106,7 @@ public class SolutionTest {
         patterns.add(pattern);
         double trimArea2 = pattern.getTrimArea();
 
-        Solution solution = new Solution(patterns);
+        Solution solution = new Solution(problem, patterns);
         assertEquals(trimArea1 + trimArea2, solution.getMetricProvider().getTrimArea(), DELTA);
     }
 
@@ -135,7 +132,7 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
+        solution = new Solution(problem, patterns);
         assertEquals(2, solution.getMetricProvider().getUniquePatternsCount());
 
         // same pattern added twice
@@ -181,9 +178,9 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
+        solution = new Solution(problem, patterns);
         assertEquals(0, solution.getProductionLengthForOrder(order3), DELTA);
-        assertFalse(solution.isOrdersFulfilled(orders));
+        assertFalse(solution.isOrdersFulfilled());
 
         // the first order is produced in insufficient length
         patterns.clear();
@@ -201,9 +198,9 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
+        solution = new Solution(problem, patterns);
         assertEquals(300, solution.getProductionLengthForOrder(order1), DELTA);
-        assertFalse(solution.isOrdersFulfilled(orders));
+        assertFalse(solution.isOrdersFulfilled());
     }
 
     @Test
@@ -228,9 +225,9 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
+        solution = new Solution(problem, patterns);
         assertEquals(500, solution.getProductionLengthForOrder(order1), DELTA);
-        assertTrue(solution.isOrdersFulfilled(orders));
+        assertTrue(solution.isOrdersFulfilled());
     }
 
     @Test
@@ -255,9 +252,9 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
+        solution = new Solution(problem, patterns);
         assertEquals(800, solution.getProductionLengthForOrder(order1), DELTA);
-        assertTrue(solution.isOrdersFulfilled(orders));
+        assertTrue(solution.isOrdersFulfilled());
     }
 
     @Test
@@ -282,8 +279,8 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
-        assertTrue(solution.isValid(problem));
+        solution = new Solution(problem, patterns);
+        assertTrue(solution.isValid());
     }
 
     @Test
@@ -309,8 +306,8 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
-        assertFalse(solution.isValid(problem));
+        solution = new Solution(problem, patterns);
+        assertFalse(solution.isValid());
     }
 
     @Test
@@ -335,7 +332,7 @@ public class SolutionTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution = new Solution(patterns);
-        assertFalse(solution.isValid(problem));
+        solution = new Solution(problem, patterns);
+        assertFalse(solution.isValid());
     }
 }

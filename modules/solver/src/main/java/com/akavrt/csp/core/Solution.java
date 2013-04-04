@@ -20,13 +20,16 @@ public class Solution implements Plan {
     private final SolutionMetricProvider metricProvider;
     private List<Pattern> patterns;
     private SolutionMetadata metadata;
+    private final Problem problem;
 
     /**
      * <p>Create an instance of Solution with empty array of patterns</p>.
      */
-    public Solution() {
+    public Solution(Problem problem) {
+        this.problem = problem;
+
         patterns = new ArrayList<Pattern>();
-        metricProvider = new SolutionMetricProvider(this);
+        metricProvider = new SolutionMetricProvider(problem, this);
     }
 
     /**
@@ -34,9 +37,11 @@ public class Solution implements Plan {
      *
      * @param patterns The list of patters assigned to the solution.
      */
-    public Solution(List<Pattern> patterns) {
+    public Solution(Problem problem, List<Pattern> patterns) {
+        this.problem = problem;
         this.patterns = patterns;
-        metricProvider = new SolutionMetricProvider(this);
+
+        metricProvider = new SolutionMetricProvider(problem, this);
     }
 
     /**
@@ -93,11 +98,9 @@ public class Solution implements Plan {
     /**
      * <p>Check validity of used patterns.</p>
      *
-     * @param problem The problem contains information about orders and constrains needed for
-     *                evaluation.
      * @return true if plan consists of valid patterns only, false otherwise.
      */
-    public boolean isPatternsValid(Problem problem) {
+    public boolean isPatternsValid() {
         boolean isPatternValid = true;
 
         // exit on the first invalid pattern
@@ -136,14 +139,13 @@ public class Solution implements Plan {
      * <p>Check whether all requirements for order's length are met. If any order with insufficient
      * length can be found, solution should be treated as invalid one.</p>
      *
-     * @param orders The list of orders is needed for evaluation.
      * @return true if strip of sufficient length will be produced for all orders, false otherwise.
      */
-    public boolean isOrdersFulfilled(List<Order> orders) {
+    public boolean isOrdersFulfilled() {
         boolean isOrderFulfilled = true;
 
         // exit on the first unfulfilled order
-        for (Order order : orders) {
+        for (Order order : problem.getOrders()) {
             isOrderFulfilled = DoubleMath.fuzzyCompare(getProductionLengthForOrder(order),
                                                        order.getLength(),
                                                        Constants.TOLERANCE) >= 0;
@@ -158,11 +160,10 @@ public class Solution implements Plan {
     /**
      * <p>Check all characteristics of the solution to determine whether it is valid or not.</p>
      *
-     * @param problem The problem against which validity of the solution is being tested.
      * @return true if solution is valid, false otherwise.
      */
-    public boolean isValid(Problem problem) {
-        return isPatternsValid(problem) && isRollsValid() && isOrdersFulfilled(problem.getOrders());
+    public boolean isValid() {
+        return isPatternsValid() && isRollsValid() && isOrdersFulfilled();
     }
 
     /**
@@ -189,25 +190,6 @@ public class Solution implements Plan {
      */
     public void setMetadata(SolutionMetadata metadata) {
         this.metadata = metadata;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-
-        int digits = (int) Math.floor(Math.log10(patterns.size())) + 1;
-        String indexFormat = "\n    #%" + digits + "d: ";
-
-        builder.append("{");
-        int i = 0;
-        for (Pattern pattern : patterns) {
-            String index = String.format(indexFormat, ++i);
-            builder.append(index);
-            builder.append(pattern);
-        }
-        builder.append("\n}");
-
-        return builder.toString();
     }
 
 }

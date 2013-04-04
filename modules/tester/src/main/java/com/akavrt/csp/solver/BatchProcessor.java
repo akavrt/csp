@@ -99,6 +99,7 @@ public class BatchProcessor {
         solver.clearCollectors();
 
         if (globalCollector != null) {
+            // reset global collector
             globalCollector.clear();
             solver.addCollector(globalCollector);
         }
@@ -108,6 +109,12 @@ public class BatchProcessor {
         }
 
         for (LoadedProblem loadedProblem : loadedProblems) {
+            if (problemCollector != null) {
+                // reset problem (local) collector
+                // before each execution of the solver
+                problemCollector.clear();
+            }
+
             solver.setProblem(loadedProblem.problem);
             solver.solve();
 

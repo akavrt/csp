@@ -86,7 +86,7 @@ public class Chromosome implements Plan {
      * @return An instance of Solution equivalent to the current chromosome.
      */
     public Solution convert() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(context.getProblem());
         for (Gene gene : genes) {
             solution.addPattern(gene.convert(context));
         }

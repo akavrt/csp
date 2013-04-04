@@ -68,8 +68,8 @@ public class SolutionConverterTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        Solution solution = new Solution(patterns);
-        assertTrue(solution.isValid(problem));
+        Solution solution = new Solution(problem, patterns);
+        assertTrue(solution.isValid());
 
         Element solutionElm = converter.export(solution);
         Solution extracted = converter.extract(solutionElm);
@@ -83,15 +83,15 @@ public class SolutionConverterTest {
                          extracted.getProductionLengthForOrder(order), DELTA);
         }
 
-        assertEquals(solution.isOrdersFulfilled(orders), extracted.isOrdersFulfilled(orders));
-        assertEquals(solution.isValid(problem), extracted.isValid(problem));
+        assertEquals(solution.isOrdersFulfilled(), extracted.isOrdersFulfilled());
+        assertEquals(solution.isValid(), extracted.isValid());
 
     }
 
     @Test
     public void metadataConversion() {
         // metadata wasn't set
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
         Element solutionElm = converter.export(solution);
         Solution extracted = converter.extract(solutionElm);
 

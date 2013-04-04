@@ -146,7 +146,7 @@ public class RunResultWriter extends XmlWriter {
         }
 
         if (collector != null) {
-            collector.process(problem);
+            collector.process();
             Element metrics = collector.getResult();
 
             runElm.addContent(metrics);

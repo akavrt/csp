@@ -248,37 +248,4 @@ public class Pattern {
         return Arrays.hashCode(multipliers);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        int maxQuantity = 0;
-        int i = 0;
-        for (MultiCut cut : cuts.values()) {
-            int quantity = cut.getQuantity();
-            if (i++ == 0 || quantity > maxQuantity) {
-                maxQuantity = quantity;
-            }
-        }
-
-        int digits = (int) Math.floor(Math.log10(maxQuantity)) + 1;
-        String format = " %" + digits + "d ";
-
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("[");
-        for (MultiCut cut : cuts.values()) {
-            builder.append(String.format(format, cut.getQuantity()));
-        }
-        builder.append("]");
-
-        if (roll != null) {
-            builder.append(" -> ").append(roll.getId());
-        } else {
-            builder.append(" -> unset");
-        }
-
-        return builder.toString();
-    }
 }

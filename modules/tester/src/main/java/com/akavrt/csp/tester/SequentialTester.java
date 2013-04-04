@@ -15,9 +15,11 @@ import com.akavrt.csp.solver.MultistartSolver;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
-import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
-import com.akavrt.csp.tester.tracer.TraceUtils;
+import com.akavrt.csp.utils.ProblemFormatter;
+import com.akavrt.csp.utils.SolutionFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,30 +50,32 @@ public class SequentialTester {
             return;
         }
 
-        System.out.println(TraceUtils.traceProblem(problem, true, true));
+        System.out.println(ProblemFormatter.format(problem));
 
         PatternGeneratorParameters generatorParams = new PatternGeneratorParameters();
         generatorParams.setGenerationTrialsLimit(20);
         PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
 
-//        VahrenkampProcedureParameters methodParams = new VahrenkampProcedureParameters();
-//        methodParams.setPatternUsageUpperBound(0.5);
-//        methodParams.setGoalmix(0.5);
-//        methodParams.setTrimRatioUpperBound(1);
-        Algorithm method = new SimplifiedProcedure(generator);
+        VahrenkampProcedureParameters methodParams = new VahrenkampProcedureParameters();
+        methodParams.setPatternUsageUpperBound(0.5);
+        methodParams.setGoalmix(0.5);
+        methodParams.setTrimRatioUpperBound(1);
+        Algorithm method = new VahrenkampProcedure(generator, methodParams);
 
-        ScalarMetric metric = new ScalarMetric(problem, new ScalarMetricParameters());
+//        Algorithm method = new SimplifiedProcedure(generator);
+
+        ScalarMetric scalarMetric = new ScalarMetric(new ScalarMetricParameters());
 
         XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
         collector.addMeasure(new StandardDeviation());
 
-        collector.addMetric(metric);
+        collector.addMetric(scalarMetric);
         collector.addMetric(new TrimLossMetric());
         collector.addMetric(new PatternReductionMetric());
         collector.addMetric(new UniquePatternsMetric());
         collector.addMetric(new ActivePatternsMetric());
-        collector.addMetric(new ProductDeviationMetric(problem));
+        collector.addMetric(new ProductDeviationMetric());
 
         SimpleCollector debugCollector = new SimpleCollector();
         debugCollector.setMeasures(collector.getMeasures());
@@ -83,14 +87,17 @@ public class SequentialTester {
 
         solver.solve();
 
-        debugCollector.process(problem);
+        debugCollector.process();
 
-        Solution best = solver.getBestSolution(metric);
+        Solution best = solver.getBestSolution(scalarMetric);
 
         if (best != null) {
-            ScalarTracer tracer = new ScalarTracer(metric, problem);
-            String trace = TraceUtils.traceSolution(best, problem, tracer, true);
-            System.out.println("*** OVERALL BEST solution found:\n" + trace);
+            ScalarTracer tracer = new ScalarTracer(scalarMetric);
+            String caption = "*** OVERALL BEST solution found:";
+            String trace = tracer.trace(best);
+            String formatted = SolutionFormatter.format(best, caption, trace, true);
+
+            System.out.println(formatted);
 
             /*
             File file = new File("/Users/akavrt/Sandbox/output-opt10.xml");

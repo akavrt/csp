@@ -1,7 +1,5 @@
 package com.akavrt.csp.metrics;
 
-import com.akavrt.csp.core.Problem;
-
 /**
  * <p>Enumerates all important characteristics of the cutting plan. No information about internal
  * structure of the plan is exposed. This way we are breaking the ties between implementation
@@ -49,18 +47,16 @@ public interface MetricProvider {
      * <p>Calculate the amount of strip produced according to the plan, find unfulfilled orders and
      * compare the missing amount of strip with the amount specified in problem definition.</p>
      *
-     * @param problem Problem to test production on.
      * @return Average underproduction defined as fractional ratio.
      */
-    double getAverageUnderProductionRatio(Problem problem);
+    double getAverageUnderProductionRatio();
 
     /**
      * <p>Calculate the excessive amount of strip produced according to the plan and compare it
      * with the amount specified in problem definition.</p>
      *
-     * @param problem Problem to test on.
      * @return Average overproduction defined as fractional ratio.
      */
-    double getAverageOverProductionRatio(Problem problem);
+    double getAverageOverProductionRatio();
 
 }

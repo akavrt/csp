@@ -45,12 +45,12 @@ public class ProductDeviationMetricTest {
 
         problem = new Problem(orders, rolls, allowedCutsNumber);
 
-        metric = new ProductDeviationMetric(problem);
+        metric = new ProductDeviationMetric();
     }
 
     @Test
     public void emptySolution() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
 
         // 100% underproduction -> production ration equals to 1
         assertEquals(1, metric.evaluate(solution), DELTA);
@@ -58,7 +58,7 @@ public class ProductDeviationMetricTest {
 
     @Test
     public void solutionWithExactProduction() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
         Pattern pattern;
 
         pattern = new Pattern(problem);

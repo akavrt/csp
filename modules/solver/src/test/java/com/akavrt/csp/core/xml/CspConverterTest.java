@@ -3,6 +3,7 @@ package com.akavrt.csp.core.xml;
 import com.akavrt.csp.core.*;
 import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.akavrt.csp.utils.Unit;
+import com.google.common.collect.Lists;
 import org.jdom2.Element;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,7 +13,6 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -36,13 +36,13 @@ public class CspConverterTest {
         int allowedCutsNumber = 10;
 
         // preparing orders
-        List<Order> orders = new ArrayList<Order>();
+        List<Order> orders = Lists.newArrayList();
         orders.add(new Order("order1", 500, 50));
         orders.add(new Order("order2", 400, 40));
         orders.add(new Order("order3", 300, 30));
 
         // preparing rolls
-        List<Roll> rolls = new ArrayList<Roll>();
+        List<Roll> rolls = Lists.newArrayList();
 
         Roll roll1 = new Roll("roll1", 300, 200);
         Roll roll2 = new Roll("roll2", 500, 300);
@@ -52,7 +52,7 @@ public class CspConverterTest {
 
         problem = new Problem(orders, rolls, allowedCutsNumber);
 
-        List<Pattern> patterns = new ArrayList<Pattern>();
+        List<Pattern> patterns = Lists.newArrayList();
 
         Pattern pattern;
 
@@ -71,7 +71,7 @@ public class CspConverterTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution1 = new Solution(patterns);
+        solution1 = new Solution(problem, patterns);
 
         patterns.clear();
         pattern = new Pattern(problem);
@@ -88,7 +88,7 @@ public class CspConverterTest {
         pattern.setRoll(roll2);
         patterns.add(pattern);
 
-        solution2 = new Solution(patterns);
+        solution2 = new Solution(problem, patterns);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class CspConverterTest {
         assertEquals(2, extractedSolutions.size());
 
         Solution solution = extractedSolutions.get(0);
-        assertTrue(solution.isValid(extractedProblem));
+        assertTrue(solution.isValid());
 
         Order targetOrder = null;
         for (Order order : extractedProblem.getOrders()) {
@@ -184,12 +184,12 @@ public class CspConverterTest {
         assertEquals(500, targetOrder.getLength(), DELTA);
         assertEquals(50, targetOrder.getWidth(), DELTA);
         assertEquals(500, solution.getProductionLengthForOrder(targetOrder), DELTA);
-        assertTrue(solution.isOrdersFulfilled(extractedProblem.getOrders()));
+        assertTrue(solution.isOrdersFulfilled());
 
         solution = extractedSolutions.get(1);
-        assertFalse(solution.isValid(extractedProblem));
+        assertFalse(solution.isValid());
         assertEquals(300, solution.getProductionLengthForOrder(targetOrder), DELTA);
-        assertFalse(solution.isOrdersFulfilled(extractedProblem.getOrders()));
+        assertFalse(solution.isOrdersFulfilled());
     }
 
     @Test

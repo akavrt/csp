@@ -1,7 +1,6 @@
 package com.akavrt.csp.metrics;
 
 import com.akavrt.csp.core.Plan;
-import com.akavrt.csp.core.Problem;
 
 /**
  * <p>Implementation of the objective function used in a previous version. Based on a linear
@@ -21,15 +20,14 @@ public class ScalarMetric extends MinimizationMetric {
      * <p>Creates an instance of evaluator. Can be reused to evaluate different solutions against
      * problem and objective function with specific parameters provided during creation.</p>
      *
-     * @param problem The problem in question.
-     * @param params  Parameters of objective function.
+     * @param params Parameters of objective function.
      */
-    public ScalarMetric(Problem problem, ScalarMetricParameters params) {
+    public ScalarMetric(ScalarMetricParameters params) {
         this.params = params;
 
         trimMetric = new TrimLossMetric();
         patternsMetric = new PatternReductionMetric();
-        productMetric = new ProductDeviationMetric(problem);
+        productMetric = new ProductDeviationMetric();
     }
 
     /**

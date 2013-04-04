@@ -92,7 +92,7 @@ public class HaesslerProcedure extends SequentialProcedure {
      */
     @Override
     protected Solution search() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(context.getProblem());
         while (!context.isCancelled() &&
                 !orderManager.isOrdersFulfilled() && rollManager.size() > 0) {
             BuildingBlock block = trimStep();

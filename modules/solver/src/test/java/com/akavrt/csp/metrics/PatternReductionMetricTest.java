@@ -46,7 +46,7 @@ public class PatternReductionMetricTest {
 
     @Test
     public void emptySolution() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
 
         // if there are less than 2 patterns within solution, 
         // patterns ration always equals to zero
@@ -55,7 +55,7 @@ public class PatternReductionMetricTest {
 
     @Test
     public void solutionWithOnePattern() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
         Pattern pattern;
 
         pattern = new Pattern(problem);
@@ -70,7 +70,7 @@ public class PatternReductionMetricTest {
 
     @Test
     public void solutionWithOneUniquePattern() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
         Pattern pattern;
 
         pattern = new Pattern(problem);
@@ -92,7 +92,7 @@ public class PatternReductionMetricTest {
 
     @Test
     public void solutionWithDifferentUniquePatterns() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(problem);
         Pattern pattern;
 
         pattern = new Pattern(problem);

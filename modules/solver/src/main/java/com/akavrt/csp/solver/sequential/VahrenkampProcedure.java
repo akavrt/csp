@@ -88,7 +88,7 @@ public class VahrenkampProcedure extends SequentialProcedure {
      */
     @Override
     protected Solution search() {
-        Solution solution = new Solution();
+        Solution solution = new Solution(context.getProblem());
 
         double allowedTrimRatio = params.getTrimRatioLowerBound();
         int patternUsage = evaluatePatternUsage(allowedTrimRatio);
