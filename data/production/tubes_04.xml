@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <problem>
+        <metadata>
+            <name>tubes_04</name>
+            <author>Victor Balabanov</author>
+            <description>
+                1.5D-CSP test case based on data from real production:
+                4 orders, number of strips in single pattern limited by 15 strips only.
+            </description>
+            <thickness unit="m">0.0015</thickness>
+            <density unit="kg/m3">7850</density>
+        </metadata>
+        <constraints>
+            <allowed-cuts>15</allowed-cuts>
+        </constraints>
+        <orders>
+            <order id="order1">
+                <metadata>
+                    <tube>
+                        <type>round section</type>
+                        <dimension type="s" unit="m">0.0015</dimension>
+                        <dimension type="d" unit="m">0.016</dimension>
+                        <weight unit="kg">8000</weight>
+                        <single-length unit="m">6</single-length>
+                    </tube>
+                </metadata>
+                <strip>
+                    <width>0.04891</width>
+                    <length>15010.366</length>
+                </strip>
+            </order>
+            <order id="order2">
+                <metadata>
+                    <tube>
+                        <type>round section</type>
+                        <dimension type="s" unit="m">0.0015</dimension>
+                        <dimension type="d" unit="m">0.02</dimension>
+                        <weight unit="kg">3000</weight>
+                        <single-length unit="m">10</single-length>
+                    </tube>
+                </metadata>
+                <strip>
+                    <width>0.06159</width>
+                    <length>4470.85</length>
+                </strip>
+            </order>
+            <order id="order3">
+                <metadata>
+                    <tube>
+                        <type>round section</type>
+                        <dimension type="s" unit="m">0.0015</dimension>
+                        <dimension type="d" unit="m">0.035</dimension>
+                        <weight unit="kg">10000</weight>
+                        <single-length unit="m">5</single-length>
+                    </tube>
+                </metadata>
+                <strip>
+                    <width>0.109</width>
+                    <length>8144.431</length>
+                </strip>
+            </order>
+            <order id="order4">
+                <metadata>
+                    <tube>
+                        <type>round section</type>
+                        <dimension type="s" unit="m">0.0015</dimension>
+                        <dimension type="d" unit="m">0.05</dimension>
+                        <weight unit="kg">10000</weight>
+                        <single-length unit="m">7</single-length>
+                    </tube>
+                </metadata>
+                <strip>
+                    <width>0.15633</width>
+                    <length>5667.579</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll01" quantity="7">
+                <metadata>
+                    <stock>
+                        <width unit="m">1</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">5000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>0.98</width>
+                    <length>421.628</length>
+                </strip>
+            </roll>
+            <roll id="roll02" quantity="4">
+                <metadata>
+                    <stock>
+                        <width unit="m">1</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">7000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>0.98</width>
+                    <length>591.48</length>
+                </strip>
+            </roll>
+            <roll id="roll3" quantity="3">
+                <metadata>
+                    <stock>
+                        <width unit="m">1</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">8000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>0.98000</width>
+                    <length>676.406</length>
+                </strip>
+            </roll>
+            <roll id="roll04" quantity="4">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.1</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">5000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.08</width>
+                    <length>383.026</length>
+                </strip>
+            </roll>
+            <roll id="roll05" quantity="2">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.1</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">6000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.08</width>
+                    <length>460.231</length>
+                </strip>
+            </roll>
+            <roll id="roll06" quantity="3">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.2</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">5000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.18</width>
+                    <length>350.857</length>
+                </strip>
+            </roll>
+            <roll id="roll07" quantity="5">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.2</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">7000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.18</width>
+                    <length>492.4</length>
+                </strip>
+            </roll>
+            <roll id="roll08" quantity="5">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.2</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">8000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.18</width>
+                    <length>563.171</length>
+                </strip>
+            </roll>
+            <roll id="roll09" quantity="3">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.25</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">5000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.23</width>
+                    <length>336.703</length>
+                </strip>
+            </roll>
+            <roll id="roll10" quantity="6">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.25</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">6000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.23</width>
+                    <length>404.643</length>
+                </strip>
+            </roll>
+            <roll id="roll11" quantity="2">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.4</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">6000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.38</width>
+                    <length>360.967</length>
+                </strip>
+            </roll>
+            <roll id="roll12" quantity="5">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.4</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">8000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.38</width>
+                    <length>482.29</length>
+                </strip>
+            </roll>
+            <roll id="roll13" quantity="4">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.5</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">5000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.48</width>
+                    <length>280.086</length>
+                </strip>
+            </roll>
+            <roll id="roll14" quantity="6">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.5</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">6000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.48</width>
+                    <length>336.703</length>
+                </strip>
+            </roll>
+            <roll id="roll15" quantity="3">
+                <metadata>
+                    <stock>
+                        <width unit="m">1.5</width>
+                        <thickness unit="m">0.0015</thickness>
+                        <weight unit="kg">8000</weight>
+                        <side-trim unit="m">0.02</side-trim>
+                        <end-trim unit="m">3</end-trim>
+                    </stock>
+                </metadata>
+                <strip>
+                    <width>1.48</width>
+                    <length>449.937</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+</csp>
