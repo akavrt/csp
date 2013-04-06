@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <metadata>
+        <name>random_04</name>
+        <author>Victor Balabanov</author>
+        <description>1.5D-CSP randomly generated test case.</description>
+    </metadata>
+    <problem>
+        <orders>
+            <order id="order1">
+                <strip>
+                    <width>0.10075</width>
+                    <length>4129.914</length>
+                </strip>
+            </order>
+            <order id="order2">
+                <strip>
+                    <width>0.10335</width>
+                    <length>7364.528</length>
+                </strip>
+            </order>
+            <order id="order3">
+                <strip>
+                    <width>0.11549</width>
+                    <length>4547.051</length>
+                </strip>
+            </order>
+            <order id="order4">
+                <strip>
+                    <width>0.12945</width>
+                    <length>4738.838</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll1" quantity="5">
+                <strip>
+                    <width>1.15</width>
+                    <length>580.353</length>
+                </strip>
+            </roll>
+            <roll id="roll2" quantity="2">
+                <strip>
+                    <width>1.45</width>
+                    <length>385.914</length>
+                </strip>
+            </roll>
+            <roll id="roll3" quantity="4">
+                <strip>
+                    <width>1.5</width>
+                    <length>321.053</length>
+                </strip>
+            </roll>
+            <roll id="roll4" quantity="4">
+                <strip>
+                    <width>1.5</width>
+                    <length>404.29</length>
+                </strip>
+            </roll>
+            <roll id="roll5" quantity="2">
+                <strip>
+                    <width>1.55</width>
+                    <length>321.345</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+</csp>

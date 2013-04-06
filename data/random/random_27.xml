@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <metadata>
+        <name>random_27</name>
+        <author>Victor Balabanov</author>
+        <description>1.5D-CSP randomly generated test case.</description>
+    </metadata>
+    <problem>
+        <orders>
+            <order id="order01">
+                <strip>
+                    <width>0.20269</width>
+                    <length>2432.205</length>
+                </strip>
+            </order>
+            <order id="order02">
+                <strip>
+                    <width>0.24158</width>
+                    <length>2082.18</length>
+                </strip>
+            </order>
+            <order id="order03">
+                <strip>
+                    <width>0.25249</width>
+                    <length>1946.696</length>
+                </strip>
+            </order>
+            <order id="order04">
+                <strip>
+                    <width>0.27315</width>
+                    <length>1935.105</length>
+                </strip>
+            </order>
+            <order id="order05">
+                <strip>
+                    <width>0.31259</width>
+                    <length>1219.66</length>
+                </strip>
+            </order>
+            <order id="order06">
+                <strip>
+                    <width>0.33587</width>
+                    <length>1876.549</length>
+                </strip>
+            </order>
+            <order id="order07">
+                <strip>
+                    <width>0.36922</width>
+                    <length>1329.585</length>
+                </strip>
+            </order>
+            <order id="order08">
+                <strip>
+                    <width>0.39045</width>
+                    <length>1561.348</length>
+                </strip>
+            </order>
+            <order id="order09">
+                <strip>
+                    <width>0.39528</width>
+                    <length>558.374</length>
+                </strip>
+            </order>
+            <order id="order10">
+                <strip>
+                    <width>0.41119</width>
+                    <length>771.02</length>
+                </strip>
+            </order>
+            <order id="order11">
+                <strip>
+                    <width>0.46791</width>
+                    <length>1276.425</length>
+                </strip>
+            </order>
+            <order id="order12">
+                <strip>
+                    <width>0.48163</width>
+                    <length>916.25</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll1" quantity="14">
+                <strip>
+                    <width>1.35</width>
+                    <length>360.165</length>
+                </strip>
+            </roll>
+            <roll id="roll2" quantity="5">
+                <strip>
+                    <width>1.4</width>
+                    <length>273.916</length>
+                </strip>
+            </roll>
+            <roll id="roll3" quantity="14">
+                <strip>
+                    <width>1.6</width>
+                    <length>275.51</length>
+                </strip>
+            </roll>
+            <roll id="roll4" quantity="1">
+                <strip>
+                    <width>1.75</width>
+                    <length>246.428</length>
+                </strip>
+            </roll>
+            <roll id="roll5" quantity="15">
+                <strip>
+                    <width>1.75</width>
+                    <length>288.588</length>
+                </strip>
+            </roll>
+            <roll id="roll6" quantity="12">
+                <strip>
+                    <width>1.9</width>
+                    <length>248.226</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+</csp>

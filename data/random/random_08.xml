@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csp>
+    <metadata>
+        <name>random_08</name>
+        <author>Victor Balabanov</author>
+        <description>1.5D-CSP randomly generated test case.</description>
+    </metadata>
+    <problem>
+        <orders>
+            <order id="order1">
+                <strip>
+                    <width>0.11504</width>
+                    <length>4408.591</length>
+                </strip>
+            </order>
+            <order id="order2">
+                <strip>
+                    <width>0.16344</width>
+                    <length>2609.905</length>
+                </strip>
+            </order>
+            <order id="order3">
+                <strip>
+                    <width>0.22998</width>
+                    <length>1240.991</length>
+                </strip>
+            </order>
+            <order id="order4">
+                <strip>
+                    <width>0.23451</width>
+                    <length>907.675</length>
+                </strip>
+            </order>
+        </orders>
+        <rolls>
+            <roll id="roll1" quantity="1">
+                <strip>
+                    <width>1</width>
+                    <length>384.161</length>
+                </strip>
+            </roll>
+            <roll id="roll2" quantity="2">
+                <strip>
+                    <width>1.6</width>
+                    <length>265.508</length>
+                </strip>
+            </roll>
+            <roll id="roll3" quantity="5">
+                <strip>
+                    <width>1.6</width>
+                    <length>276.767</length>
+                </strip>
+            </roll>
+            <roll id="roll4" quantity="5">
+                <strip>
+                    <width>1.65</width>
+                    <length>303.882</length>
+                </strip>
+            </roll>
+        </rolls>
+    </problem>
+</csp>
