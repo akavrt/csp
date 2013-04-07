@@ -3,6 +3,8 @@ package com.akavrt.csp.core.xml;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.google.common.collect.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -21,6 +23,7 @@ import java.util.List;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class CspReader {
+    private static final Logger LOGGER = LogManager.getLogger(CspReader.class);
     private Problem loadedProblem;
     private List<Solution> loadedSolutions;
 
@@ -115,6 +118,8 @@ public class CspReader {
         Element problemElm = cspElm.getChild(XmlTags.PROBLEM);
         if (problemElm != null) {
             problem = new ProblemConverter().extract(problemElm);
+        } else {
+            LOGGER.info("<{}> element wasn't found.", XmlTags.PROBLEM);
         }
 
         return problem;
@@ -135,6 +140,8 @@ public class CspReader {
                 Solution solution = converter.extract(solutionElm);
                 solutions.add(solution);
             }
+        } else {
+            LOGGER.info("<{}> element wasn't found.", XmlTags.SOLUTIONS);
         }
 
         return solutions;

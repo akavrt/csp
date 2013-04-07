@@ -18,7 +18,7 @@ import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
  * Date: 04.04.13
  * Time: 15:44
  */
-public class BatchTester {
+public class ManualBatchTester {
     public static void main(String[] args) {
         PatternGenerator generator = createPatternGenerator();
         Algorithm method = createAlgorithm(generator);

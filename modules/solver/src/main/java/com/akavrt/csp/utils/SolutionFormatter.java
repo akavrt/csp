@@ -5,9 +5,9 @@ import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Solution;
 
 /**
- * User: akavrt
- * Date: 04.04.13
- * Time: 00:27
+ * <p>Utility class used to format console output.</p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class SolutionFormatter {
     private static final String FIRST_LEVEL_INDENT = "  ";

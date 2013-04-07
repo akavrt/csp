@@ -25,6 +25,7 @@ public class RunResultWriter extends XmlWriter {
     private Algorithm algorithm;
     private int numberOfExecutions;
     private int numberOfProblemsSolved;
+    private long totalProcessingTimeInMillis;
     private XmlEnabledCollector collector;
 
     /**
@@ -94,6 +95,19 @@ public class RunResultWriter extends XmlWriter {
     }
 
     /**
+     * <p>Set total running time. Used in batch processing.</p>
+     *
+     * <p>We can run same algorithm to solve different problems (representing a class of problems
+     * with similar characteristics, for example). In this case it's useful to store running times
+     * for later analysis of the method efficiency.</p>
+     *
+     * @param timeInMillis Total running time in milliseconds.
+     */
+    public void setTotalProcessingTime(long timeInMillis) {
+        this.totalProcessingTimeInMillis = timeInMillis;
+    }
+
+    /**
      * <p>Set an instance of collector used to collect and prepare run results.</p>
      *
      * @param collector Collector used to collect and prepare run results.
@@ -145,6 +159,13 @@ public class RunResultWriter extends XmlWriter {
             runElm.addContent(executionsElm);
         }
 
+        if (totalProcessingTimeInMillis > 0) {
+            Element processingTimeElm = new Element(XmlTags.PROCESS_TIME);
+            processingTimeElm.setAttribute(XmlTags.UNIT, XmlTags.SECOND);
+            processingTimeElm.setText(XmlUtils.formatDouble(0.001 * totalProcessingTimeInMillis));
+            runElm.addContent(processingTimeElm);
+        }
+
         if (collector != null) {
             collector.process();
             Element metrics = collector.getResult();
@@ -152,15 +173,17 @@ public class RunResultWriter extends XmlWriter {
             runElm.addContent(metrics);
         }
 
-        CspWriter cspWriter = new CspWriter();
-        cspWriter.setProblem(problem);
-        cspWriter.setSolutions(solutions);
-
-        Element cspElm = cspWriter.convert();
-
         Element rootElm = new Element(XmlTags.RESULTS);
         rootElm.addContent(runElm);
-        rootElm.addContent(cspElm);
+
+        if (problem != null) {
+            CspWriter cspWriter = new CspWriter();
+            cspWriter.setProblem(problem);
+            cspWriter.setSolutions(solutions);
+
+            Element cspElm = cspWriter.convert();
+            rootElm.addContent(cspElm);
+        }
 
         return rootElm;
     }
@@ -174,6 +197,7 @@ public class RunResultWriter extends XmlWriter {
         algorithm = null;
         numberOfProblemsSolved = 0;
         numberOfExecutions = 0;
+        totalProcessingTimeInMillis = 0L;
         collector = null;
     }
 
@@ -185,6 +209,9 @@ public class RunResultWriter extends XmlWriter {
         String NAME = "name";
         String PARAMETERS = "parameters";
         String PROBLEMS = "problems";
+        String PROCESS_TIME = "process-time";
+        String UNIT = "unit";
+        String SECOND = "s";
         String EXECUTIONS = "executions";
     }
 }

@@ -70,8 +70,10 @@ public class BatchProcessor {
             return;
         }
 
+        long start = System.currentTimeMillis();
         List<LoadedProblem> loadedProblems = loadProblems();
         if (loadedProblems.size() == 0) {
+            LOGGER.info("This batch is empty, halting batch processing.");
             return;
         }
 
@@ -99,7 +101,7 @@ public class BatchProcessor {
                 problemCollector.clear();
             }
 
-            LOGGER.info("Solving problem {},loaded from '{}'",
+            LOGGER.info("Solving problem {} loaded from '{}'",
                         extractProblemName(loadedProblem), loadedProblem.path);
             solver.setProblem(loadedProblem.problem);
             solver.solve();
@@ -109,8 +111,10 @@ public class BatchProcessor {
             }
         }
 
+        long end = System.currentTimeMillis();
         if (globalCollector != null) {
-            writeGlobalResults(outputDirectory, globalCollector, loadedProblems.size());
+            writeGlobalResults(outputDirectory,
+                               globalCollector, loadedProblems.size(), end - start);
         }
     }
 
@@ -167,7 +171,7 @@ public class BatchProcessor {
 
         File resultsFile = new File(outputDirectory, resultsFileName);
         try {
-            LOGGER.info("Writing results for problem {}, into '{}'",
+            LOGGER.info("Writing results for problem {} into '{}'",
                         extractProblemName(loadedProblem), resultsFile.getPath());
 
             RunResultWriter writer = new RunResultWriter();
@@ -187,7 +191,7 @@ public class BatchProcessor {
     }
 
     private boolean writeGlobalResults(File outputDirectory, XmlEnabledCollector globalCollector,
-                                       int numberOfProblemsSolved) {
+                                       int numberOfProblemsSolved, long totalProcessTimeInMillis) {
         File resultsFile = new File(outputDirectory, RUN_RESULTS_FILE_NAME);
         try {
             LOGGER.info("Writing run results into '{}'", resultsFile.getPath());
@@ -197,6 +201,7 @@ public class BatchProcessor {
             writer.setAlgorithm(solver.getAlgorithm());
             writer.setNumberOfProblemsSolved(numberOfProblemsSolved);
             writer.setNumberOfExecutions(solver.getNumberOfRuns());
+            writer.setTotalProcessingTime(totalProcessTimeInMillis);
             writer.setCollector(globalCollector);
 
             writer.write(resultsFile, true);
