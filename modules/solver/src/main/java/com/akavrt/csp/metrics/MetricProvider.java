@@ -52,11 +52,29 @@ public interface MetricProvider {
     double getAverageUnderProductionRatio();
 
     /**
+     * <p>Calculate the amount of strip produced according to the plan, find unfulfilled orders and
+     * compare the missing amount of strip with the amount specified in problem definition. Maximum
+     * underproduction found is returned in a form of a fractional ratio.</p>
+     *
+     * @return Maximum underproduction defined as fractional ratio.
+     */
+    public double getMaximumUnderProductionRatio();
+
+    /**
      * <p>Calculate the excessive amount of strip produced according to the plan and compare it
      * with the amount specified in problem definition.</p>
      *
      * @return Average overproduction defined as fractional ratio.
      */
     double getAverageOverProductionRatio();
+
+    /**
+     * <p>Calculate the excessive amount of strip produced according to the plan and compare it
+     * with the amount specified in problem definition. Maximum overproduction found is returned in
+     * a form of a fractional ratio.</p>
+     *
+     * @return Maximum overproduction defined as fractional ratio.
+     */
+    public double getMaximumOverProductionRatio();
 
 }

@@ -104,6 +104,29 @@ public class SolutionMetricProvider implements MetricProvider {
      * {@inheritDoc}
      */
     @Override
+    public double getMaximumUnderProductionRatio() {
+        double maximum = 0;
+        int i = 0;
+        List<Order> orders = problem.getOrders();
+        for (Order order : orders) {
+            double demand = order.getLength();
+            double production = solution.getProductionLengthForOrder(order);
+            double ratio = production < demand ? (1 - production / demand) : 0;
+
+            if (i == 0 || ratio > maximum) {
+                maximum = ratio;
+            }
+
+            i++;
+        }
+
+        return maximum;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double getAverageOverProductionRatio() {
         double overProductionRatio = 0;
 
@@ -116,6 +139,29 @@ public class SolutionMetricProvider implements MetricProvider {
         }
 
         return overProductionRatio / orders.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getMaximumOverProductionRatio() {
+        double maximum = 0;
+        int i = 0;
+        List<Order> orders = problem.getOrders();
+        for (Order order : orders) {
+            double demand = order.getLength();
+            double production = solution.getProductionLengthForOrder(order);
+            double ratio = production > demand ? (production / demand - 1) : 0;
+
+            if (i == 0 || ratio > maximum) {
+                maximum = ratio;
+            }
+
+            i++;
+        }
+
+        return maximum;
     }
 
 }

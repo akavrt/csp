@@ -21,7 +21,9 @@ public class ChromosomeMetricProvider implements MetricProvider {
     private int cachedActivePatternsCount;
     private int cachedUniquePatternsCount;
     private double cachedAverageUnderProductionRatio;
+    private double cachedMaxUnderProductionRatio;
     private double cachedAverageOverProductionRatio;
+    private double cachedMaxOverProductionRatio;
 
     /**
      * <p>Creates context-aware instance of ChromosomeMetricProvider tied with specific instance of
@@ -138,6 +140,29 @@ public class ChromosomeMetricProvider implements MetricProvider {
      * {@inheritDoc}
      */
     @Override
+    public double getMaximumUnderProductionRatio() {
+        if (cachedMaxUnderProductionRatio < 0) {
+            double maximum = 0;
+            for (int i = 0; i < context.getOrdersSize(); i++) {
+                double demand = context.getOrderLength(i);
+                double production = chromosome.getProductionLengthForOrder(i);
+                double ratio = production < demand ? (1 - production / demand) : 0;
+
+                if (i == 0 || ratio > maximum) {
+                    maximum = ratio;
+                }
+            }
+
+            cachedMaxUnderProductionRatio = maximum;
+        }
+
+        return cachedMaxUnderProductionRatio;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public double getAverageOverProductionRatio() {
         if (cachedAverageOverProductionRatio < 0) {
             double overProductionRatio = 0;
@@ -158,6 +183,29 @@ public class ChromosomeMetricProvider implements MetricProvider {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getMaximumOverProductionRatio() {
+        if (cachedMaxOverProductionRatio < 0) {
+            double maximum = 0;
+            for (int i = 0; i < context.getOrdersSize(); i++) {
+                double demand = context.getOrderLength(i);
+                double production = chromosome.getProductionLengthForOrder(i);
+                double ratio = production > demand ? (production / demand - 1) : 0;
+
+                if (i == 0 || ratio > maximum) {
+                    maximum = ratio;
+                }
+            }
+
+            cachedMaxOverProductionRatio = maximum;
+        }
+
+        return cachedMaxOverProductionRatio;
+    }
+
+    /**
      * <p>Resets cached values, should be manually called every time when chromosome structure is
      * changed.</p>
      */
@@ -167,6 +215,8 @@ public class ChromosomeMetricProvider implements MetricProvider {
         cachedActivePatternsCount = -1;
         cachedUniquePatternsCount = -1;
         cachedAverageUnderProductionRatio = -1;
+        cachedMaxUnderProductionRatio = -1;
         cachedAverageOverProductionRatio = -1;
+        cachedMaxOverProductionRatio = -1;
     }
 }

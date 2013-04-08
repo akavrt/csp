@@ -5,7 +5,6 @@ import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
-import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,6 +57,11 @@ public class SequentialBatchTester extends DirectoryBatchTester {
     @Override
     protected Algorithm createAlgorithm() {
         PatternGenerator generator = createPatternGenerator();
+        return new VahrenkampProcedure(generator);
+
+        /*
+        PatternGenerator generator = createPatternGenerator();
+        return new HaesslerProcedure(generator);
 
         VahrenkampProcedureParameters methodParams = new VahrenkampProcedureParameters();
         methodParams.setPatternUsageUpperBound(0.5);
@@ -65,6 +69,7 @@ public class SequentialBatchTester extends DirectoryBatchTester {
         methodParams.setTrimRatioUpperBound(1);
 
         return new VahrenkampProcedure(generator, methodParams);
+        */
     }
 
     @Override

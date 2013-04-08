@@ -47,7 +47,7 @@ public class GeneticBatchTester extends DirectoryBatchTester {
                                 "the default value of {} will be used.", DEFAULT_NUMBER_OF_RUNS);
         }
 
-        SequentialBatchTester tester = new SequentialBatchTester(targetDirectory, numberOfRuns);
+        GeneticBatchTester tester = new GeneticBatchTester(targetDirectory, numberOfRuns);
         tester.process();
     }
 
@@ -72,8 +72,8 @@ public class GeneticBatchTester extends DirectoryBatchTester {
         Metric objectiveFunction = createObjectiveFunction();
 
         GeneticAlgorithmParameters params = new GeneticAlgorithmParameters();
-        params.setPopulationSize(30);
-        params.setExchangeSize(20);
+        params.setPopulationSize(100);
+        params.setExchangeSize(70);
         params.setRunSteps(1000);
         params.setCrossoverRate(0.5);
 

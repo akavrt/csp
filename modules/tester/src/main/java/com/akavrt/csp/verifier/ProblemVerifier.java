@@ -1,4 +1,4 @@
-package com.akavrt.csp.tester;
+package com.akavrt.csp.verifier;
 
 import com.akavrt.csp.utils.Utils;
 import com.akavrt.csp.xml.XmlUtils;

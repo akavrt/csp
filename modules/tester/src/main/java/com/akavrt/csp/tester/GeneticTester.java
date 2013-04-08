@@ -1,13 +1,19 @@
 package com.akavrt.csp.tester;
 
+import com.akavrt.csp.analyzer.Average;
+import com.akavrt.csp.analyzer.MaxValue;
+import com.akavrt.csp.analyzer.SimpleCollector;
+import com.akavrt.csp.analyzer.StandardDeviation;
+import com.akavrt.csp.analyzer.xml.RunResultWriter;
+import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
 import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
-import com.akavrt.csp.metrics.Metric;
-import com.akavrt.csp.metrics.ScalarMetric;
+import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;
+import com.akavrt.csp.solver.MultistartSolver;
 import com.akavrt.csp.solver.SimpleSolver;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
@@ -46,6 +52,30 @@ public class GeneticTester {
         ScalarMetric metric = new ScalarMetric();
         Algorithm method = createAlgorithm(generator, metric);
 
+        XmlEnabledCollector collector = createXmlCollector();
+        SimpleCollector debugCollector = createDebugCollector(collector);
+
+        MultistartSolver solver = new MultistartSolver(problem, method, 10);
+        solver.addCollector(collector);
+        solver.addCollector(debugCollector);
+
+        solver.solve();
+
+        debugCollector.process();
+
+        File file = new File("/Users/akavrt/Sandbox/csp/optimal_10_ga_run.xml");
+
+        RunResultWriter writer = new RunResultWriter();
+
+        writer.setAlgorithm(method);
+        writer.setNumberOfExecutions(solver.getNumberOfRuns());
+        writer.setCollector(collector);
+        writer.setProblem(problem);
+
+        writer.write(file, true);
+
+
+        /*
         SimpleSolver solver = new SimpleSolver(problem, method);
 
         long start = System.currentTimeMillis();
@@ -58,6 +88,7 @@ public class GeneticTester {
         ScalarTracer tracer = new ScalarTracer(metric);
         tracePopulation(solutions, tracer);
         System.out.println(String.format("Run time: %.2f second", 0.001 * (end - start)));
+        */
     }
 
     private static void tracePopulation(List<Solution> solutions, Tracer<Solution> tracer) {
@@ -101,6 +132,33 @@ public class GeneticTester {
         params.setCrossoverRate(0.5);
 
         return new GeneticAlgorithm(factory, metric, params);
+    }
+
+    private static XmlEnabledCollector createXmlCollector() {
+        XmlEnabledCollector collector = new XmlEnabledCollector();
+        collector.addMeasure(new Average());
+        collector.addMeasure(new StandardDeviation());
+        collector.addMeasure(new MaxValue());
+
+        ScalarMetric scalarMetric = new ScalarMetric();
+        collector.addMetric(scalarMetric);
+        collector.addMetric(new TrimLossMetric());
+        collector.addMetric(new PatternReductionMetric());
+        collector.addMetric(new UniquePatternsMetric());
+        collector.addMetric(new ActivePatternsMetric());
+        collector.addMetric(new ProductDeviationMetric());
+        collector.addMetric(new MaxUnderProductionMetric());
+        collector.addMetric(new MaxOverProductionMetric());
+
+        return collector;
+    }
+
+    private static SimpleCollector createDebugCollector(SimpleCollector prototype) {
+        SimpleCollector collector = new SimpleCollector();
+        collector.setMeasures(prototype.getMeasures());
+        collector.setMetrics(prototype.getMetrics());
+
+        return collector;
     }
 
 }

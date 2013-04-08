@@ -84,7 +84,8 @@ public class XmlEnabledCollector extends SimpleCollector {
         metricElm.addContent(nameElm);
 
         Element valueElm = new Element(XmlTags.VALUE);
-        valueElm.setText(XmlUtils.formatDouble(feasibilityRatio) + "%");
+        valueElm.setAttribute(XmlTags.UNIT, XmlTags.PERCENTS);
+        valueElm.setText(XmlUtils.formatDouble(feasibilityRatio));
         metricElm.addContent(valueElm);
 
         return metricElm;
@@ -98,6 +99,8 @@ public class XmlEnabledCollector extends SimpleCollector {
         String METRICS = "metrics";
         String METRIC = "metric";
         String NAME = "name";
+        String UNIT = "unit";
+        String PERCENTS = "%";
         String VALUE = "value";
     }
 

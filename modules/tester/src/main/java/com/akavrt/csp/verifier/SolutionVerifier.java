@@ -1,4 +1,4 @@
-package com.akavrt.csp.tester;
+package com.akavrt.csp.verifier;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Solution;

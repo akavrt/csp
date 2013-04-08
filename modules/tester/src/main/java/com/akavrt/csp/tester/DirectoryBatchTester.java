@@ -1,6 +1,8 @@
 package com.akavrt.csp.tester;
 
 import com.akavrt.csp.analyzer.Average;
+import com.akavrt.csp.analyzer.MaxValue;
+import com.akavrt.csp.analyzer.MinValue;
 import com.akavrt.csp.analyzer.StandardDeviation;
 import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.metrics.*;
@@ -78,6 +80,8 @@ public abstract class DirectoryBatchTester {
         XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
         collector.addMeasure(new StandardDeviation());
+        collector.addMeasure(new MinValue());
+        collector.addMeasure(new MaxValue());
 
         ScalarMetric scalarMetric = new ScalarMetric();
         collector.addMetric(scalarMetric);
@@ -86,6 +90,8 @@ public abstract class DirectoryBatchTester {
         collector.addMetric(new UniquePatternsMetric());
         collector.addMetric(new ActivePatternsMetric());
         collector.addMetric(new ProductDeviationMetric());
+        collector.addMetric(new MaxUnderProductionMetric());
+        collector.addMetric(new MaxOverProductionMetric());
 
         return collector;
     }
@@ -94,10 +100,14 @@ public abstract class DirectoryBatchTester {
         XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
         collector.addMeasure(new StandardDeviation());
+        collector.addMeasure(new MinValue());
+        collector.addMeasure(new MaxValue());
 
         ScalarMetric scalarMetric = new ScalarMetric(new ScalarMetricParameters());
         collector.addMetric(scalarMetric);
         collector.addMetric(new ProductDeviationMetric());
+        collector.addMetric(new MaxUnderProductionMetric());
+        collector.addMetric(new MaxOverProductionMetric());
 
         return collector;
     }

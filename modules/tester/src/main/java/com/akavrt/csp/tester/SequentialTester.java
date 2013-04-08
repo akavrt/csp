@@ -1,6 +1,7 @@
 package com.akavrt.csp.tester;
 
 import com.akavrt.csp.analyzer.Average;
+import com.akavrt.csp.analyzer.MaxValue;
 import com.akavrt.csp.analyzer.SimpleCollector;
 import com.akavrt.csp.analyzer.StandardDeviation;
 import com.akavrt.csp.analyzer.xml.RunResultWriter;
@@ -67,7 +68,7 @@ public class SequentialTester {
 
             System.out.println(formatted);
 
-            File file = new File("/Users/akavrt/Sandbox/output-opt10run.xml");
+            File file = new File("/Users/akavrt/Sandbox/csp/optimal_10_vshp_run.xml");
 
             RunResultWriter writer = new RunResultWriter();
 
@@ -116,6 +117,7 @@ public class SequentialTester {
         XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
         collector.addMeasure(new StandardDeviation());
+        collector.addMeasure(new MaxValue());
 
         ScalarMetric scalarMetric = new ScalarMetric();
         collector.addMetric(scalarMetric);
@@ -124,6 +126,8 @@ public class SequentialTester {
         collector.addMetric(new UniquePatternsMetric());
         collector.addMetric(new ActivePatternsMetric());
         collector.addMetric(new ProductDeviationMetric());
+        collector.addMetric(new MaxUnderProductionMetric());
+        collector.addMetric(new MaxOverProductionMetric());
 
         return collector;
     }
