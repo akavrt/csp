@@ -87,9 +87,8 @@ public class GeneticTester {
     private static PatternGenerator createPatternGenerator() {
         PatternGeneratorParameters generatorParams = new PatternGeneratorParameters();
         generatorParams.setGenerationTrialsLimit(20);
-        PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
 
-        return generator;
+        return new ConstrainedPatternGenerator(generatorParams);
     }
 
     private static Algorithm createAlgorithm(PatternGenerator generator, Metric metric) {
@@ -101,9 +100,7 @@ public class GeneticTester {
         params.setRunSteps(1000);
         params.setCrossoverRate(0.5);
 
-        Algorithm method = new GeneticAlgorithm(factory, metric, params);
-
-        return method;
+        return new GeneticAlgorithm(factory, metric, params);
     }
 
 }

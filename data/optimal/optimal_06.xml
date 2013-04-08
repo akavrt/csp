@@ -10,7 +10,7 @@
             <order id="order1">
                 <strip>
                     <width>0.1</width>
-                    <length>5300</length>
+                    <length>7950</length>
                 </strip>
             </order>
             <order id="order2">
@@ -193,9 +193,9 @@
             <patterns>
                 <pattern id="pattern1">
                     <rolls>
-                        <roll quantity="2" ref="roll1" />
-                        <roll quantity="1" ref="roll2" />
-                        <roll quantity="1" ref="roll3" />
+                        <roll quantity="2" ref="roll02" />
+                        <roll quantity="1" ref="roll03" />
+                        <roll quantity="1" ref="roll05" />
                     </rolls>
                     <cuts>
                         <cut quantity="2" ref="order1" />
@@ -211,6 +211,7 @@
                         <roll quantity="1" ref="roll20" />
                     </rolls>
                     <cuts>
+                        <cut quantity="1" ref="order1" />
                         <cut quantity="4" ref="order2" />
                         <cut quantity="2" ref="order3" />
                         <cut quantity="3" ref="order4" />

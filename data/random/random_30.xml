@@ -7,55 +7,55 @@
     </metadata>
     <problem>
         <orders>
-            <order id="order1">
+            <order id="order01">
                 <strip>
                     <width>0.22023</width>
                     <length>3385.732</length>
                 </strip>
             </order>
-            <order id="order2">
+            <order id="order02">
                 <strip>
                     <width>0.2224</width>
                     <length>1555.031</length>
                 </strip>
             </order>
-            <order id="order3">
+            <order id="order03">
                 <strip>
                     <width>0.25662</width>
                     <length>3947.391</length>
                 </strip>
             </order>
-            <order id="order4">
+            <order id="order04">
                 <strip>
                     <width>0.27865</width>
                     <length>2432.729</length>
                 </strip>
             </order>
-            <order id="order5">
+            <order id="order05">
                 <strip>
                     <width>0.28053</width>
                     <length>2559.064</length>
                 </strip>
             </order>
-            <order id="order6">
+            <order id="order06">
                 <strip>
                     <width>0.28945</width>
                     <length>2248.049</length>
                 </strip>
             </order>
-            <order id="order7">
+            <order id="order07">
                 <strip>
                     <width>0.2956</width>
                     <length>2134.537</length>
                 </strip>
             </order>
-            <order id="order8">
+            <order id="order08">
                 <strip>
                     <width>0.31382</width>
                     <length>2063.453</length>
                 </strip>
             </order>
-            <order id="order9">
+            <order id="order09">
                 <strip>
                     <width>0.31888</width>
                     <length>3222.063</length>

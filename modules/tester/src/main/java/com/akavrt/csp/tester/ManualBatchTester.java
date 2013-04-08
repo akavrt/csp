@@ -39,9 +39,8 @@ public class ManualBatchTester {
     private static PatternGenerator createPatternGenerator() {
         PatternGeneratorParameters generatorParams = new PatternGeneratorParameters();
         generatorParams.setGenerationTrialsLimit(20);
-        PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
 
-        return generator;
+        return new ConstrainedPatternGenerator(generatorParams);
     }
 
     private static Algorithm createAlgorithm(PatternGenerator generator) {
@@ -49,9 +48,8 @@ public class ManualBatchTester {
         methodParams.setPatternUsageUpperBound(0.5);
         methodParams.setGoalmix(0.5);
         methodParams.setTrimRatioUpperBound(1);
-        Algorithm method = new VahrenkampProcedure(generator, methodParams);
 
-        return method;
+        return new VahrenkampProcedure(generator, methodParams);
     }
 
     private static XmlEnabledCollector createProblemCollector() {

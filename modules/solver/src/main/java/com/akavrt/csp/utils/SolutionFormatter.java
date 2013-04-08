@@ -95,6 +95,9 @@ public class SolutionFormatter {
 
         if (pattern.getRoll() != null) {
             builder.append(" -> ").append(pattern.getRoll().getId());
+            builder.append(String.format(" (%.0f mm; ", 1000 * pattern.getRoll().getWidth()));
+            builder.append(String.format("%.0f m)", pattern.getRoll().getLength()));
+            builder.append(String.format(" %.0f mm of trim", 1000 * pattern.getTrimWidth()));
         } else {
             builder.append(" -> unset");
         }
