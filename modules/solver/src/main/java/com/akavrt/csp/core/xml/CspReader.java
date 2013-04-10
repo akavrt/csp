@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class CspReader {
     private static final Logger LOGGER = LogManager.getLogger(CspReader.class);
+    private Document document;
     private Problem loadedProblem;
     private List<Solution> loadedSolutions;
 
@@ -46,12 +47,13 @@ public class CspReader {
      */
     public void read(InputStream in) throws CspParseException {
         try {
+            document = null;
             loadedProblem = null;
             loadedSolutions = null;
 
             SAXBuilder sax = new SAXBuilder();
-            Document doc = sax.build(in);
-            convert(doc.getRootElement());
+            document = sax.build(in);
+            convert(document.getRootElement());
         } catch (JDOMException e) {
             throw new CspParseException("Error related to XML parsing.", e);
         } catch (IOException e) {
@@ -76,12 +78,13 @@ public class CspReader {
      */
     public void read(File file) throws CspParseException {
         try {
+            document = null;
             loadedProblem = null;
             loadedSolutions = null;
 
             SAXBuilder sax = new SAXBuilder();
-            Document doc = sax.build(file);
-            convert(doc.getRootElement());
+            document = sax.build(file);
+            convert(document.getRootElement());
         } catch (JDOMException e) {
             throw new CspParseException("Error related to XML parsing.", e);
         } catch (IOException e) {
@@ -105,6 +108,15 @@ public class CspReader {
      */
     public List<Solution> getSolutions() {
         return loadedSolutions;
+    }
+
+    /**
+     * <p>Returns org.jdom2.Document parsed from the input.</p>
+     *
+     * @return Parsed org.jdom2.Document.
+     */
+    public Document getDocument() {
+        return document;
     }
 
     private Problem loadProblem(Element cspElm) {
