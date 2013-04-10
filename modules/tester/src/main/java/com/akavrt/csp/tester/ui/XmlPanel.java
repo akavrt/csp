@@ -32,7 +32,7 @@ public class XmlPanel extends JPanel {
     }
 
     public void setXml(String formattedXml) {
-        xmlArea.append(formattedXml);
+        xmlArea.setText(formattedXml);
     }
 
 }

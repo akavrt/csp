@@ -1,13 +1,23 @@
 package com.akavrt.csp.tester.ui;
 
 import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
+import com.akavrt.csp.core.xml.CspWriter;
+import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
+import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;
+import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
+import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
+import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
+import com.akavrt.csp.tester.tracer.ScalarTracer;
 import com.akavrt.csp.tester.ui.utils.GBC;
 import com.akavrt.csp.utils.ProblemFormatter;
+import com.akavrt.csp.utils.SolutionFormatter;
+import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.output.Format;
@@ -19,22 +29,29 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 /**
  * User: akavrt
  * Date: 09.04.13
  * Time: 13:10
  */
-public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedListener {
+public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedListener,
+        AsyncSolver.OnProblemSolvedListener {
     private static final Logger LOGGER = LogManager.getLogger(MainFrame.class);
     private static final double SCREEN_DIV = 2;
-    private final JFileChooser chooser;
+    private JFileChooser chooser;
+    private MainToolBar toolBar;
     private PresetsPanel presetsPanel;
     private ContentPanel contentPanel;
     private Problem problem;
+    private List<Solution> solutions;
+    private File problemFile;
+    private AsyncSolver solver;
+    private ScalarMetric metric;
 
     public MainFrame() {
-        chooser = new JFileChooser();
+        prepareFileChooser();
 
         setupFrame();
         setupViews();
@@ -42,6 +59,8 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         pack();
         setVisible(true);
+
+        contentPanel.setFocus();
     }
 
     public static void main(String[] args) {
@@ -55,6 +74,12 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
     private static void createAndShowGUI() {
         new MainFrame();
+    }
+
+    private void prepareFileChooser() {
+        chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("XML files", "xml");
+        chooser.addChoosableFileFilter(filter);
     }
 
     private void setupFrame() {
@@ -78,10 +103,11 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     private void setupViews() {
         setLayout(new GridBagLayout());
 
+        toolBar = new MainToolBar(this);
         presetsPanel = new PresetsPanel();
         contentPanel = new ContentPanel();
 
-        add(new MainToolBar(this), new GBC(0, 0, 2, 1).setFill(GBC.HORIZONTAL).setWeight(100, 0));
+        add(toolBar, new GBC(0, 0, 2, 1).setFill(GBC.HORIZONTAL).setWeight(100, 0));
         add(presetsPanel, new GBC(0, 1).setFill(GBC.BOTH).setWeight(0, 100));
         add(contentPanel, new GBC(1, 1).setFill(GBC.BOTH).setWeight(100, 100));
     }
@@ -99,15 +125,12 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         chooser.setSelectedFile(new File(""));
         chooser.setMultiSelectionEnabled(false);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("XML files", "xml");
-        chooser.setFileFilter(filter);
-
         int r = chooser.showOpenDialog(this);
         if (r != JFileChooser.APPROVE_OPTION) {
             return;
         }
 
-        File problemFile = chooser.getSelectedFile();
+        problemFile = chooser.getSelectedFile();
 
         CspReader reader = new CspReader();
         try {
@@ -117,6 +140,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         }
 
         problem = reader.getProblem();
+        solutions = reader.getSolutions();
 
         if (problem == null || reader.getDocument() == null) {
             contentPanel.appendText("\nProblem wasn't loaded.");
@@ -132,7 +156,8 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
                 LOGGER.catching(e);
             }
 
-            contentPanel.appendText(String.format("\nProblem from '%s' file was successfully loaded.", problemFile.getPath()));
+            contentPanel.appendText(String.format("\nProblem from '%s' file was successfully " +
+                                                          "loaded.", problemFile.getPath()));
             String formattedProblem = ProblemFormatter.format(problem);
             contentPanel.appendText(formattedProblem);
         }
@@ -141,7 +166,34 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     @Override
     public void saveData() {
         if (problem == null) {
-            JOptionPane.showMessageDialog(this, "Nothing to save.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Nothing to save.", "Warning",
+                                          JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (problemFile != null) {
+            chooser.setCurrentDirectory(problemFile.getParentFile());
+            chooser.setSelectedFile(problemFile);
+        } else {
+            chooser.setCurrentDirectory(new File("."));
+            chooser.setSelectedFile(new File("problem.xml"));
+        }
+
+        chooser.setMultiSelectionEnabled(false);
+
+        int r = chooser.showSaveDialog(this);
+        if (r != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File file = chooser.getSelectedFile();
+        try {
+            CspWriter writer = new CspWriter();
+            writer.setProblem(problem);
+            writer.setSolutions(solutions);
+            writer.write(file, true);
+        } catch (IOException e) {
+            LOGGER.catching(e);
         }
     }
 
@@ -153,15 +205,90 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     @Override
     public boolean startCalculations() {
         if (problem == null) {
-            JOptionPane.showMessageDialog(this, "Nothing to solve.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Nothing to solve.", "Warning",
+                                          JOptionPane.WARNING_MESSAGE);
             return false;
         }
+
+        GeneticAlgorithm algorithm = prepareAlgorithm();
+        solver = new AsyncSolver(problem, algorithm, this);
+        solver.execute();
+
+        contentPanel.appendText("\nExecuting genetic algorithm.");
 
         return true;
     }
 
     @Override
     public void stopCalculations() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if (solver != null && !solver.isDone()) {
+            solver.cancel(true);
+
+            contentPanel.appendText("\nExecution was canceled.");
+        }
+    }
+
+    @Override
+    public void onGeneticProgressChanged(GeneticProgressUpdate update) {
+        toolBar.onGeneticProgressChanged(update);
+    }
+
+    @Override
+    public void onProblemSolved(List<Solution> obtained) {
+        toolBar.setProgressBarVisible(false);
+        toolBar.setStartActionEnabled(true);
+        toolBar.setStopActionEnabled(false);
+
+        if (solutions == null) {
+            solutions = Lists.newArrayList();
+        }
+
+        if (obtained == null || obtained.isEmpty()) {
+            // notify user with update in text trace
+            contentPanel.appendText("\nNo solution was found in run.");
+        } else if (obtained.get(0) != null) {
+            Solution best = obtained.get(0);
+
+            solutions.add(best);
+
+            // print out best solution in text trace
+            String caption = "\nBest solution found in run:";
+            String formatted;
+            if (metric != null) {
+                ScalarTracer tracer = new ScalarTracer(metric);
+                String trace = tracer.trace(best);
+                formatted = SolutionFormatter.format(best, caption, trace, true);
+            } else {
+                formatted = SolutionFormatter.format(best, caption, true);
+            }
+
+            contentPanel.appendText(formatted);
+        }
+
+    }
+
+    private GeneticAlgorithm prepareAlgorithm() {
+        PatternGeneratorParameters generatorParams = presetsPanel.getPatternGeneratorParameters();
+        if (generatorParams == null) {
+            generatorParams = new PatternGeneratorParameters();
+        }
+
+        PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
+
+        ScalarMetricParameters scalarParams = presetsPanel.getObjectiveFunctionParameters();
+        if (scalarParams == null) {
+            scalarParams = new ScalarMetricParameters();
+        }
+
+        metric = new ScalarMetric(scalarParams);
+
+        GeneticAlgorithmParameters geneticParams = presetsPanel.getGeneticAlgorithmParameters();
+        if (geneticParams == null) {
+            geneticParams = new GeneticAlgorithmParameters();
+        }
+
+        PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
+
+        return new GeneticAlgorithm(factory, metric, geneticParams);
     }
 }

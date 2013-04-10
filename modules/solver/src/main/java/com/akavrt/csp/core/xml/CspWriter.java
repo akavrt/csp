@@ -83,7 +83,9 @@ public class CspWriter extends XmlWriter {
             exportedSolutions.clear();
         }
 
-        exportedSolutions.addAll(solutions);
+        if (solutions != null) {
+            exportedSolutions.addAll(solutions);
+        }
     }
 
     /**
@@ -103,12 +105,16 @@ public class CspWriter extends XmlWriter {
         Element solutionsElm = new Element(XmlTags.SOLUTIONS);
 
         SolutionConverter converter = new SolutionConverter(exportedProblem);
+        int exported = 0;
         for (int i = 0; i < exportedSolutions.size(); i++) {
-            String solutionId = String.format(SOLUTION_ID_TEMPLATE, i + 1);
+            Solution solution = exportedSolutions.get(i);
+            if (solution != null) {
+                String solutionId = String.format(SOLUTION_ID_TEMPLATE, ++exported);
 
-            Element solutionElm = converter.export(exportedSolutions.get(i));
-            solutionElm.setAttribute(XmlTags.ID, solutionId);
-            solutionsElm.addContent(solutionElm);
+                Element solutionElm = converter.export(solution);
+                solutionElm.setAttribute(XmlTags.ID, solutionId);
+                solutionsElm.addContent(solutionElm);
+            }
         }
 
         return solutionsElm;

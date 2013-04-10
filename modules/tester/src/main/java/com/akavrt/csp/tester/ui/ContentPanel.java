@@ -57,4 +57,7 @@ public class ContentPanel extends JTabbedPane {
         xmlPanel.setXml(formattedXml);
     }
 
+    public void setFocus() {
+        textTracePanel.setFocus();
+    }
 }

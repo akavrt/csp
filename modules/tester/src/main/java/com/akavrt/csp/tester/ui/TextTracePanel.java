@@ -18,7 +18,7 @@ public class TextTracePanel extends JPanel {
         textArea.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
-        textArea.append("<!-- Trace start at " + new Date() + " -->");
+        textArea.append("<!-- Trace start at " + new Date() + " -->\n");
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
@@ -30,11 +30,15 @@ public class TextTracePanel extends JPanel {
 
     public void clearTextArea() {
         textArea.setText("");
-        textArea.append("<!-- Trace start at " + new Date() + " -->");
+        textArea.append("<!-- Trace start at " + new Date() + " -->\n");
     }
 
     public void appendText(String text) {
         textArea.append("\n");
         textArea.append(text);
+    }
+
+    public void setFocus() {
+        textArea.requestFocusInWindow();
     }
 }

@@ -26,6 +26,7 @@ public class GeneticAlgorithm implements Algorithm {
     private final GeneticOperator crossover;
     private final GeneticOperator mutation;
     private final Algorithm initializationProcedure;
+    private GeneticProgressChangeListener progressChangeListener;
 
     public GeneticAlgorithm(GeneticComponentsFactory componentsFactory, Metric objectiveFunction,
                             GeneticAlgorithmParameters parameters) {
@@ -83,6 +84,14 @@ public class GeneticAlgorithm implements Algorithm {
         return solutions;
     }
 
+    public void setProgressChangeListener(GeneticProgressChangeListener listener) {
+        this.progressChangeListener = listener;
+    }
+
+    public void removeProgressChangeListener() {
+        this.progressChangeListener = null;
+    }
+
     private SolutionMetadata prepareMetadata() {
         SolutionMetadata metadata = new SolutionMetadata();
         metadata.setDescription("Solution obtained with " + SHORT_METHOD_NAME + ".");
@@ -105,10 +114,19 @@ public class GeneticAlgorithm implements Algorithm {
         mutation.initialize(geneticContext);
 
         Population population = new Population(geneticContext, parameters, objectiveFunction);
+        population.setProgressChangeListener(progressChangeListener);
+
         population.initialize(initializationProcedure);
 
         while (!geneticContext.isCancelled() && population.getAge() < parameters.getRunSteps()) {
             population.generation(crossover, mutation);
+
+            if (progressChangeListener != null) {
+                int progress = 100 * population.getAge() / parameters.getRunSteps();
+                progress = Math.min(progress, 100);
+
+                progressChangeListener.onGeneticProgressChanged(progress, GeneticPhase.GENERATION);
+            }
         }
 
         population.sort();

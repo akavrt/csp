@@ -34,6 +34,7 @@ public class Population {
     private final Comparator<Plan> comparator;
     private final List<Chromosome> chromosomes;
     private int age;
+    private GeneticProgressChangeListener progressChangeListener;
 
     /**
      * <p>Creates empty population. Initialization of the population has to be done separately by
@@ -83,6 +84,10 @@ public class Population {
         return solutions;
     }
 
+    public void setProgressChangeListener(GeneticProgressChangeListener listener) {
+        this.progressChangeListener = listener;
+    }
+
     /**
      * <p>Fills in population with chromosomes obtained with a help of auxiliary algorithm and
      * resets age counter to zero.</p>
@@ -113,6 +118,14 @@ public class Population {
                         }
                     }
                 }
+            }
+
+            if (progressChangeListener != null) {
+                int progress = 100 * chromosomes.size() / parameters.getPopulationSize();
+                progress = Math.min(progress, 100);
+
+                progressChangeListener.onGeneticProgressChanged(progress,
+                                                                GeneticPhase.INITIALIZATION);
             }
         }
     }

@@ -70,6 +70,8 @@ public class MainToolBar extends JToolBar {
                 if (listener != null && listener.startCalculations()) {
                     startAction.setEnabled(false);
                     stopAction.setEnabled(true);
+                    progressBar.setValue(0);
+                    progressBar.setString("");
                     progressBar.setVisible(true);
                 }
             }
@@ -79,13 +81,15 @@ public class MainToolBar extends JToolBar {
                                     KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK)) {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                startAction.setEnabled(true);
-                stopAction.setEnabled(false);
-                progressBar.setVisible(false);
-
                 if (listener != null) {
                     listener.stopCalculations();
                 }
+
+                startAction.setEnabled(true);
+                stopAction.setEnabled(false);
+                progressBar.setVisible(false);
+                progressBar.setValue(0);
+                progressBar.setString("");
             }
         };
         stopAction.setEnabled(false);
@@ -127,6 +131,24 @@ public class MainToolBar extends JToolBar {
         addSeparator();
 
         add(progressBar);
+    }
+
+    public void setStartActionEnabled(boolean enabled) {
+        startAction.setEnabled(enabled);
+    }
+
+    public void setStopActionEnabled(boolean enabled) {
+        stopAction.setEnabled(enabled);
+    }
+
+    public void setProgressBarVisible(boolean visible) {
+        progressBar.setVisible(visible);
+    }
+
+    public void onGeneticProgressChanged(GeneticProgressUpdate update) {
+        progressBar.setValue(update.progress);
+        progressBar.setString(String.format("%s %d%%",
+                                            update.phase.getDescription(), update.progress));
     }
 
     public interface OnActionPerformedListener {
