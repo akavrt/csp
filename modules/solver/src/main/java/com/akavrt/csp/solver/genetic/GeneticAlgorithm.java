@@ -125,7 +125,7 @@ public class GeneticAlgorithm implements Algorithm {
                 int progress = 100 * population.getAge() / parameters.getRunSteps();
                 progress = Math.min(progress, 100);
 
-                progressChangeListener.onGeneticProgressChanged(progress, GeneticPhase.GENERATION);
+                progressChangeListener.onGenerationProgressChanged(progress, population);
             }
         }
 

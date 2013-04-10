@@ -84,6 +84,10 @@ public class Population {
         return solutions;
     }
 
+    public List<Chromosome> getChromosomes() {
+        return chromosomes;
+    }
+
     public void setProgressChangeListener(GeneticProgressChangeListener listener) {
         this.progressChangeListener = listener;
     }
@@ -124,8 +128,7 @@ public class Population {
                 int progress = 100 * chromosomes.size() / parameters.getPopulationSize();
                 progress = Math.min(progress, 100);
 
-                progressChangeListener.onGeneticProgressChanged(progress,
-                                                                GeneticPhase.INITIALIZATION);
+                progressChangeListener.onInitializationProgressChanged(progress);
             }
         }
     }

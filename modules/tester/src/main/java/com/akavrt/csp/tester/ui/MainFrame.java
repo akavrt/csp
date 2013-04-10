@@ -200,6 +200,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     @Override
     public void clearTrace() {
         contentPanel.clearTextArea();
+        contentPanel.clearSeries();
     }
 
     @Override
@@ -210,11 +211,12 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             return false;
         }
 
+        contentPanel.appendText("\nExecuting genetic algorithm.");
+        contentPanel.clearSeries();
+
         GeneticAlgorithm algorithm = prepareAlgorithm();
         solver = new AsyncSolver(problem, algorithm, this);
         solver.execute();
-
-        contentPanel.appendText("\nExecuting genetic algorithm.");
 
         return true;
     }
@@ -231,6 +233,10 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     @Override
     public void onGeneticProgressChanged(GeneticProgressUpdate update) {
         toolBar.onGeneticProgressChanged(update);
+
+        if (presetsPanel.isGraphTraceEnabled()) {
+            contentPanel.updateSeries(update.seriesData);
+        }
     }
 
     @Override

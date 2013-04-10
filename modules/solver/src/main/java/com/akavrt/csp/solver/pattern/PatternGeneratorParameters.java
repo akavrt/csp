@@ -15,7 +15,7 @@ import org.jdom2.Element;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class PatternGeneratorParameters extends BaseParameters {
-    private static final int DEFAULT_GENERATION_TRIALS_LIMIT = 100;
+    private static final int DEFAULT_GENERATION_TRIALS_LIMIT = 20;
     private int generationTrialsLimit = DEFAULT_GENERATION_TRIALS_LIMIT;
 
     /**

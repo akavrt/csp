@@ -6,12 +6,12 @@ import com.akavrt.csp.solver.ExecutionContext;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
 import com.akavrt.csp.solver.genetic.GeneticPhase;
 import com.akavrt.csp.solver.genetic.GeneticProgressChangeListener;
+import com.akavrt.csp.solver.genetic.Population;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * User: akavrt
@@ -46,10 +46,9 @@ public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpda
 
     @Override
     protected void process(List<GeneticProgressUpdate> updates) {
-        if (listener != null) {
-            for (GeneticProgressUpdate update : updates) {
-                listener.onGeneticProgressChanged(update);
-            }
+        if (listener != null && !isCancelled() && updates.size() > 0) {
+            GeneticProgressUpdate lastUpdate = updates.get(updates.size() - 1);
+            listener.onGeneticProgressChanged(lastUpdate);
         }
     }
 
@@ -57,21 +56,26 @@ public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpda
     public void done() {
         this.algorithm.removeProgressChangeListener();
 
-        if (listener != null) {
+        if (listener != null && !isCancelled()) {
+            List<Solution> solutions = null;
             try {
-                List<Solution> solutions = get();
-                listener.onProblemSolved(solutions);
-            } catch (InterruptedException e) {
-                LOGGER.catching(e);
-            } catch (ExecutionException e) {
+                solutions = get();
+            } catch (Exception e) {
                 LOGGER.catching(e);
             }
+
+            listener.onProblemSolved(solutions);
         }
     }
 
     @Override
-    public void onGeneticProgressChanged(int progress, GeneticPhase phase) {
-        publish(new GeneticProgressUpdate(progress, phase));
+    public void onInitializationProgressChanged(int progress) {
+        publish(new GeneticProgressUpdate(progress, GeneticPhase.INITIALIZATION));
+    }
+
+    @Override
+    public void onGenerationProgressChanged(int progress, Population population) {
+        publish(new GeneticProgressUpdate(progress, GeneticPhase.GENERATION, population));
     }
 
     public interface OnProblemSolvedListener {

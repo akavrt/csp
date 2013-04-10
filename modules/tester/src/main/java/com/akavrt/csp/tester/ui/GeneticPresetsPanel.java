@@ -29,7 +29,7 @@ public class GeneticPresetsPanel extends BasePresetsPanel {
         runStepsEdit = createIntValueEdit();
 
         setLayout(new GridBagLayout());
-        add(new JLabel("Genetic parameters"),
+        add(new JLabel("Genetic algorithm"),
             new GBC(0, 0, 2, 1).setFill(GBC.BOTH).setWeight(100, 0).setInsets(10, 10, 10, 10));
 
         add(new JLabel("population size:", SwingConstants.RIGHT),

@@ -1,9 +1,10 @@
 package com.akavrt.csp.solver.genetic;
 
+
 /**
- * User: akavrt
- * Date: 10.04.13
- * Time: 17:40
+ * <p></p>
+ *
+ * @author Victor Balabanov <akavrt@gmail.com>
  */
 public enum GeneticPhase {
     INITIALIZATION("initialization", "Initializing"),

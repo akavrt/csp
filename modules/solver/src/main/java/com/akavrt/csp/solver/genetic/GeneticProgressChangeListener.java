@@ -6,5 +6,6 @@ package com.akavrt.csp.solver.genetic;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public interface GeneticProgressChangeListener {
-    void onGeneticProgressChanged(int progress, GeneticPhase phase);
+    void onInitializationProgressChanged(int progress);
+    void onGenerationProgressChanged(int progress, Population population);
 }

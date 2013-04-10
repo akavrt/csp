@@ -11,15 +11,17 @@ import java.awt.*;
  */
 public class ContentPanel extends JTabbedPane {
     private final TextTracePanel textTracePanel;
+    private final GraphTracePanel graphTracePanel;
     private final XmlPanel xmlPanel;
 
     public ContentPanel() {
         textTracePanel = new TextTracePanel();
+        graphTracePanel = new GraphTracePanel();
         xmlPanel = new XmlPanel();
 
         addTab("text trace", textTracePanel);
-        addTab("graph trace", new GraphTracePanel());
-        addTab("analyze", new AnalyzerPanel());
+        addTab("graph trace",graphTracePanel);
+//        addTab("analyze", new AnalyzerPanel());
         addTab("XML", xmlPanel);
 
         setTabPlacement(JTabbedPane.BOTTOM);
@@ -60,4 +62,14 @@ public class ContentPanel extends JTabbedPane {
     public void setFocus() {
         textTracePanel.setFocus();
     }
+
+    public void clearSeries() {
+        graphTracePanel.clearSeries();
+    }
+
+    public void updateSeries(SeriesData data) {
+        graphTracePanel.updateSeries(data);
+    }
+
+
 }
