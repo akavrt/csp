@@ -24,12 +24,14 @@ public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpda
     private final Problem problem;
     private final GeneticAlgorithm algorithm;
     private final OnProblemSolvedListener listener;
+    private final SeriesMetricProvider metricProvider;
 
     public AsyncSolver(Problem problem, GeneticAlgorithm algorithm,
-                       OnProblemSolvedListener listener) {
+                       OnProblemSolvedListener listener, SeriesMetricProvider metricProvider) {
         this.problem = problem;
         this.algorithm = algorithm;
         this.listener = listener;
+        this.metricProvider = metricProvider;
 
         this.algorithm.setProgressChangeListener(this);
     }
@@ -75,7 +77,9 @@ public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpda
 
     @Override
     public void onGenerationProgressChanged(int progress, Population population) {
-        publish(new GeneticProgressUpdate(progress, GeneticPhase.GENERATION, population));
+        // calculate data for graph trace
+        SeriesData seriesData = new SeriesData(population, metricProvider);
+        publish(new GeneticProgressUpdate(progress, GeneticPhase.GENERATION, seriesData));
     }
 
     public interface OnProblemSolvedListener {

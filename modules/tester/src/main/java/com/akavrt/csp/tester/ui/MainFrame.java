@@ -15,6 +15,7 @@ import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
 import com.akavrt.csp.tester.ui.utils.GBC;
+import com.akavrt.csp.tester.utils.Utils;
 import com.akavrt.csp.utils.ProblemFormatter;
 import com.akavrt.csp.utils.SolutionFormatter;
 import com.google.common.collect.Lists;
@@ -40,6 +41,8 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         AsyncSolver.OnProblemSolvedListener {
     private static final Logger LOGGER = LogManager.getLogger(MainFrame.class);
     private static final double SCREEN_DIV = 2;
+    private static final String APP_NAME = "csp";
+    private static final String APP_NAME_TEMPLATE = APP_NAME + " - %s";
     private JFileChooser chooser;
     private MainToolBar toolBar;
     private PresetsPanel presetsPanel;
@@ -83,7 +86,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     }
 
     private void setupFrame() {
-        setTitle("csp");
+        setTitle(APP_NAME);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // calc window size and position
@@ -143,9 +146,13 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         solutions = reader.getSolutions();
 
         if (problem == null || reader.getDocument() == null) {
+            setTitle(APP_NAME);
             contentPanel.appendText("\nProblem wasn't loaded.");
             contentPanel.setXml("");
         } else {
+            String problemName = Utils.extractProblemName(problem, problemFile.getPath());
+            setTitle(String.format(APP_NAME_TEMPLATE, problemName));
+
             try {
                 XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
                 StringWriter writer = new StringWriter();
@@ -156,8 +163,9 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
                 LOGGER.catching(e);
             }
 
-            contentPanel.appendText(String.format("\nProblem from '%s' file was successfully " +
-                                                          "loaded.", problemFile.getPath()));
+            contentPanel.appendText(String.format("\nProblem %s from '%s' file was loaded " +
+                                                          "successfully.",
+                                                  problemName, problemFile.getPath()));
             String formattedProblem = ProblemFormatter.format(problem);
             contentPanel.appendText(formattedProblem);
         }
@@ -215,7 +223,9 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         contentPanel.clearSeries();
 
         GeneticAlgorithm algorithm = prepareAlgorithm();
-        solver = new AsyncSolver(problem, algorithm, this);
+        SeriesMetricProvider metricProvider = createMetricProvider();
+
+        solver = new AsyncSolver(problem, algorithm, this, metricProvider);
         solver.execute();
 
         return true;
@@ -296,5 +306,14 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
 
         return new GeneticAlgorithm(factory, metric, geneticParams);
+    }
+
+    private SeriesMetricProvider createMetricProvider() {
+        ScalarMetricParameters scalarParams = presetsPanel.getObjectiveFunctionParameters();
+        if (scalarParams == null) {
+            scalarParams = new ScalarMetricParameters();
+        }
+
+        return new StandardMetricProvider(scalarParams);
     }
 }

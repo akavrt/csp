@@ -22,7 +22,8 @@ public class PresetsPanel extends JPanel {
     public PresetsPanel() {
         setLayout(new GridBagLayout());
 
-        tracePanel = new TracePresetsPanel();
+        // graph trace is enabled by default
+        tracePanel = new TracePresetsPanel(false, true);
         patternPanel = new PatternPresetsPanel();
         geneticPanel = new GeneticPresetsPanel();
         objectivePanel = new ObjectivePresetsPanel();

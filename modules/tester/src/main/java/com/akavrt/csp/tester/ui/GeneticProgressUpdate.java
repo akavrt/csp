@@ -1,7 +1,6 @@
 package com.akavrt.csp.tester.ui;
 
 import com.akavrt.csp.solver.genetic.GeneticPhase;
-import com.akavrt.csp.solver.genetic.Population;
 
 /**
  * User: akavrt
@@ -17,10 +16,9 @@ public class GeneticProgressUpdate {
         this(progress, phase, null);
     }
 
-    public GeneticProgressUpdate(int progress, GeneticPhase phase, Population population) {
+    public GeneticProgressUpdate(int progress, GeneticPhase phase, SeriesData seriesData) {
         this.progress = progress;
         this.phase = phase;
-
-        this.seriesData = population == null ? null : new SeriesData(population);
+        this.seriesData = seriesData;
     }
 }

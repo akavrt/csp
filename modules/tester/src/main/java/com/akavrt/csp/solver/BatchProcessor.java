@@ -3,10 +3,9 @@ package com.akavrt.csp.solver;
 import com.akavrt.csp.analyzer.xml.RunResultWriter;
 import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
 import com.akavrt.csp.core.Problem;
-import com.akavrt.csp.core.metadata.ProblemMetadata;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
-import com.akavrt.csp.utils.Utils;
+import com.akavrt.csp.tester.utils.Utils;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -214,18 +213,7 @@ public class BatchProcessor {
     }
 
     private String extractProblemName(LoadedProblem loadedProblem) {
-        String problemName = null;
-        ProblemMetadata metadata = loadedProblem.problem.getMetadata();
-        if (metadata != null) {
-            problemName = metadata.getName();
-        }
-
-        if (Utils.isEmpty(problemName)) {
-            File problemFile = new File(loadedProblem.path);
-            problemName = FilenameUtils.removeExtension(problemFile.getName());
-        }
-
-        return problemName;
+        return Utils.extractProblemName(loadedProblem.problem, loadedProblem.path);
     }
 
     private static class LoadedProblem {

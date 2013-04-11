@@ -38,8 +38,8 @@ public class GraphTracePanel extends JPanel {
     private XYSeries productionBestSeries;
     private XYSeries productionAverageSeries;
     private XYSeries productionTradeoffSeries;
-    private XYSeries productionTradeoffMaxOverProdSeries;
     private XYSeries productionTradeoffMaxUnderProdSeries;
+    private XYSeries productionTradeoffMaxOverProdSeries;
     // scalar metric (aggregated)
     private XYSeries scalarBestSeries;
     private XYSeries scalarAverageSeries;
@@ -64,8 +64,8 @@ public class GraphTracePanel extends JPanel {
         productionBestSeries.clear();
         productionAverageSeries.clear();
         productionTradeoffSeries.clear();
-        productionTradeoffMaxOverProdSeries.clear();
         productionTradeoffMaxUnderProdSeries.clear();
+        productionTradeoffMaxOverProdSeries.clear();
 
         scalarBestSeries.clear();
         scalarAverageSeries.clear();
@@ -76,7 +76,24 @@ public class GraphTracePanel extends JPanel {
             return;
         }
 
-        // TODO add implementation
+        trimBestSeries.add(data.age, 100 * data.trimBest);
+        trimAverageSeries.add(data.age, 100 * data.trimAverage);
+        trimTradeoffSeries.add(data.age, 100 * data.trimTradeoff);
+
+        patternsBestSeries.add(data.age, data.patternsBest);
+        patternsAverageSeries.add(data.age, data.patternsAverage);
+        patternsTradeoffUniqueSeries.add(data.age, data.patternsTradeoffUnique);
+        patternsTradeoffTotalSeries.add(data.age, data.patternsTradeoffTotal);
+
+        productionBestSeries.add(data.age, 100 * data.productionBest);
+        productionAverageSeries.add(data.age, 100 * data.productionAverage);
+        productionTradeoffSeries.add(data.age, 100 * data.productionTradeoff);
+        productionTradeoffMaxUnderProdSeries.add(data.age,
+                                                 -100 * data.productionTradeoffMaxUnderProd);
+        productionTradeoffMaxOverProdSeries.add(data.age, 100 * data.productionTradeoffMaxOverProd);
+
+        scalarBestSeries.add(data.age, data.scalarBest);
+        scalarAverageSeries.add(data.age, data.scalarAverage);
     }
 
     private void setupViews() {
@@ -128,9 +145,6 @@ public class GraphTracePanel extends JPanel {
         JFreeChart chart = createChart(dataset);
 
         XYPlot plot = (XYPlot) chart.getPlot();
-        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
         renderer.setSeriesShape(2, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
@@ -160,9 +174,6 @@ public class GraphTracePanel extends JPanel {
         XYPlot plot = (XYPlot) chart.getPlot();
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
@@ -194,9 +205,6 @@ public class GraphTracePanel extends JPanel {
         JFreeChart chart = createChart(dataset);
 
         XYPlot plot = (XYPlot) chart.getPlot();
-        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
         renderer.setSeriesShape(2, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
@@ -222,10 +230,8 @@ public class GraphTracePanel extends JPanel {
         JFreeChart chart = createChart(dataset);
 
         XYPlot plot = (XYPlot) chart.getPlot();
-        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
+
         renderer.setSeriesShape(1, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
 
         renderer.setSeriesPaint(0, new Color(0, 204, 51)); // best, green
@@ -259,6 +265,7 @@ public class GraphTracePanel extends JPanel {
 
         NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
         domainAxis.setTickLabelFont(createAxisFont());
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
