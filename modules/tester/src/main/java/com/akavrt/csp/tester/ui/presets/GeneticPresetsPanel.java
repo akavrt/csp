@@ -1,4 +1,4 @@
-package com.akavrt.csp.tester.ui;
+package com.akavrt.csp.tester.ui.presets;
 
 import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
 import com.akavrt.csp.tester.ui.utils.GBC;

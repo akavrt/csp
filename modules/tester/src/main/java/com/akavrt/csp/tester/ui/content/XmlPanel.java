@@ -1,4 +1,4 @@
-package com.akavrt.csp.tester.ui;
+package com.akavrt.csp.tester.ui.content;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

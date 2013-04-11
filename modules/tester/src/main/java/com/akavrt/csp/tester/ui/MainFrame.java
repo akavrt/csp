@@ -14,6 +14,8 @@ import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
+import com.akavrt.csp.tester.ui.content.ContentPanel;
+import com.akavrt.csp.tester.ui.presets.PresetsPanel;
 import com.akavrt.csp.tester.ui.utils.GBC;
 import com.akavrt.csp.tester.utils.Utils;
 import com.akavrt.csp.utils.ProblemFormatter;
@@ -21,6 +23,7 @@ import com.akavrt.csp.utils.SolutionFormatter;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdom2.Document;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
@@ -38,7 +41,7 @@ import java.util.List;
  * Time: 13:10
  */
 public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedListener,
-        AsyncSolver.OnProblemSolvedListener {
+        AsyncSolver.OnProblemSolvedListener, ContentPanel.OnSolutionsSelectedListener {
     private static final Logger LOGGER = LogManager.getLogger(MainFrame.class);
     private static final double SCREEN_DIV = 2;
     private static final String APP_NAME = "csp";
@@ -108,7 +111,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         toolBar = new MainToolBar(this);
         presetsPanel = new PresetsPanel();
-        contentPanel = new ContentPanel();
+        contentPanel = new ContentPanel(this);
 
         add(toolBar, new GBC(0, 0, 2, 1).setFill(GBC.HORIZONTAL).setWeight(100, 0));
         add(presetsPanel, new GBC(0, 1).setFill(GBC.BOTH).setWeight(0, 100));
@@ -132,6 +135,11 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         if (r != JFileChooser.APPROVE_OPTION) {
             return;
         }
+
+        // at this point we can clear trace,
+        // old data is not valid any more
+        contentPanel.clearSeries();
+        contentPanel.clearAnalyzerData();
 
         problemFile = chooser.getSelectedFile();
 
@@ -163,8 +171,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
                 LOGGER.catching(e);
             }
 
-            contentPanel.appendText(String.format("\nProblem %s from '%s' file was loaded " +
-                                                          "successfully.",
+            contentPanel.appendText(String.format("\nLoaded problem %s from '%s' file.",
                                                   problemName, problemFile.getPath()));
             String formattedProblem = ProblemFormatter.format(problem);
             contentPanel.appendText(formattedProblem);
@@ -221,9 +228,15 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         contentPanel.appendText("\nExecuting genetic algorithm.");
         contentPanel.clearSeries();
+        contentPanel.clearAnalyzerData();
+
+        if (presetsPanel.isGraphTraceEnabled()) {
+            // switch to graph trace tab automatically
+            contentPanel.setSelectedIndex(1);
+        }
 
         GeneticAlgorithm algorithm = prepareAlgorithm();
-        SeriesMetricProvider metricProvider = createMetricProvider();
+        SeriesMetricProvider metricProvider = createSeriesMetricProvider();
 
         solver = new AsyncSolver(problem, algorithm, this, metricProvider);
         solver.execute();
@@ -255,17 +268,13 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         toolBar.setStartActionEnabled(true);
         toolBar.setStopActionEnabled(false);
 
-        if (solutions == null) {
-            solutions = Lists.newArrayList();
-        }
-
         if (obtained == null || obtained.isEmpty()) {
             // notify user with update in text trace
             contentPanel.appendText("\nNo solution was found in run.");
         } else if (obtained.get(0) != null) {
-            Solution best = obtained.get(0);
+            contentPanel.setAnalyzerData(problem, obtained, createDetailsMetricProvider());
 
-            solutions.add(best);
+            Solution best = obtained.get(0);
 
             // print out best solution in text trace
             String caption = "\nBest solution found in run:";
@@ -308,7 +317,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         return new GeneticAlgorithm(factory, metric, geneticParams);
     }
 
-    private SeriesMetricProvider createMetricProvider() {
+    private SeriesMetricProvider createSeriesMetricProvider() {
         ScalarMetricParameters scalarParams = presetsPanel.getObjectiveFunctionParameters();
         if (scalarParams == null) {
             scalarParams = new ScalarMetricParameters();
@@ -316,4 +325,45 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         return new StandardMetricProvider(scalarParams);
     }
+
+    private SeriesMetricProvider createDetailsMetricProvider() {
+        ScalarMetricParameters scalarParams = presetsPanel.getObjectiveFunctionParameters();
+        if (scalarParams == null) {
+            scalarParams = new ScalarMetricParameters();
+        }
+
+        return new DetailsMetricProvider(scalarParams);
+    }
+
+    @Override
+    public void onSolutionsSelected(List<Solution> selection) {
+        if (problem == null || selection == null || selection.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nothing to export.", "Selection is empty",
+                                          JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (solutions == null) {
+            solutions = Lists.newArrayList();
+        }
+
+        solutions.addAll(selection);
+
+        try {
+            CspWriter writer = new CspWriter();
+            writer.setProblem(problem);
+            writer.setSolutions(solutions);
+
+            Document doc = new Document(writer.convert());
+
+            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+            StringWriter stringWriter = new StringWriter();
+            outputter.output(doc, stringWriter);
+
+            contentPanel.setXml(stringWriter.toString());
+        } catch (Exception e) {
+            LOGGER.catching(e);
+        }
+    }
+
 }

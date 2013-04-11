@@ -1,5 +1,6 @@
-package com.akavrt.csp.tester.ui;
+package com.akavrt.csp.tester.ui.content;
 
+import com.akavrt.csp.tester.ui.SeriesData;
 import com.akavrt.csp.tester.ui.utils.GBC;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
