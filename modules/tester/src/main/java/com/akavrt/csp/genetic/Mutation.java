@@ -2,7 +2,10 @@ package com.akavrt.csp.genetic;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Roll;
-import com.akavrt.csp.solver.genetic.*;
+import com.akavrt.csp.solver.genetic.Chromosome;
+import com.akavrt.csp.solver.genetic.Gene;
+import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
+import com.akavrt.csp.solver.genetic.GeneticOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -42,9 +45,17 @@ public class Mutation implements GeneticOperator {
         }
 
         Chromosome original = chromosomes[0];
-
+        Chromosome mutated;
         double draw = rGen.nextDouble();
-        return draw < 0.5 ? useExistingRoll(original) : useNewRoll(original);
+        if (draw < 0.33) {
+            mutated = useExistingRoll(original);
+        } else if (draw < 0.66) {
+            mutated = useNewRoll(original);
+        } else {
+            mutated = heuristic(original);
+        }
+
+        return mutated;
     }
 
     private Chromosome useExistingRoll(Chromosome chromosome) {
@@ -106,6 +117,64 @@ public class Mutation implements GeneticOperator {
         return mutated;
     }
 
+    private Chromosome heuristic(Chromosome chromosome) {
+        Chromosome mutated = new Chromosome(chromosome);
+
+        if (chromosome.size() < 2) {
+            return mutated;
+        }
+
+        int firstIndex = rGen.nextInt(mutated.size());
+        Gene firstGene = mutated.getGene(firstIndex);
+
+        if (firstGene.getRoll() == null) {
+            return mutated;
+        }
+
+        int secondIndex = firstIndex;
+        for (int i = 0; i < mutated.size(); i++) {
+            Gene candidate = mutated.getGene(i);
+            if (i != firstIndex && candidate.getRoll() != null
+                    && candidate.getRoll().getWidth() == firstGene.getRoll().getWidth()
+                    && candidate.getPatternHashCode() != firstGene.getPatternHashCode()) {
+                secondIndex = i;
+                break;
+            }
+        }
+
+        if (firstIndex != secondIndex) {
+            // gene with suitable roll was found
+            // replace pattern in the second gene
+            // with pattern from the first gene
+            LOGGER.debug("MTH: copying pattern from gene {} to gene {}", firstIndex, secondIndex);
+
+            int[] pattern = firstGene.getPattern().clone();
+            Roll roll = mutated.getGene(secondIndex).getRoll();
+
+            Gene replacement = new Gene(pattern, roll);
+            mutated.addGene(secondIndex, replacement);
+        } else {
+            // gene with suitable roll wasn't found
+            // pick one of the spare rolls with suitable width,
+            // replace pattern and roll in randomly selected gene
+            // with pattern from the first gene and previously
+            // picked spare roll, respectively
+            Roll roll = pickRoll(mutated, firstGene.getRoll());
+            if (roll != null) {
+                secondIndex = rGen.nextInt(mutated.size());
+                LOGGER.debug("MTH: copying pattern from gene {} to gene {}, replacing roll in it",
+                             firstIndex, secondIndex);
+
+                int[] pattern = firstGene.getPattern().clone();
+
+                Gene replacement = new Gene(pattern, roll);
+                mutated.addGene(secondIndex, replacement);
+            }
+        }
+
+        return mutated;
+    }
+
     private double getRatio(Chromosome chromosome) {
         return chromosome.getMetricProvider().getAverageUnderProductionRatio() +
                 chromosome.getMetricProvider().getAverageOverProductionRatio();
@@ -136,6 +205,38 @@ public class Mutation implements GeneticOperator {
         if (rolls.size() > 0) {
             int index = rGen.nextInt(rolls.size());
             picked = rolls.get(index);
+        }
+
+        return picked;
+    }
+
+    private Roll pickRoll(Chromosome chromosome, Roll protorype) {
+        // mutable list of rolls
+        List<Roll> rolls = Lists.newArrayList(chromosome.getContext().getProblem().getRolls());
+
+        Set<Integer> usedRollIds = Sets.newHashSet();
+        for (Gene gene : chromosome.getGenes()) {
+            if (gene.getRoll() != null) {
+                usedRollIds.add(gene.getRoll().getInternalId());
+            }
+        }
+
+        int i = 0;
+        while (i < rolls.size()) {
+            int id = rolls.get(i).getInternalId();
+            if (usedRollIds.contains(id)) {
+                rolls.remove(i);
+            } else {
+                i++;
+            }
+        }
+
+        Roll picked = null;
+        for (Roll roll : rolls) {
+            if (roll.getWidth() == protorype.getWidth()) {
+                picked = roll;
+                break;
+            }
         }
 
         return picked;
