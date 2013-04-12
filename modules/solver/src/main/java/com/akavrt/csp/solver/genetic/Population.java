@@ -5,13 +5,11 @@ import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * <p>In genetic algorithm all operators including selection, reproduction and mutation are applied
@@ -28,13 +26,16 @@ import java.util.Random;
  */
 public class Population {
     private static final Logger LOGGER = LogManager.getLogger(Population.class);
+    private static final int RETRY_BOUND = 10;
     private final GeneticExecutionContext context;
     private final GeneticAlgorithmParameters parameters;
     private final Random rGen;
     private final Comparator<Plan> comparator;
     private final List<Chromosome> chromosomes;
+    private final Set<Integer> hashes;
     private int age;
     private GeneticProgressChangeListener progressChangeListener;
+    private int retryCount;
 
     /**
      * <p>Creates empty population. Initialization of the population has to be done separately by
@@ -51,6 +52,7 @@ public class Population {
         this.parameters = parameters;
 
         chromosomes = Lists.newArrayList();
+        hashes = Sets.newHashSet();
 
         rGen = new Random();
         comparator = objectiveFunction.getReverseComparator();
@@ -101,34 +103,35 @@ public class Population {
      */
     public void initialize(Algorithm initializationProcedure) {
         chromosomes.clear();
+        hashes.clear();
+
         age = 0;
 
         // fill population with solutions generated using auxiliary algorithm
+        int stuck = 0;
         while (!context.isCancelled() && chromosomes.size() < parameters.getPopulationSize()) {
             // run auxiliary algorithm
             List<Solution> solutions = initializationProcedure.execute(context);
 
-            if (solutions != null && solutions.size() > 0) {
-                // some of the methods constructs multiple solutions in a single run
-                for (Solution solution : solutions) {
-                    if (solution != null) {
-                        // add new chromosome:
-                        // conversion from solution to chromosome is done automatically
-                        chromosomes.add(new Chromosome(context, solutions.get(0)));
+            if (solutions != null && solutions.size() > 0 && solutions.get(0) != null) {
+                // conversion from solution to chromosome is done automatically
+                Chromosome chromosome = new Chromosome(context, solutions.get(0));
+                int hash = chromosome.hashCode();
+                if (hashes.contains(hash) && stuck < RETRY_BOUND) {
+                    stuck++;
+                } else {
+                    chromosomes.add(chromosome);
+                    hashes.add(hash);
 
-                        // exit early if number of the chromosomes is sufficient
-                        if (chromosomes.size() == parameters.getPopulationSize()) {
-                            break;
-                        }
+                    stuck = 0;
+
+                    if (progressChangeListener != null) {
+                        int progress = 100 * chromosomes.size() / parameters.getPopulationSize();
+                        progress = Math.min(progress, 100);
+
+                        progressChangeListener.onInitializationProgressChanged(progress);
                     }
                 }
-            }
-
-            if (progressChangeListener != null) {
-                int progress = 100 * chromosomes.size() / parameters.getPopulationSize();
-                progress = Math.min(progress, 100);
-
-                progressChangeListener.onInitializationProgressChanged(progress);
             }
         }
     }
@@ -161,15 +164,28 @@ public class Population {
             exchangeList.add(chromosomes.get(i));
         }
 
+        hashes.clear();
+        for (int i = 0; i < chromosomes.size() - exchangeList.size(); i++) {
+            int hash = chromosomes.get(i).hashCode();
+            hashes.add(hash);
+        }
+
+        retryCount = 0;
+
         // replace content of the exchange list with new chromosomes
         prepareExchange(exchangeList, crossover, mutation);
 
         // exchange the last 'GeneticAlgorithmParameters.getExchangeSize()' chromosomes
         // (the worst fitted part of the population) with new chromosomes
         int offset = chromosomes.size() - exchangeList.size();
-        for (int j = 0; j < exchangeList.size(); j++) {
-            chromosomes.set(offset + j, exchangeList.get(j));
+        for (int i = 0; i < exchangeList.size(); i++) {
+            Chromosome chromosome = exchangeList.get(i);
+            chromosomes.set(offset + i, chromosome);
         }
+
+        LOGGER.debug("Population age is {}, diversity measure: {} unique of {} total solutions",
+                     age, hashes.size(), chromosomes.size());
+        LOGGER.warn("Population age is {}, {} retries were done during generation.", age, retryCount);
     }
 
     private List<Chromosome> prepareExchange(List<Chromosome> exchangeList,
@@ -185,24 +201,23 @@ public class Population {
                 Chromosome parent = exchangeList.remove(i);
                 matingPool.add(parent);
             } else {
-                // create a copy of the chromosome and apply mutation to it,
-                // then replace current chromosome with mutated one inside the exchange list
-                Chromosome original = exchangeList.get(i);
-
-                Chromosome mutated = mutation.apply(original);
-                exchangeList.set(i, mutated);
-
                 i++;
             }
         }
 
         if (matingPool.size() % 2 > 0) {
-            // randomly pick one of the mating chromosomes and apply mutation to it
+            // randomly pick one of the mating chromosomes and move it to mutation candidates
             int index = rGen.nextInt(matingPool.size());
-            Chromosome original = matingPool.remove(index);
+            exchangeList.add(matingPool.remove(index));
+        }
 
-            Chromosome mutated = mutation.apply(original);
-            exchangeList.add(mutated);
+        for (int j = 0; j < exchangeList.size(); j++) {
+            // pick chromosome from the exchange list and apply mutation to it,
+            // then replace original chromosome with mutated one in the exchange list
+            Chromosome original = exchangeList.get(j);
+            Chromosome mutated = applyMutation(mutation, original);
+            exchangeList.set(j, mutated);
+            hashes.add(mutated.hashCode());
         }
 
         // produce required number of new chromosomes using crossover
@@ -213,16 +228,51 @@ public class Population {
             int secondIndex = rGen.nextInt(matingPool.size());
             Chromosome secondParent = matingPool.remove(secondIndex);
 
-            // produce first child
-            Chromosome firstChild = crossover.apply(firstParent, secondParent);
+            Chromosome firstChild = applyCrossover(crossover, firstParent, secondParent);
             exchangeList.add(firstChild);
+            hashes.add(firstChild.hashCode());
 
-            // exchange parents and produce second child
-            Chromosome secondChild = crossover.apply(secondParent, firstParent);
+            Chromosome secondChild = applyCrossover(crossover, secondParent, firstParent);
             exchangeList.add(secondChild);
+            hashes.add(secondChild.hashCode());
         }
 
         return exchangeList;
+    }
+
+    private Chromosome applyMutation(GeneticOperator mutation, Chromosome original) {
+        int stuck = 0;
+        Chromosome mutated = null;
+        while (mutated == null) {
+            Chromosome candidate = mutation.apply(original);
+            int hash = candidate.hashCode();
+            if (hashes.contains(hash) && stuck < RETRY_BOUND) {
+                retryCount++;
+                stuck++;
+            } else {
+                mutated = candidate;
+            }
+        }
+
+        return mutated;
+    }
+
+    private Chromosome applyCrossover(GeneticOperator crossover,
+                                      Chromosome firstParent, Chromosome secondParent) {
+        int stuck = 0;
+        Chromosome child = null;
+        while (child == null) {
+            Chromosome candidate = crossover.apply(firstParent, secondParent);
+            int hash = candidate.hashCode();
+            if (hashes.contains(hash) && stuck < RETRY_BOUND) {
+                retryCount++;
+                stuck++;
+            } else {
+                child = candidate;
+            }
+        }
+
+        return child;
     }
 
 }
