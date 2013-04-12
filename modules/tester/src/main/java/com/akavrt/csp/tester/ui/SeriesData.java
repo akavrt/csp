@@ -65,6 +65,8 @@ public class SeriesData {
             if (i == 0 || provider.getScalarMetric().compare(chromosome, bestScalar) > 0) {
                 bestScalar = chromosome;
             }
+
+            i++;
         }
 
         trimBest = provider.getTrimMetric().evaluate(bestTrim);
