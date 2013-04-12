@@ -10,6 +10,7 @@ import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
+import com.akavrt.csp.solver.genetic.GeneticPhase;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -226,7 +227,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             return false;
         }
 
-        contentPanel.appendText("\nExecuting genetic algorithm.");
+        contentPanel.appendText("\nExecuting genetic algorithm.\n");
         contentPanel.clearSeries();
         contentPanel.clearAnalyzerData();
 
@@ -249,7 +250,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         if (solver != null && !solver.isDone()) {
             solver.cancel(true);
 
-            contentPanel.appendText("\nExecution was canceled.");
+            contentPanel.appendText("\nExecution was canceled.\n");
         }
     }
 
@@ -259,6 +260,16 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         if (presetsPanel.isGraphTraceEnabled()) {
             contentPanel.updateSeries(update.seriesData);
+        }
+
+        if (presetsPanel.isTextTraceEnabled()) {
+            // append population age and evaluated objective
+            // function for the best solution found so far
+            if (update.phase != GeneticPhase.INITIALIZATION && update.seriesData != null) {
+                contentPanel.appendText(String.format("Generation %d, best's scalar = %.3f",
+                                                      update.seriesData.age,
+                                                      update.seriesData.scalarBest));
+            }
         }
     }
 
