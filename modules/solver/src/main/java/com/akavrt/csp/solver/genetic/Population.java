@@ -114,7 +114,7 @@ public class Population {
                     if (solution != null) {
                         // add new chromosome:
                         // conversion from solution to chromosome is done automatically
-                        chromosomes.add(new Chromosome(context, solutions.get(0)));
+                        chromosomes.add(new Chromosome(context, solution));
 
                         // exit early if number of the chromosomes is sufficient
                         if (chromosomes.size() == parameters.getPopulationSize()) {
