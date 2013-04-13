@@ -39,7 +39,7 @@ public class PatternGeneratorParameters extends BaseParameters {
      */
     @Override
     public Element save() {
-        Element paramsElm = new Element(XmlTags.PARAMETERS);
+        Element paramsElm = new Element(XmlTags.PATTERN);
 
         // optional description
         if (!Utils.isEmpty(getDescription())) {
@@ -73,7 +73,7 @@ public class PatternGeneratorParameters extends BaseParameters {
     }
 
     private interface XmlTags {
-        String PARAMETERS = "pattern";
+        String PATTERN = "pattern";
         String GENERATION_TRIALS_LIMIT = "generation-trials-limit";
         String DESCRIPTION = "description";
     }

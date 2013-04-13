@@ -60,7 +60,7 @@ public class GeneticAlgorithmParameters extends BaseParameters {
      */
     @Override
     public Element save() {
-        Element paramsElm = new Element(XmlTags.PARAMETERS);
+        Element paramsElm = new Element(XmlTags.GENETIC);
 
         // optional description
         if (!Utils.isEmpty(getDescription())) {
@@ -115,7 +115,7 @@ public class GeneticAlgorithmParameters extends BaseParameters {
     }
 
     private interface XmlTags {
-        String PARAMETERS = "genetic";
+        String GENETIC = "genetic";
         String POPULATION_SIZE = "population-size";
         String EXCHANGE_SIZE = "exchange-size";
         String RUN_STEPS = "generations";
