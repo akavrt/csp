@@ -183,9 +183,9 @@ public class Population {
             chromosomes.set(offset + i, chromosome);
         }
 
-        LOGGER.debug("Population age is {}, diversity measure: {} unique of {} total solutions",
+        LOGGER.debug("Population age is {}, diversity measure: {} unique of {} total solutions.",
                      age, hashes.size(), chromosomes.size());
-        LOGGER.warn("Population age is {}, {} retries were done during generation.", age, retryCount);
+        LOGGER.debug("Population age is {}, {} retries were done during generation.", age, retryCount);
     }
 
     private List<Chromosome> prepareExchange(List<Chromosome> exchangeList,

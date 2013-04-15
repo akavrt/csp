@@ -47,6 +47,7 @@ public class Mutation implements GeneticOperator {
         Chromosome original = chromosomes[0];
         Chromosome mutated;
         double draw = rGen.nextDouble();
+
         if (draw < 0.33) {
             mutated = useExistingRoll(original);
         } else if (draw < 0.66) {
@@ -152,7 +153,7 @@ public class Mutation implements GeneticOperator {
             Roll roll = mutated.getGene(secondIndex).getRoll();
 
             Gene replacement = new Gene(pattern, roll);
-            mutated.addGene(secondIndex, replacement);
+            mutated.setGene(secondIndex, replacement);
         } else {
             // gene with suitable roll wasn't found
             // pick one of the spare rolls with suitable width,
@@ -168,7 +169,7 @@ public class Mutation implements GeneticOperator {
                 int[] pattern = firstGene.getPattern().clone();
 
                 Gene replacement = new Gene(pattern, roll);
-                mutated.addGene(secondIndex, replacement);
+                mutated.setGene(secondIndex, replacement);
             }
         }
 
