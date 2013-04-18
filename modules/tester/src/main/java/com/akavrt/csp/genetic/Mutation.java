@@ -46,6 +46,7 @@ public class Mutation implements GeneticOperator {
 
         Chromosome original = chromosomes[0];
         Chromosome mutated;
+
         double draw = rGen.nextDouble();
 
         if (draw < 0.33) {
@@ -211,7 +212,7 @@ public class Mutation implements GeneticOperator {
         return picked;
     }
 
-    private Roll pickRoll(Chromosome chromosome, Roll protorype) {
+    private Roll pickRoll(Chromosome chromosome, Roll prototype) {
         // mutable list of rolls
         List<Roll> rolls = Lists.newArrayList(chromosome.getContext().getProblem().getRolls());
 
@@ -234,7 +235,7 @@ public class Mutation implements GeneticOperator {
 
         Roll picked = null;
         for (Roll roll : rolls) {
-            if (roll.getWidth() == protorype.getWidth()) {
+            if (roll.getWidth() == prototype.getWidth()) {
                 picked = roll;
                 break;
             }

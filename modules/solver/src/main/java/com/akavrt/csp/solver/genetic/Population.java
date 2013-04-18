@@ -185,7 +185,18 @@ public class Population {
 
         LOGGER.debug("Population age is {}, diversity measure: {} unique of {} total solutions.",
                      age, hashes.size(), chromosomes.size());
-        LOGGER.debug("Population age is {}, {} retries were done during generation.", age, retryCount);
+        LOGGER.debug("Population age is {}, {} retries were done during generation.", age,
+                     retryCount);
+
+        if (LOGGER.isDebugEnabled()) {
+            double groupLength = 0;
+            for (Chromosome chromosome : chromosomes) {
+                groupLength += chromosome.getMetricProvider().getAverageGroupSize();
+            }
+
+            String formatted = String.format("%.2f", groupLength / chromosomes.size());
+            LOGGER.debug("Population age is {}, average group length is {}", age, formatted);
+        }
     }
 
     private List<Chromosome> prepareExchange(List<Chromosome> exchangeList,

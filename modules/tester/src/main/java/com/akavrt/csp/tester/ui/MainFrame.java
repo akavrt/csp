@@ -56,6 +56,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     private File problemFile;
     private AsyncSolver solver;
     private ScalarMetric metric;
+    private PatternBasedComponentsFactory factory;
 
     public MainFrame() {
         prepareFileChooser();
@@ -120,8 +121,17 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     }
 
     private void setupParameters() {
-        presetsPanel.setPatternGeneratorParameters(new PatternGeneratorParameters());
-        presetsPanel.setGeneticAlgorithmParameters(new GeneticAlgorithmParameters());
+        PatternGeneratorParameters patternParams = new PatternGeneratorParameters();
+        patternParams.setGenerationTrialsLimit(5);
+        presetsPanel.setPatternGeneratorParameters(patternParams);
+
+        GeneticAlgorithmParameters geneticParams = new GeneticAlgorithmParameters();
+        geneticParams.setPopulationSize(50);
+        geneticParams.setExchangeSize(45);
+        geneticParams.setCrossoverRate(0);
+        geneticParams.setRunSteps(2000);
+        presetsPanel.setGeneticAlgorithmParameters(geneticParams);
+
         presetsPanel.setObjectiveFunctionParameters(new ScalarMetricParameters());
     }
 
@@ -279,6 +289,11 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         toolBar.setStartActionEnabled(true);
         toolBar.setStopActionEnabled(false);
 
+        // TODO remove
+        if (factory != null) {
+            factory.traceMutation();
+        }
+
         if (obtained == null || obtained.isEmpty()) {
             // notify user with update in text trace
             contentPanel.appendText("\nNo solution was found in run.");
@@ -323,7 +338,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             geneticParams = new GeneticAlgorithmParameters();
         }
 
-        PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
+        factory = new PatternBasedComponentsFactory(generator, metric);
 
         return new GeneticAlgorithm(factory, metric, geneticParams);
     }

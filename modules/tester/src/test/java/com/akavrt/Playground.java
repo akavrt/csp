@@ -34,4 +34,19 @@ public class Playground {
         assertFalse(hash3content == hash1content);
         assertFalse(hash3content == hash2content);
     }
+
+    @Test
+    public void division() {
+        double size = 0;
+        size += 2;
+        size += 3;
+
+        assertTrue(size / 2 > 2);
+
+        int length = 0;
+        length += 2;
+        length += 3;
+
+        assertTrue(length / 2 == 2);
+    }
 }

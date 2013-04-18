@@ -1,8 +1,10 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.metrics.MetricProvider;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -219,4 +221,26 @@ public class ChromosomeMetricProvider implements MetricProvider {
         cachedAverageOverProductionRatio = -1;
         cachedMaxOverProductionRatio = -1;
     }
+
+    public double getAverageGroupSize() {
+        if (chromosome.size() == 0) {
+            return 0;
+        }
+
+        Map<Integer, Integer> groups = Maps.newHashMap();
+        for (Gene gene : chromosome.getGenes()) {
+            int patternHash = gene.getPatternHashCode();
+            int count = groups.containsKey(patternHash) ? groups.get(patternHash) : 0;
+
+            groups.put(patternHash, ++count);
+        }
+
+        double size = 0;
+        for (Integer count : groups.values()) {
+            size += count;
+        }
+
+        return size / groups.size();
+    }
+
 }
