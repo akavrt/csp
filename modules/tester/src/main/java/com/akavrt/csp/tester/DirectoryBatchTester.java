@@ -83,8 +83,7 @@ public abstract class DirectoryBatchTester {
         collector.addMeasure(new MinValue());
         collector.addMeasure(new MaxValue());
 
-        ScalarMetric scalarMetric = new ScalarMetric();
-        collector.addMetric(scalarMetric);
+        collector.addMetric(new ScalarMetric());
         collector.addMetric(new TrimLossMetric());
         collector.addMetric(new PatternReductionMetric());
         collector.addMetric(new UniquePatternsMetric());
@@ -103,8 +102,7 @@ public abstract class DirectoryBatchTester {
         collector.addMeasure(new MinValue());
         collector.addMeasure(new MaxValue());
 
-        ScalarMetric scalarMetric = new ScalarMetric(new ScalarMetricParameters());
-        collector.addMetric(scalarMetric);
+        collector.addMetric(new ScalarMetric());
         collector.addMetric(new ProductDeviationMetric());
         collector.addMetric(new MaxUnderProductionMetric());
         collector.addMetric(new MaxOverProductionMetric());

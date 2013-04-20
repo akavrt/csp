@@ -164,4 +164,37 @@ public class SolutionMetricProvider implements MetricProvider {
         return maximum;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAggregatedTrimArea() {
+        double overProducedArea = 0;
+
+        List<Order> orders = problem.getOrders();
+        for (Order order : orders) {
+            double production = solution.getProductionLengthForOrder(order);
+            if (production > order.getLength()) {
+                overProducedArea += (production - order.getLength()) * order.getWidth();
+            }
+        }
+
+        return getTrimArea() + overProducedArea;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAggregatedTrimRatio() {
+        double totalArea = 0;
+        for (Pattern pattern : solution.getPatterns()) {
+            if (pattern.isActive()) {
+                totalArea += pattern.getRoll().getArea();
+            }
+        }
+
+        return totalArea == 0 ? 0 : getAggregatedTrimArea() / totalArea;
+    }
+
 }

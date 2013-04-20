@@ -27,7 +27,8 @@ public class SeriesData {
     public double productionTradeoffMaxOverProd;
     // scalar
     public double scalarBest;
-    public double scalarAverage;
+    public double comparativeBest;
+    public double comparativeAverage;
 
     public SeriesData(Population population, SeriesMetricProvider provider) {
         process(population, provider);
@@ -42,6 +43,7 @@ public class SeriesData {
 
         int i = 0;
         Chromosome bestScalar = null;
+        Chromosome bestComparative = null;
         Chromosome bestTrim = null;
         Chromosome bestPatterns = null;
         Chromosome bestProduct = null;
@@ -61,9 +63,14 @@ public class SeriesData {
                 bestProduct = chromosome;
             }
 
-            scalarAverage += provider.getScalarMetric().evaluate(chromosome);
             if (i == 0 || provider.getScalarMetric().compare(chromosome, bestScalar) > 0) {
                 bestScalar = chromosome;
+            }
+
+            comparativeAverage += provider.getComparativeMetric().evaluate(chromosome);
+            if (i == 0 || provider.getComparativeMetric().compare(chromosome,
+                                                                  bestComparative) > 0) {
+                bestComparative = chromosome;
             }
 
             i++;
@@ -81,10 +88,14 @@ public class SeriesData {
         productionBest = provider.getProductMetric().evaluate(bestProduct);
         productionAverage /= population.getChromosomes().size();
         productionTradeoff = provider.getProductMetric().evaluate(bestScalar);
-        productionTradeoffMaxUnderProd = bestScalar.getMetricProvider().getMaximumUnderProductionRatio();
-        productionTradeoffMaxOverProd = bestScalar.getMetricProvider().getMaximumOverProductionRatio();
+        productionTradeoffMaxUnderProd = bestScalar.getMetricProvider()
+                                                   .getMaximumUnderProductionRatio();
+        productionTradeoffMaxOverProd = bestScalar.getMetricProvider()
+                                                  .getMaximumOverProductionRatio();
 
         scalarBest = provider.getScalarMetric().evaluate(bestScalar);
-        scalarAverage /= population.getChromosomes().size();
+        comparativeBest = provider.getComparativeMetric().evaluate(bestComparative);
+        comparativeAverage /= population.getChromosomes().size();
     }
+
 }

@@ -43,7 +43,8 @@ public class GraphTracePanel extends JPanel {
     private XYSeries productionTradeoffMaxOverProdSeries;
     // scalar metric (aggregated)
     private XYSeries scalarBestSeries;
-    private XYSeries scalarAverageSeries;
+    private XYSeries comparativeAverageSeries;
+    private XYSeries comparativeBestSeries;
 
     public GraphTracePanel() {
         setupViews();
@@ -69,7 +70,8 @@ public class GraphTracePanel extends JPanel {
         productionTradeoffMaxOverProdSeries.clear();
 
         scalarBestSeries.clear();
-        scalarAverageSeries.clear();
+        comparativeAverageSeries.clear();
+        comparativeBestSeries.clear();
     }
 
     public void updateSeries(SeriesData data) {
@@ -94,7 +96,8 @@ public class GraphTracePanel extends JPanel {
         productionTradeoffMaxOverProdSeries.add(data.age, 100 * data.productionTradeoffMaxOverProd);
 
         scalarBestSeries.add(data.age, data.scalarBest);
-        scalarAverageSeries.add(data.age, data.scalarAverage);
+        comparativeAverageSeries.add(data.age, data.comparativeAverage);
+        comparativeBestSeries.add(data.age, data.comparativeBest);
     }
 
     private void setupViews() {
@@ -128,14 +131,15 @@ public class GraphTracePanel extends JPanel {
             new GBC(1, 0).setAnchor(GBC.WEST).setInsets(10, 10, 5, 0));
         add(productionPanel, new GBC(1, 1).setWeight(100, 100).setFill(GBC.BOTH));
 
-        add(new JLabel("Scalar"), new GBC(1, 2).setAnchor(GBC.WEST).setInsets(10, 10, 5, 0));
+        add(new JLabel("Aggregate objective"),
+            new GBC(1, 2).setAnchor(GBC.WEST).setInsets(10, 10, 5, 0));
         add(totalPanel, new GBC(1, 3).setWeight(100, 100).setFill(GBC.BOTH));
     }
 
     private JFreeChart createTrimChart() {
-        trimBestSeries = new XYSeries("p.best");
-        trimAverageSeries = new XYSeries("p.aver");
-        trimTradeoffSeries = new XYSeries("tr.aver");
+        trimBestSeries = new XYSeries("P.LB");
+        trimAverageSeries = new XYSeries("P.AV");
+        trimTradeoffSeries = new XYSeries("B.TL");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
@@ -158,10 +162,10 @@ public class GraphTracePanel extends JPanel {
     }
 
     private JFreeChart createPatternsChart() {
-        patternsBestSeries = new XYSeries("p.best");
-        patternsAverageSeries = new XYSeries("p.aver");
-        patternsTradeoffUniqueSeries = new XYSeries("tr.up");
-        patternsTradeoffTotalSeries = new XYSeries("tr.tp");
+        patternsBestSeries = new XYSeries("P.LB");
+        patternsAverageSeries = new XYSeries("P.AV");
+        patternsTradeoffUniqueSeries = new XYSeries("B.UP");
+        patternsTradeoffTotalSeries = new XYSeries("B.TP");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
@@ -189,11 +193,11 @@ public class GraphTracePanel extends JPanel {
     }
 
     private JFreeChart createProductionChart() {
-        productionBestSeries = new XYSeries("p.best");
-        productionAverageSeries = new XYSeries("p.aver");
-        productionTradeoffSeries = new XYSeries("tr.aver");
-        productionTradeoffMaxOverProdSeries = new XYSeries("tr.mxov");
-        productionTradeoffMaxUnderProdSeries = new XYSeries("tr.mxun");
+        productionBestSeries = new XYSeries("P.LB");
+        productionAverageSeries = new XYSeries("P.AV");
+        productionTradeoffSeries = new XYSeries("B.PD");
+        productionTradeoffMaxOverProdSeries = new XYSeries("B.MOP");
+        productionTradeoffMaxUnderProdSeries = new XYSeries("B.MUP");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
@@ -220,13 +224,15 @@ public class GraphTracePanel extends JPanel {
     }
 
     private JFreeChart createScalarChart() {
-        scalarBestSeries = new XYSeries("p.best");
-        scalarAverageSeries = new XYSeries("p.aver");
+        scalarBestSeries = new XYSeries("B.SCR");
+        comparativeAverageSeries = new XYSeries("C.AV");
+        comparativeBestSeries = new XYSeries("C.SCR");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         dataset.addSeries(scalarBestSeries);
-        dataset.addSeries(scalarAverageSeries);
+        dataset.addSeries(comparativeAverageSeries);
+        dataset.addSeries(comparativeBestSeries);
 
         JFreeChart chart = createChart(dataset);
 
@@ -236,7 +242,8 @@ public class GraphTracePanel extends JPanel {
         renderer.setSeriesShape(1, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
 
         renderer.setSeriesPaint(0, new Color(0, 204, 51)); // best, green
-        renderer.setSeriesPaint(1, Color.orange); // average, yellow
+        renderer.setSeriesPaint(1, Color.orange); // comparative average, yellow
+        renderer.setSeriesPaint(2, Color.red); // comparative best, red
 
         return chart;
     }

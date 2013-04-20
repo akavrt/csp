@@ -1,18 +1,18 @@
 package com.akavrt.csp.tester;
 
 import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
+import com.akavrt.csp.metrics.ConstraintAwareMetric;
+import com.akavrt.csp.metrics.ConstraintAwareMetricParameters;
 import com.akavrt.csp.metrics.Metric;
-import com.akavrt.csp.metrics.ScalarMetric;
-import com.akavrt.csp.metrics.ScalarMetricParameters;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
+import com.akavrt.csp.tester.params.ConstraintAwareMetricParametersReader;
 import com.akavrt.csp.tester.params.GeneticAlgorithmParametersReader;
 import com.akavrt.csp.tester.params.PatternGeneratorParametersReader;
-import com.akavrt.csp.tester.params.ScalarMetricParametersReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +27,7 @@ public class GeneticBatchTester extends DirectoryBatchTester {
     private static final Logger LOGGER = LogManager.getLogger(GeneticBatchTester.class);
     private GeneticAlgorithmParameters geneticParameters;
     private PatternGeneratorParameters patternParameters;
-    private ScalarMetricParameters metricParameters;
+    private ConstraintAwareMetricParameters metricParameters;
 
 public GeneticBatchTester(String directory, int numberOfRuns) {
         super(directory, numberOfRuns);
@@ -88,12 +88,12 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
             LOGGER.info("Can't find parameters of pattern generator procedure, the default set of parameters will be used.");
         }
 
-        ScalarMetricParameters metricParameters = null;
+        ConstraintAwareMetricParameters metricParameters = null;
         try {
             String path = args[4];
             File file = new File(path);
             if (file.exists() && file.isFile()) {
-                metricParameters = new ScalarMetricParametersReader().read(file);
+                metricParameters = new ConstraintAwareMetricParametersReader().read(file);
             }
         } catch (Exception e) {
             LOGGER.info("Can't find parameters of objective function, the default set of parameters will be used.");
@@ -115,7 +115,7 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
         this.patternParameters = params;
     }
 
-    public void setMetricParameters(ScalarMetricParameters params) {
+    public void setMetricParameters(ConstraintAwareMetricParameters params) {
         this.metricParameters = params;
     }
 
@@ -129,10 +129,10 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
 
     private Metric createObjectiveFunction() {
         if (metricParameters == null) {
-            metricParameters = new ScalarMetricParameters();
+            metricParameters = new ConstraintAwareMetricParameters();
         }
 
-        return new ScalarMetric(metricParameters);
+        return new ConstraintAwareMetric(metricParameters);
     }
 
     @Override

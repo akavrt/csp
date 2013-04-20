@@ -77,4 +77,22 @@ public interface MetricProvider {
      */
     public double getMaximumOverProductionRatio();
 
+    /**
+     * <p>Aggregated trim includes not only the area of the side trim introduced by patterns (see
+     * MetricProvider.getTrimArea()) but also total area of the excessive amount of strip produced
+     * according to the plan.</p>
+     *
+     * @return Aggregated trim area for a cutting plan.
+     */
+    public double getAggregatedTrimArea();
+
+    /**
+     * <p>Compares the amount of material wasted on trim and overproduction of strip with total
+     * amount of material used according to the cutting plan.</p>
+     *
+     * @return Fractional ratio as a measure showing what part of stock material is wasted on trim
+     *         and overproduction.
+     */
+    public double getAggregatedTrimRatio();
+
 }

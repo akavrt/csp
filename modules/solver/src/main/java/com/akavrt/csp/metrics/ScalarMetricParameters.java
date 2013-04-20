@@ -110,7 +110,6 @@ public class ScalarMetricParameters extends BaseParameters {
         double productWeight = XmlUtils.getDoubleFromText(rootElm, XmlTags.PRODUCT_WEIGHT,
                                                           DEFAULT_PRODUCTION_FACTOR);
         setProductionFactor(productWeight);
-
     }
 
     private interface XmlTags {

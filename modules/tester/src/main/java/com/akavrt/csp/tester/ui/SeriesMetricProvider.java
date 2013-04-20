@@ -12,4 +12,5 @@ public interface SeriesMetricProvider {
     Metric getPatternsMetric();
     Metric getProductMetric();
     Metric getScalarMetric();
+    Metric getComparativeMetric();
 }

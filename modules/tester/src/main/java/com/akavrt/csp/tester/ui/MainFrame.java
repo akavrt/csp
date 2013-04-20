@@ -6,6 +6,7 @@ import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
 import com.akavrt.csp.core.xml.CspWriter;
 import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
+import com.akavrt.csp.metrics.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
@@ -338,9 +339,10 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             geneticParams = new GeneticAlgorithmParameters();
         }
 
-        factory = new PatternBasedComponentsFactory(generator, metric);
+        factory = new PatternBasedComponentsFactory(generator, new ConstraintAwareMetric());
 
-        return new GeneticAlgorithm(factory, metric, geneticParams);
+//        return new GeneticAlgorithm(factory, metric, geneticParams);
+        return new GeneticAlgorithm(factory, new ConstraintAwareMetric(), geneticParams);
     }
 
     private SeriesMetricProvider createSeriesMetricProvider() {

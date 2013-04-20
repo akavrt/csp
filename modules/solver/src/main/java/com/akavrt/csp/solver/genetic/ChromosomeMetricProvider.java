@@ -26,6 +26,8 @@ public class ChromosomeMetricProvider implements MetricProvider {
     private double cachedMaxUnderProductionRatio;
     private double cachedAverageOverProductionRatio;
     private double cachedMaxOverProductionRatio;
+    private double cachedAggregatedTrimArea;
+    private double cachedAggregatedTrimRatio;
 
     /**
      * <p>Creates context-aware instance of ChromosomeMetricProvider tied with specific instance of
@@ -208,6 +210,48 @@ public class ChromosomeMetricProvider implements MetricProvider {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAggregatedTrimArea() {
+        if (cachedAggregatedTrimArea < 0) {
+            double overProducedArea = 0;
+
+            for (int i = 0; i < context.getOrdersSize(); i++) {
+                double production = chromosome.getProductionLengthForOrder(i);
+                double orderLength = context.getOrderLength(i);
+
+                if (production > orderLength) {
+                    overProducedArea += (production - orderLength) * context.getOrderWidth(i);
+                }
+            }
+
+            cachedAggregatedTrimArea = getTrimArea() + overProducedArea;
+        }
+
+        return cachedAggregatedTrimArea;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAggregatedTrimRatio() {
+        if (cachedAggregatedTrimRatio < 0) {
+            double totalArea = 0;
+            for (Gene gene : chromosome.getGenes()) {
+                if (gene.getRoll() != null) {
+                    totalArea += gene.getRoll().getArea();
+                }
+            }
+
+            cachedAggregatedTrimRatio = totalArea == 0 ? 0 : getAggregatedTrimArea() / totalArea;
+        }
+
+        return cachedAggregatedTrimRatio;
+    }
+
+    /**
      * <p>Resets cached values, should be manually called every time when chromosome structure is
      * changed.</p>
      */
@@ -220,6 +264,8 @@ public class ChromosomeMetricProvider implements MetricProvider {
         cachedMaxUnderProductionRatio = -1;
         cachedAverageOverProductionRatio = -1;
         cachedMaxOverProductionRatio = -1;
+        cachedAggregatedTrimArea = -1;
+        cachedAggregatedTrimRatio = -1;
     }
 
     public double getAverageGroupSize() {

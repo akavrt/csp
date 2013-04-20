@@ -15,9 +15,10 @@ import java.util.List;
 public class SolutionsTableModel extends AbstractTableModel {
     private static final int SELECTION_INDEX = 0;
     private static final int NUMBER_INDEX = 1;
-    private static final int SCALAR_INDEX = 2;
-    private static final int FEASIBILITY_INDEX = 3;
-    private final String[] columnNames = {"", "#", "scalar", "feasible"};
+    private static final int COMPARATIVE_INDEX = 2;
+    private static final int SCALAR_INDEX = 3;
+    private static final int FEASIBILITY_INDEX = 4;
+    private final String[] columnNames = {"", "#", "3-scalar", "2-scalar", "feasible"};
     private final List<TableRowData> rowData;
     private final List<Solution> solutions;
 
@@ -108,6 +109,10 @@ public class SolutionsTableModel extends AbstractTableModel {
                 holder = rowIndex + 1;
                 break;
 
+            case COMPARATIVE_INDEX:
+                holder = rowData.get(rowIndex).comparativeRatio;
+                break;
+
             case SCALAR_INDEX:
                 holder = rowData.get(rowIndex).scalarRatio;
                 break;
@@ -144,6 +149,8 @@ public class SolutionsTableModel extends AbstractTableModel {
         public final double maxUnderProductionRatio;
         public final double maxOverProductionRatio;
         public final double scalarRatio;
+        public final double aggregatedTrimRatio;
+        public final double comparativeRatio;
         public final boolean isFeasible;
         private boolean isSelected;
 
@@ -159,6 +166,8 @@ public class SolutionsTableModel extends AbstractTableModel {
             maxOverProductionRatio = solution.getMetricProvider().getMaximumOverProductionRatio();
 
             scalarRatio = metricProvider.getScalarMetric().evaluate(solution);
+            aggregatedTrimRatio = solution.getMetricProvider().getAggregatedTrimRatio();
+            comparativeRatio = metricProvider.getComparativeMetric().evaluate(solution);
 
             isFeasible = solution.isFeasible();
         }

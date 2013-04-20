@@ -42,6 +42,7 @@ import java.util.List;
  * Time: 19:13
  */
 public class AnalyzerPanel extends JPanel {
+    public static final double RANGE_CORRECTION = 1.3;
     public static final Integer DONE = 0;
     public static final Integer UNDER = 1;
     public static final Integer ORDER = 2;
@@ -51,7 +52,8 @@ public class AnalyzerPanel extends JPanel {
     private final SolutionsTableModel tableModel;
     private final ContentPanel.OnSolutionsSelectedListener listener;
     // solution details
-    private JLabel trimRatioLabel;
+    private JLabel aggregatedTrimRatioLabel;
+    private JLabel sideTrimRatioLabel;
     private JLabel patternsRatioLabel;
     private JLabel patternsUniqueLabel;
     private JLabel patternsActiveLabel;
@@ -59,6 +61,8 @@ public class AnalyzerPanel extends JPanel {
     private JLabel productDevLowerLabel;
     private JLabel productDevUpperLabel;
     private Problem problem;
+    private double chartRangeLowerBound;
+    private double chartRangeUpperBound;
 
     public AnalyzerPanel(ContentPanel.OnSolutionsSelectedListener listener) {
         this.listener = listener;
@@ -68,6 +72,10 @@ public class AnalyzerPanel extends JPanel {
 
         dataset = new DefaultCategoryDataset();
         chart = createChart(dataset);
+
+        chartRangeLowerBound = 0;
+        chartRangeUpperBound = 200;
+        setChartRange(chartRangeLowerBound, chartRangeUpperBound);
 
         JScrollPane tablePane = new JScrollPane(table);
         tablePane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
@@ -82,8 +90,10 @@ public class AnalyzerPanel extends JPanel {
         JPanel detailsPanel = createDetailsPanel(chartPanel);
 
         setLayout(new GridBagLayout());
-        add(new JLabel("Solutions"), new GBC(0, 0).setAnchor(GBC.WEST).setInsets(10, 15, 0, 0));
-        add(tablePane, new GBC(0, 1).setWeight(10, 100).setFill(GBC.BOTH).setInsets(10, 15, 0, 0));
+        add(new JLabel("Solutions"),
+            new GBC(0, 0).setFill(GBC.BOTH).setWeight(100, 0).setAnchor(GBC.WEST)
+                         .setInsets(10, 15, 0, 0));
+        add(tablePane, new GBC(0, 1).setWeight(100, 100).setFill(GBC.BOTH).setInsets(10, 15, 0, 0));
         add(exportButton, new GBC(0, 2).setAnchor(GBC.CENTER).setInsets(10, 15, 10, 0));
         add(detailsPanel,
             new GBC(1, 0, 1, 3).setFill(GBC.BOTH).setWeight(100, 100).setInsets(10, 20, 15, 10));
@@ -98,6 +108,7 @@ public class AnalyzerPanel extends JPanel {
         tableModel.setData(solutions, metricProvider);
 
         if (solutions != null && solutions.size() > 0) {
+            adjustRange(solutions);
             table.setRowSelectionInterval(0, 0);
         }
     }
@@ -106,11 +117,17 @@ public class AnalyzerPanel extends JPanel {
         problem = null;
         tableModel.clearData();
         dataset.clear();
+
+        chartRangeLowerBound = 0;
+        chartRangeUpperBound = 200;
+        setChartRange(chartRangeLowerBound, chartRangeUpperBound);
+
         clearDetails();
     }
 
     private void clearDetails() {
-        trimRatioLabel.setText(" ");
+        aggregatedTrimRatioLabel.setText(" ");
+        sideTrimRatioLabel.setText(" ");
         patternsRatioLabel.setText(" ");
         patternsUniqueLabel.setText(" ");
         patternsActiveLabel.setText(" ");
@@ -137,12 +154,17 @@ public class AnalyzerPanel extends JPanel {
         indexColumn.setMaxWidth(60);
         indexColumn.setResizable(true);
 
-        TableColumn scalarRatioColumn = columnModel.getColumn(2);
+        TableColumn comparativeRatioColumn = columnModel.getColumn(2);
+        comparativeRatioColumn.setCellRenderer(new ScalarCellRenderer());
+        comparativeRatioColumn.setMinWidth(40);
+        comparativeRatioColumn.setResizable(true);
+
+        TableColumn scalarRatioColumn = columnModel.getColumn(3);
         scalarRatioColumn.setCellRenderer(new ScalarCellRenderer());
         scalarRatioColumn.setMinWidth(40);
         scalarRatioColumn.setResizable(true);
 
-        TableColumn feasibilityColumn = columnModel.getColumn(3);
+        TableColumn feasibilityColumn = columnModel.getColumn(4);
         feasibilityColumn.setPreferredWidth(60);
         feasibilityColumn.setMinWidth(60);
         feasibilityColumn.setResizable(false);
@@ -220,44 +242,77 @@ public class AnalyzerPanel extends JPanel {
         JPanel detailsPanel = new JPanel();
         detailsPanel.setLayout(new GridBagLayout());
 
-        detailsPanel.add(new JLabel("Production diagram"), new GBC(0, 0, 4, 1).setAnchor(GBC.WEST));
+        detailsPanel.add(new JLabel("Production diagram"),
+                         new GBC(0, 0, 4, 1).setFill(GBC.BOTH).setWeight(100, 0)
+                                            .setAnchor(GBC.WEST));
         detailsPanel.add(chartPanel, new GBC(0, 1, 4, 1).setFill(GBC.BOTH).setWeight(100, 100));
         detailsPanel.add(new JLabel("Solution details"),
-                         new GBC(0, 2, 4, 1).setAnchor(GBC.WEST).setInsets(10, 0, 0, 0));
+                         new GBC(0, 2, 4, 1).setFill(GBC.BOTH).setWeight(100, 0)
+                                            .setAnchor(GBC.WEST).setInsets(10, 0, 0, 0));
 
-        trimRatioLabel = new JLabel(" ");
-        detailsPanel.add(new JLabel("Trim loss"),
+        aggregatedTrimRatioLabel = new JLabel(" ");
+        sideTrimRatioLabel = new JLabel(" ");
+        detailsPanel.add(new JLabel("Material usage"),
                          new GBC(0, 3).setAnchor(GBC.EAST).setInsets(10, 10, 0, 0));
-        detailsPanel.add(trimRatioLabel,
+        detailsPanel.add(aggregatedTrimRatioLabel,
                          new GBC(0, 4).setAnchor(GBC.EAST).setInsets(6, 10, 0, 6));
+        detailsPanel.add(sideTrimRatioLabel,
+                         new GBC(0, 5).setAnchor(GBC.EAST).setInsets(4, 10, 0, 6));
 
+        int columnPadding = 40;
         patternsRatioLabel = new JLabel(" ");
         patternsUniqueLabel = new JLabel(" ");
         patternsActiveLabel = new JLabel(" ");
         detailsPanel.add(new JLabel("Pattern reduction"),
-                         new GBC(1, 3).setAnchor(GBC.EAST).setInsets(10, 50, 0, 0));
+                         new GBC(1, 3).setAnchor(GBC.EAST).setInsets(10, columnPadding, 0, 0));
         detailsPanel.add(patternsRatioLabel,
-                         new GBC(1, 4).setAnchor(GBC.EAST).setInsets(6, 50, 0, 6));
+                         new GBC(1, 4).setAnchor(GBC.EAST).setInsets(6, columnPadding, 0, 6));
         detailsPanel.add(patternsUniqueLabel,
-                         new GBC(1, 5).setAnchor(GBC.EAST).setInsets(4, 50, 0, 6));
+                         new GBC(1, 5).setAnchor(GBC.EAST).setInsets(4, columnPadding, 0, 6));
         detailsPanel.add(patternsActiveLabel,
-                         new GBC(1, 6).setAnchor(GBC.EAST).setInsets(4, 50, 0, 6));
+                         new GBC(1, 6).setAnchor(GBC.EAST).setInsets(4, columnPadding, 0, 6));
 
         productDevRatioLabel = new JLabel(" ");
         productDevLowerLabel = new JLabel(" ");
         productDevUpperLabel = new JLabel(" ");
         detailsPanel.add(new JLabel("Product deviation"),
-                         new GBC(2, 3).setAnchor(GBC.EAST).setInsets(10, 50, 0, 0));
+                         new GBC(2, 3).setAnchor(GBC.EAST).setInsets(10, columnPadding, 0, 0));
         detailsPanel.add(productDevRatioLabel,
-                         new GBC(2, 4).setAnchor(GBC.EAST).setInsets(6, 50, 0, 6));
+                         new GBC(2, 4).setAnchor(GBC.EAST).setInsets(6, columnPadding, 0, 6));
         detailsPanel.add(productDevLowerLabel,
-                         new GBC(2, 5).setAnchor(GBC.EAST).setInsets(4, 50, 0, 6));
+                         new GBC(2, 5).setAnchor(GBC.EAST).setInsets(4, columnPadding, 0, 6));
         detailsPanel.add(productDevUpperLabel,
-                         new GBC(2, 6).setAnchor(GBC.EAST).setInsets(4, 50, 0, 6));
+                         new GBC(2, 6).setAnchor(GBC.EAST).setInsets(4, columnPadding, 0, 6));
 
         detailsPanel.setBackground(Color.white);
 
         return detailsPanel;
+    }
+
+    private void adjustRange(List<Solution> solutions) {
+        double maxDeviation = 0;
+        for (Solution solution : solutions) {
+            double underProduction = solution.getMetricProvider().getMaximumUnderProductionRatio();
+            double overProduction = solution.getMetricProvider().getMaximumOverProductionRatio();
+
+            if (maxDeviation < Math.max(underProduction, overProduction)) {
+                maxDeviation = Math.max(underProduction, overProduction);
+            }
+        }
+
+        if (maxDeviation == 0) {
+            maxDeviation = 0.01;
+        }
+
+        chartRangeLowerBound = 100 * (1 - RANGE_CORRECTION * maxDeviation);
+        chartRangeUpperBound = 100 * (1 + RANGE_CORRECTION * maxDeviation);
+        setChartRange(chartRangeLowerBound, chartRangeUpperBound);
+    }
+
+    private void setChartRange(double lowerBound, double upperBound) {
+        CategoryPlot solutionPlot = (CategoryPlot) chart.getPlot();
+        NumberAxis rangeAxis = (NumberAxis) solutionPlot.getRangeAxis();
+        rangeAxis.setRange(lowerBound, upperBound);
     }
 
     private void visualizeProduction(Solution solution) {
@@ -267,8 +322,6 @@ public class AnalyzerPanel extends JPanel {
             return;
         }
 
-        double maxDeviation = 0;
-        int i = 0;
         for (Order order : problem.getOrders()) {
             double required = order.getLength();
             double produced = solution.getProductionLengthForOrder(order);
@@ -276,21 +329,8 @@ public class AnalyzerPanel extends JPanel {
             Integer status = produced > required ? ORDER : (produced < required ? UNDER : DONE);
             double ratio = produced / required - 1;
 
-            if (i++ == 0 || Math.abs(ratio) > maxDeviation) {
-                maxDeviation = Math.abs(ratio);
-            }
-
             dataset.addValue(100 * ratio, status, order.getId());
         }
-
-        if (maxDeviation == 0) {
-            maxDeviation = 0.01;
-        }
-
-        // adjust range
-        CategoryPlot solutionPlot = (CategoryPlot) chart.getPlot();
-        NumberAxis rangeAxis = (NumberAxis) solutionPlot.getRangeAxis();
-        rangeAxis.setRange(100 * (1 - 1.5 * maxDeviation), 100 * (1 + 1.5 * maxDeviation));
 
         setSeriesColors();
     }
@@ -324,14 +364,16 @@ public class AnalyzerPanel extends JPanel {
             return;
         }
 
-        trimRatioLabel.setText(String.format("%.2f%%", 100 * details.trimRatio));
-        patternsRatioLabel.setText(String.format("%.2f%%", 100 * details.patternsRatio));
+        aggregatedTrimRatioLabel.setText(String.format("waste %.1f%%",
+                                                       100 * details.aggregatedTrimRatio));
+        sideTrimRatioLabel.setText(String.format("trim %.1f%%", 100 * details.trimRatio));
+        patternsRatioLabel.setText(String.format("%.1f%%", 100 * details.patternsRatio));
         patternsUniqueLabel.setText(String.format("%d unique", details.uniquePatterns));
         patternsActiveLabel.setText(String.format("%d total", details.totalPatterns));
-        productDevRatioLabel.setText(String.format("%.2f%%", 100 * details.productionRatio));
-        productDevLowerLabel.setText(String.format("from %+.2f%%",
+        productDevRatioLabel.setText(String.format("%.1f%%", 100 * details.productionRatio));
+        productDevLowerLabel.setText(String.format("from %+.1f%%",
                                                    -100 * details.maxUnderProductionRatio));
-        productDevUpperLabel.setText(String.format("to %+.2f%%",
+        productDevUpperLabel.setText(String.format("to %+.1f%%",
                                                    100 * details.maxOverProductionRatio));
     }
 
@@ -347,6 +389,9 @@ public class AnalyzerPanel extends JPanel {
                 Solution selectedSolution = tableModel.getSolution(selection);
                 if (selectedSolution != null) {
                     visualizeProduction(selectedSolution);
+
+                    // restore chart range
+                    setChartRange(chartRangeLowerBound, chartRangeUpperBound);
                 }
 
                 SolutionsTableModel.TableRowData rowData = tableModel.getDetails(selection);
