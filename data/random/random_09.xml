@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csp>
-    <metadata>
-        <name>random_09</name>
-        <author>Victor Balabanov</author>
-        <description>1.5D-CSP randomly generated test case.</description>
-    </metadata>
     <problem>
+        <metadata>
+            <name>random_09</name>
+            <author>Victor Balabanov</author>
+            <description>1.5D-CSP randomly generated test case.</description>
+        </metadata>
         <orders>
             <order id="order1">
                 <strip>
