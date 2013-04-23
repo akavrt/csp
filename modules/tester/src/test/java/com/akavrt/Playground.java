@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -48,5 +49,19 @@ public class Playground {
         length += 3;
 
         assertTrue(length / 2 == 2);
+    }
+
+    @Test
+    public void increment() {
+        int[] array = new int[] {2, 4, 6, 8};
+        --array[0];
+        array[1]--;
+        ++array[2];
+        array[3]++;
+
+        assertEquals(1, array[0]);
+        assertEquals(3, array[1]);
+        assertEquals(7, array[2]);
+        assertEquals(9, array[3]);
     }
 }

@@ -2,6 +2,7 @@ package com.akavrt.csp.genetic;
 
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.genetic.Gene;
+import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -63,7 +64,7 @@ public class GeneGroup {
         return length;
     }
 
-    public double getMinWidth() {
+    public double getMinRollWidth() {
         double minWidth = 0;
         boolean unset = true;
         for (Gene gene : genes) {
@@ -75,6 +76,14 @@ public class GeneGroup {
         }
 
         return minWidth;
+    }
+
+    public double getPatternWidth(GeneticExecutionContext context) {
+        return genes.isEmpty() ? 0 : getGene(0).getWidth(context);
+    }
+
+    public int[] getPattern() {
+        return genes.isEmpty() ? null : getGene(0).getPattern();
     }
 
 }

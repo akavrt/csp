@@ -19,37 +19,32 @@ public class AdaptGroupPatternMutation extends PatternBasedMutation {
 
     @Override
     public Chromosome apply(Chromosome... chromosomes) {
-        if (chromosomes.length < 1 || chromosomes[0] == null) {
-            return null;
-        }
+        final Chromosome mutated = new Chromosome(chromosomes[0]);
 
-        if (chromosomes[0].size() == 0) {
-            return new Chromosome(chromosomes[0]);
-        }
+        if (mutated.size() > 0) {
+            double toleranceRatio = getWidthToleranceRatio(mutated);
 
-        Chromosome original = chromosomes[0];
-        List<GeneGroup> groups = groupGenes(original);
-        int groupIndex = rGen.nextInt(groups.size());
-        GeneGroup selectedGroup = groups.get(groupIndex);
+            List<GeneGroup> groups = groupGenes(mutated);
+            int groupIndex = rGen.nextInt(groups.size());
+            GeneGroup selectedGroup = groups.get(groupIndex);
 
-        Chromosome mutated = new Chromosome(original);
-        for (int i = selectedGroup.size() - 1; i >= 0; i--) {
-            int indexToRemove = selectedGroup.getGeneIndex(i);
-            mutated.removeGene(indexToRemove);
-        }
-
-        int[] demand = calcDemand(selectedGroup.getTotalLength(), mutated);
-        int[] pattern = generator.generate(selectedGroup.getMinWidth(), demand, 0.1);
-        if (pattern != null) {
-            for (int i = 0; i < selectedGroup.size(); i++) {
-                Gene previous = selectedGroup.getGene(i);
-                Gene replacement = new Gene(pattern.clone(), previous.getRoll());
-
-                int indexToAdd = selectedGroup.getGeneIndex(i);
-                mutated.addGene(indexToAdd, replacement);
+            for (int i = selectedGroup.size() - 1; i >= 0; i--) {
+                int indexToRemove = selectedGroup.getGeneIndex(i);
+                mutated.removeGene(indexToRemove);
             }
-        } else {
-            mutated = new Chromosome(original);
+
+            int[] demand = calcDemand(selectedGroup.getTotalLength(), mutated);
+            int[] pattern = generator.generate(selectedGroup.getMinRollWidth(), demand,
+                                               toleranceRatio);
+            if (pattern != null) {
+                for (int i = 0; i < selectedGroup.size(); i++) {
+                    Gene previous = selectedGroup.getGene(i);
+                    Gene replacement = new Gene(pattern.clone(), previous.getRoll());
+
+                    int indexToAdd = selectedGroup.getGeneIndex(i);
+                    mutated.addGene(indexToAdd, replacement);
+                }
+            }
         }
 
         return mutated;

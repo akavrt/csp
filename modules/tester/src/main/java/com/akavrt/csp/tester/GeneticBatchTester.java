@@ -1,9 +1,7 @@
 package com.akavrt.csp.tester;
 
 import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
-import com.akavrt.csp.metrics.ConstraintAwareMetric;
-import com.akavrt.csp.metrics.ConstraintAwareMetricParameters;
-import com.akavrt.csp.metrics.Metric;
+import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
@@ -27,7 +25,8 @@ public class GeneticBatchTester extends DirectoryBatchTester {
     private static final Logger LOGGER = LogManager.getLogger(GeneticBatchTester.class);
     private GeneticAlgorithmParameters geneticParameters;
     private PatternGeneratorParameters patternParameters;
-    private ConstraintAwareMetricParameters metricParameters;
+    private ConstraintAwareMetricParameters constrainedMetricParameters;
+    private ScalarMetricParameters scalarMetricParameters;
 
 public GeneticBatchTester(String directory, int numberOfRuns) {
         super(directory, numberOfRuns);
@@ -88,11 +87,13 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
             LOGGER.info("Can't find parameters of pattern generator procedure, the default set of parameters will be used.");
         }
 
+//        ScalarMetricParameters metricParameters = null;
         ConstraintAwareMetricParameters metricParameters = null;
         try {
             String path = args[4];
             File file = new File(path);
             if (file.exists() && file.isFile()) {
+//                metricParameters = new ScalarMetricParametersReader().read(file);
                 metricParameters = new ConstraintAwareMetricParametersReader().read(file);
             }
         } catch (Exception e) {
@@ -102,7 +103,7 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
         GeneticBatchTester tester = new GeneticBatchTester(targetDirectory, numberOfRuns);
         tester.setGeneticParameters(geneticParameters);
         tester.setPatternParameters(patternParameters);
-        tester.setMetricParameters(metricParameters);
+        tester.setConstrainedMetricParameters(metricParameters);
 
         tester.process();
     }
@@ -115,8 +116,12 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
         this.patternParameters = params;
     }
 
-    public void setMetricParameters(ConstraintAwareMetricParameters params) {
-        this.metricParameters = params;
+    public void setScalarMetricParameters(ScalarMetricParameters params) {
+        this.scalarMetricParameters = params;
+    }
+
+    public void setConstrainedMetricParameters(ConstraintAwareMetricParameters params) {
+        this.constrainedMetricParameters = params;
     }
 
     private PatternGenerator createPatternGenerator() {
@@ -127,12 +132,20 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
         return new ConstrainedPatternGenerator(patternParameters);
     }
 
-    private Metric createObjectiveFunction() {
-        if (metricParameters == null) {
-            metricParameters = new ConstraintAwareMetricParameters();
+    private Metric createScalarObjectiveFunction() {
+        if (scalarMetricParameters == null) {
+            scalarMetricParameters = new ScalarMetricParameters();
         }
 
-        return new ConstraintAwareMetric(metricParameters);
+        return new ScalarMetric(scalarMetricParameters);
+    }
+
+    private Metric createConstrainedObjectiveFunction() {
+        if (constrainedMetricParameters == null) {
+            constrainedMetricParameters = new ConstraintAwareMetricParameters();
+        }
+
+        return new ConstraintAwareMetric(constrainedMetricParameters);
     }
 
     @Override
@@ -141,7 +154,7 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
 
         PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
 
-        Metric objectiveFunction = createObjectiveFunction();
+        Metric objectiveFunction = createConstrainedObjectiveFunction();
 
         if (geneticParameters == null) {
             geneticParameters = new GeneticAlgorithmParameters();

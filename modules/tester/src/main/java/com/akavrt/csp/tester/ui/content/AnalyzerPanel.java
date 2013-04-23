@@ -252,7 +252,7 @@ public class AnalyzerPanel extends JPanel {
 
         aggregatedTrimRatioLabel = new JLabel(" ");
         sideTrimRatioLabel = new JLabel(" ");
-        detailsPanel.add(new JLabel("Material usage"),
+        detailsPanel.add(new JLabel("Material utilization"),
                          new GBC(0, 3).setAnchor(GBC.EAST).setInsets(10, 10, 0, 0));
         detailsPanel.add(aggregatedTrimRatioLabel,
                          new GBC(0, 4).setAnchor(GBC.EAST).setInsets(6, 10, 0, 6));

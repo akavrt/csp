@@ -46,17 +46,19 @@ public class MutationX implements GeneticOperator {
         addOperator(new GroupDeleteRollReplacePatternMutation(generator));
         */
 
-        /*
         addOperator(new AdaptGroupPatternMutation(generator));
-        addOperator(new AddRollToGroupMutation(generator));
-        addOperator(new ReplaceRollInGroupMutation(generator));
-        addOperator(new DeleteRollFromGroupMutation(generator));
-        */
+        addOperator(new GroupMergeMutation(generator));
+        addOperator(new ReplaceGroupMutation(generator));
+        addOperator(new AddRollMutation(generator));
+        addOperator(new ReplaceRollMutation());
+        addOperator(new DeleteRollMutation());
 
+        /*
         addOperator(new GroupKeepRollsReplacePatternMutation(generator));
         addOperator(new GroupAddRollReplacePatternMutation(generator));
         addOperator(new GroupReplaceRollReplacePatternMutation(generator));
         addOperator(new GroupDeleteRollReplacePatternMutation(generator));
+        */
 
         rGen = new Random();
     }

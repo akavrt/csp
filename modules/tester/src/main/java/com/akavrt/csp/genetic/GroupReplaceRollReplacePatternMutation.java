@@ -55,7 +55,7 @@ public class GroupReplaceRollReplacePatternMutation extends PatternBasedMutation
             }
 
             int[] demand = calcDemand(selectedGroup.getTotalLength(), mutated);
-            int[] newPattern = generator.generate(selectedGroup.getMinWidth(), demand, 0.1);
+            int[] newPattern = generator.generate(selectedGroup.getMinRollWidth(), demand, 0.1);
             if (newPattern != null) {
                 for (int i = 0; i < selectedGroup.size(); i++) {
                     Gene previous = selectedGroup.getGene(i);

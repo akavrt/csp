@@ -103,9 +103,13 @@ public abstract class DirectoryBatchTester {
         collector.addMeasure(new MaxValue());
 
         collector.addMetric(new ScalarMetric());
+        collector.addMetric(new TrimLossMetric());
+        collector.addMetric(new PatternReductionMetric());
         collector.addMetric(new ProductDeviationMetric());
         collector.addMetric(new MaxUnderProductionMetric());
+        collector.addMetric(new AverageUnderProductionMetric());
         collector.addMetric(new MaxOverProductionMetric());
+        collector.addMetric(new AverageOverProductionMetric());
 
         return collector;
     }
