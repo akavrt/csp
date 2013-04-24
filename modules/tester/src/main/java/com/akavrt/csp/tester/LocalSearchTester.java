@@ -13,6 +13,7 @@ import com.akavrt.csp.core.xml.CspReader;
 import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.MultistartSolver;
+import com.akavrt.csp.solver.local.LocalSearch;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -29,11 +30,11 @@ import java.io.IOException;
 
 /**
  * User: akavrt
- * Date: 17.03.13
- * Time: 19:41
+ * Date: 24.04.13
+ * Time: 16:44
  */
-public class SequentialTester {
-    private static final Logger LOGGER = LogManager.getLogger(SequentialTester.class);
+public class LocalSearchTester {
+    private static final Logger LOGGER = LogManager.getLogger(LocalSearchTester.class);
 
     public static void main(String[] args) throws IOException {
         Problem problem = loadProblem("/Users/akavrt/Sandbox/csp/optimal/optimal_10.xml");
@@ -68,7 +69,7 @@ public class SequentialTester {
 
             System.out.println(formatted);
 
-            File file = new File("/Users/akavrt/Sandbox/csp/optimal_10_vshp_run.xml");
+            File file = new File("/Users/akavrt/Sandbox/csp/optimal_10_ls_run.xml");
 
             RunResultWriter writer = new RunResultWriter();
 
@@ -110,7 +111,9 @@ public class SequentialTester {
         methodParams.setGoalmix(0.5);
         methodParams.setTrimRatioUpperBound(1);
 
-        return new VahrenkampProcedure(generator, methodParams);
+        Algorithm constructiveProcedure = new VahrenkampProcedure(generator, methodParams);
+
+        return new LocalSearch(constructiveProcedure, generator, new ScalarMetric());
     }
 
     private static XmlEnabledCollector createXmlCollector() {
@@ -140,3 +143,4 @@ public class SequentialTester {
         return collector;
     }
 }
+

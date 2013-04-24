@@ -35,4 +35,12 @@ public interface GeneticComponentsFactory {
      *         placed into initial population.
      */
     Algorithm createInitializationProcedure();
+
+    /**
+     * <p>Provides concrete implementation of the local search operator.</p>
+     *
+     * @return Implementation of the local search operator.
+     */
+    GeneticOperator createLocalSearch();
+
 }

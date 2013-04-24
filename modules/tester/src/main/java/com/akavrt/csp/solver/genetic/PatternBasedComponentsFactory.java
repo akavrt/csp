@@ -1,9 +1,8 @@
-package com.akavrt.csp.genetic;
+package com.akavrt.csp.solver.genetic;
 
+import com.akavrt.csp.metrics.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
-import com.akavrt.csp.solver.genetic.GeneticComponentsFactory;
-import com.akavrt.csp.solver.genetic.GeneticOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
 
@@ -15,7 +14,7 @@ import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
 public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
     private final PatternGenerator patternGenerator;
     private final Metric objectiveFunction;
-    private MutationX mutation;
+    private CompositeMutation mutation;
 
     public PatternBasedComponentsFactory(PatternGenerator generator) {
         this(generator, null);
@@ -33,13 +32,18 @@ public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
 
     @Override
     public GeneticOperator createMutation() {
-        mutation = new MutationX(patternGenerator, objectiveFunction);
+        mutation = new CompositeMutation(patternGenerator, objectiveFunction);
         return mutation;
     }
 
     @Override
     public Algorithm createInitializationProcedure() {
         return new SimplifiedProcedure(patternGenerator);
+    }
+
+    @Override
+    public GeneticOperator createLocalSearch() {
+        return new LocalSearchOperator(patternGenerator, new ConstraintAwareMetric());
     }
 
     public void traceMutation() {

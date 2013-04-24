@@ -98,9 +98,11 @@ public abstract class DirectoryBatchTester {
     private XmlEnabledCollector createGlobalCollector() {
         XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
+        /*
         collector.addMeasure(new StandardDeviation());
         collector.addMeasure(new MinValue());
         collector.addMeasure(new MaxValue());
+        */
 
         collector.addMetric(new ScalarMetric());
         collector.addMetric(new TrimLossMetric());

@@ -1,6 +1,6 @@
 package com.akavrt.csp.tester;
 
-import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
+import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.genetic.GeneticAlgorithm;

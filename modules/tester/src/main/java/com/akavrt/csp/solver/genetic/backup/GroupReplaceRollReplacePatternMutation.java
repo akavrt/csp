@@ -1,8 +1,10 @@
-package com.akavrt.csp.genetic;
+package com.akavrt.csp.solver.genetic.backup;
 
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.genetic.Chromosome;
 import com.akavrt.csp.solver.genetic.Gene;
+import com.akavrt.csp.solver.genetic.GeneGroup;
+import com.akavrt.csp.solver.genetic.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 
 import java.util.List;
@@ -10,11 +12,11 @@ import java.util.List;
 /**
  * User: akavrt
  * Date: 16.04.13
- * Time: 22:19
+ * Time: 23:01
  */
-public class GroupAddRollReplacePatternMutation extends PatternBasedMutation {
+public class GroupReplaceRollReplacePatternMutation extends PatternBasedMutation {
 
-    public GroupAddRollReplacePatternMutation(PatternGenerator generator) {
+    public GroupReplaceRollReplacePatternMutation(PatternGenerator generator) {
         super(generator);
     }
 
@@ -38,11 +40,16 @@ public class GroupAddRollReplacePatternMutation extends PatternBasedMutation {
         double patternWidth = selectedGroup.getGene(0).getWidth(mutated.getContext());
         Roll roll = pickRoll(patternWidth, mutated);
         if (roll != null) {
-            int[] pattern = selectedGroup.getGene(0).getPattern().clone();
+            int geneIndexInGroup = rGen.nextInt(selectedGroup.size());
+            Gene gene = selectedGroup.getGene(geneIndexInGroup);
+            int geneIndexInChromosome = selectedGroup.getGeneIndex(geneIndexInGroup);
 
-            Gene gene = new Gene(pattern, roll);
-            selectedGroup.addGene(mutated.size(), gene);
-            mutated.addGene(gene);
+            int[] pattern = gene.getPattern().clone();
+
+            Gene replacementWithNewRoll = new Gene(pattern, roll);
+            selectedGroup.setGene(geneIndexInGroup, replacementWithNewRoll);
+
+            mutated.setGene(geneIndexInChromosome, replacementWithNewRoll);
 
             for (int i = selectedGroup.size() - 1; i >= 0; i--) {
                 int indexToRemove = selectedGroup.getGeneIndex(i);
@@ -54,14 +61,15 @@ public class GroupAddRollReplacePatternMutation extends PatternBasedMutation {
             if (newPattern != null) {
                 for (int i = 0; i < selectedGroup.size(); i++) {
                     Gene previous = selectedGroup.getGene(i);
-                    Gene replacement = new Gene(newPattern.clone(), previous.getRoll());
+                    Gene replacementWithNewPattern = new Gene(newPattern.clone(), previous.getRoll());
 
                     int indexToAdd = selectedGroup.getGeneIndex(i);
-                    mutated.addGene(indexToAdd, replacement);
+                    mutated.addGene(indexToAdd, replacementWithNewPattern);
                 }
             } else {
                 for (int i = 0; i < selectedGroup.size(); i++) {
                     Gene previous = selectedGroup.getGene(i);
+
                     int indexToAdd = selectedGroup.getGeneIndex(i);
                     mutated.addGene(indexToAdd, previous);
                 }
@@ -72,3 +80,4 @@ public class GroupAddRollReplacePatternMutation extends PatternBasedMutation {
     }
 
 }
+

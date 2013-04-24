@@ -5,7 +5,7 @@ import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
 import com.akavrt.csp.core.xml.CspWriter;
-import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
+import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.metrics.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;

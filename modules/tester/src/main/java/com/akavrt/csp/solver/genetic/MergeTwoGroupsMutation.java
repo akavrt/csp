@@ -1,7 +1,5 @@
-package com.akavrt.csp.genetic;
+package com.akavrt.csp.solver.genetic;
 
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.Gene;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 
@@ -13,9 +11,9 @@ import java.util.List;
  * Date: 22.04.13
  * Time: 19:32
  */
-public class GroupMergeMutation extends PatternBasedMutation {
+public class MergeTwoGroupsMutation extends PatternBasedMutation {
 
-    public GroupMergeMutation(PatternGenerator generator) {
+    public MergeTwoGroupsMutation(PatternGenerator generator) {
         super(generator);
     }
 

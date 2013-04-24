@@ -1,11 +1,9 @@
-package com.akavrt.csp.genetic;
+package com.akavrt.csp.solver.genetic.backup;
 
 import com.akavrt.csp.core.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.Gene;
-import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
+import com.akavrt.csp.solver.genetic.*;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
 import com.google.common.collect.Lists;

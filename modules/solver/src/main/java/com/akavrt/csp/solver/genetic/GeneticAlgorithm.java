@@ -27,6 +27,7 @@ public class GeneticAlgorithm implements Algorithm {
     private final GeneticOperator mutation;
     private final Algorithm initializationProcedure;
     private GeneticProgressChangeListener progressChangeListener;
+    private final GeneticOperator localSearch;
 
     public GeneticAlgorithm(GeneticComponentsFactory componentsFactory, Metric objectiveFunction,
                             GeneticAlgorithmParameters parameters) {
@@ -35,6 +36,7 @@ public class GeneticAlgorithm implements Algorithm {
         this.crossover = componentsFactory.createCrossover();
         this.mutation = componentsFactory.createMutation();
         this.initializationProcedure = componentsFactory.createInitializationProcedure();
+        this.localSearch = componentsFactory.createLocalSearch();
     }
 
     /**
@@ -113,6 +115,10 @@ public class GeneticAlgorithm implements Algorithm {
         crossover.initialize(geneticContext);
         mutation.initialize(geneticContext);
 
+        if (localSearch != null) {
+            localSearch.initialize(geneticContext);
+        }
+
         Population population = new Population(geneticContext, parameters, objectiveFunction);
         population.setProgressChangeListener(progressChangeListener);
 
@@ -130,6 +136,10 @@ public class GeneticAlgorithm implements Algorithm {
         }
 
         population.sort();
+
+        if (localSearch != null) {
+            population.localSearch(localSearch);
+        }
 
         return population.getSolutions();
     }

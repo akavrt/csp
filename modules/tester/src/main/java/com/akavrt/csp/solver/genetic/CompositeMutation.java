@@ -1,9 +1,6 @@
-package com.akavrt.csp.genetic;
+package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.metrics.Metric;
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
-import com.akavrt.csp.solver.genetic.GeneticOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
@@ -17,15 +14,15 @@ import java.util.Random;
  * Date: 16.04.13
  * Time: 23:56
  */
-public class MutationX implements GeneticOperator {
-    private static final Logger LOGGER = LogManager.getLogger(MutationX.class);
+public class CompositeMutation implements GeneticOperator {
+    private static final Logger LOGGER = LogManager.getLogger(CompositeMutation.class);
     private final List<GeneticOperator> operators;
     private final List<Integer> successCounter;
     private final List<Integer> executionCounter;
     private final Random rGen;
     private final Metric objectiveFunction;
 
-    public MutationX(PatternGenerator generator, Metric objectiveFunction) {
+    public CompositeMutation(PatternGenerator generator, Metric objectiveFunction) {
         this.objectiveFunction = objectiveFunction;
 
         successCounter = Lists.newArrayList();
@@ -33,32 +30,12 @@ public class MutationX implements GeneticOperator {
 
         operators = Lists.newArrayList();
 
-        /*
-        addOperator(new GroupKeepRollsReplacePatternMutation(generator));
-
-        addOperator(new GroupAddRollKeepPatternMutation(generator));
-        addOperator(new GroupAddRollReplacePatternMutation(generator));
-
-        addOperator(new GroupReplaceRollKeepPatternMutation(generator));
-        addOperator(new GroupReplaceRollReplacePatternMutation(generator));
-
-        addOperator(new GroupDeleteRollKeepPatternMutation(generator));
-        addOperator(new GroupDeleteRollReplacePatternMutation(generator));
-        */
-
         addOperator(new AdaptGroupPatternMutation(generator));
-        addOperator(new GroupMergeMutation(generator));
+        addOperator(new MergeTwoGroupsMutation(generator));
         addOperator(new ReplaceGroupMutation(generator));
         addOperator(new AddRollMutation(generator));
         addOperator(new ReplaceRollMutation());
         addOperator(new DeleteRollMutation());
-
-        /*
-        addOperator(new GroupKeepRollsReplacePatternMutation(generator));
-        addOperator(new GroupAddRollReplacePatternMutation(generator));
-        addOperator(new GroupReplaceRollReplacePatternMutation(generator));
-        addOperator(new GroupDeleteRollReplacePatternMutation(generator));
-        */
 
         rGen = new Random();
     }

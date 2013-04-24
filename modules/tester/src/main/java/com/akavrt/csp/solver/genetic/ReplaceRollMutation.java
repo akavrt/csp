@@ -1,9 +1,6 @@
-package com.akavrt.csp.genetic;
+package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Roll;
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.Gene;
-import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
 
 import java.util.List;
 

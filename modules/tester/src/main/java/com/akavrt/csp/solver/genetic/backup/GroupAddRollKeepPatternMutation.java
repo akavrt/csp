@@ -1,8 +1,10 @@
-package com.akavrt.csp.genetic;
+package com.akavrt.csp.solver.genetic.backup;
 
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.genetic.Chromosome;
 import com.akavrt.csp.solver.genetic.Gene;
+import com.akavrt.csp.solver.genetic.GeneGroup;
+import com.akavrt.csp.solver.genetic.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 
 import java.util.List;

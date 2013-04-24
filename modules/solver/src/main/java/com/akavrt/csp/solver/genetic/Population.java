@@ -199,6 +199,21 @@ public class Population {
         }
     }
 
+    public void localSearch(GeneticOperator localSearchOperator) {
+        localSearch(localSearchOperator, 1);
+    }
+
+    public void localSearch(GeneticOperator localSearchOperator, int count) {
+        sort();
+
+        int countToApply = Math.min(count, chromosomes.size());
+        for (int i = 0; i < countToApply; i++) {
+            Chromosome current = chromosomes.get(i);
+            Chromosome refined = localSearchOperator.apply(current);
+            chromosomes.set(i, refined);
+        }
+    }
+
     private List<Chromosome> prepareExchange(List<Chromosome> exchangeList,
                                              GeneticOperator crossover,
                                              GeneticOperator mutation) {
