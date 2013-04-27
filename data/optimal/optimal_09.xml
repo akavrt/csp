@@ -4,7 +4,7 @@
         <metadata>
             <name>optimal_09</name>
             <author>Victor Balabanov</author>
-            <description>1.5D-CSP test case with proven optimal solution.</description>
+            <description>1.5D-CSP test case with supposed optimal solution.</description>
         </metadata>
         <orders>
             <order id="order01">

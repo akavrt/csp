@@ -1,6 +1,7 @@
 package com.akavrt.csp.metrics;
 
 import com.akavrt.csp.core.*;
+import com.akavrt.csp.metrics.complex.ProductDeviationMetric;
 import org.junit.Before;
 import org.junit.Test;
 

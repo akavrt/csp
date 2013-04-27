@@ -3,10 +3,10 @@ package com.akavrt.csp.tester.ui;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.solver.ExecutionContext;
-import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
-import com.akavrt.csp.solver.genetic.GeneticPhase;
-import com.akavrt.csp.solver.genetic.GeneticProgressChangeListener;
-import com.akavrt.csp.solver.genetic.Population;
+import com.akavrt.csp.solver.evo.EvolutionPhase;
+import com.akavrt.csp.solver.evo.EvolutionProgressChangeListener;
+import com.akavrt.csp.solver.evo.EvolutionaryAlgorithm;
+import com.akavrt.csp.solver.evo.Population;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,14 +19,14 @@ import java.util.List;
  * Time: 15:05
  */
 public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpdate> implements
-        ExecutionContext, GeneticProgressChangeListener {
+        ExecutionContext, EvolutionProgressChangeListener {
     private final static Logger LOGGER = LogManager.getLogger(AsyncSolver.class);
     private final Problem problem;
-    private final GeneticAlgorithm algorithm;
+    private final EvolutionaryAlgorithm algorithm;
     private final OnProblemSolvedListener listener;
     private final SeriesMetricProvider metricProvider;
 
-    public AsyncSolver(Problem problem, GeneticAlgorithm algorithm,
+    public AsyncSolver(Problem problem, EvolutionaryAlgorithm algorithm,
                        OnProblemSolvedListener listener, SeriesMetricProvider metricProvider) {
         this.problem = problem;
         this.algorithm = algorithm;
@@ -72,14 +72,14 @@ public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpda
 
     @Override
     public void onInitializationProgressChanged(int progress) {
-        publish(new GeneticProgressUpdate(progress, GeneticPhase.INITIALIZATION));
+        publish(new GeneticProgressUpdate(progress, EvolutionPhase.INITIALIZATION));
     }
 
     @Override
     public void onGenerationProgressChanged(int progress, Population population) {
         // calculate data for graph trace
         SeriesData seriesData = new SeriesData(population, metricProvider);
-        publish(new GeneticProgressUpdate(progress, GeneticPhase.GENERATION, seriesData));
+        publish(new GeneticProgressUpdate(progress, EvolutionPhase.GENERATION, seriesData));
     }
 
     public interface OnProblemSolvedListener {

@@ -10,7 +10,10 @@ import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
-import com.akavrt.csp.metrics.*;
+import com.akavrt.csp.metrics.complex.PatternReductionMetric;
+import com.akavrt.csp.metrics.complex.ProductDeviationMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.metrics.simple.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.MultistartSolver;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
@@ -36,7 +39,7 @@ public class SequentialTester {
     private static final Logger LOGGER = LogManager.getLogger(SequentialTester.class);
 
     public static void main(String[] args) throws IOException {
-        Problem problem = loadProblem("/Users/akavrt/Sandbox/csp/optimal_10.xml");
+        Problem problem = loadProblem("/Users/akavrt/Sandbox/csp/optimal/optimal_10.xml");
         if (problem == null) {
             LOGGER.error("Error occurred while loading problem from external file.");
             return;

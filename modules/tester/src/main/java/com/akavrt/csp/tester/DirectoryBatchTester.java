@@ -5,7 +5,10 @@ import com.akavrt.csp.analyzer.MaxValue;
 import com.akavrt.csp.analyzer.MinValue;
 import com.akavrt.csp.analyzer.StandardDeviation;
 import com.akavrt.csp.analyzer.xml.XmlEnabledCollector;
-import com.akavrt.csp.metrics.*;
+import com.akavrt.csp.metrics.complex.PatternReductionMetric;
+import com.akavrt.csp.metrics.complex.ProductDeviationMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.metrics.simple.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.BatchProcessor;
 import com.akavrt.csp.solver.MultistartSolver;
@@ -83,8 +86,7 @@ public abstract class DirectoryBatchTester {
         collector.addMeasure(new MinValue());
         collector.addMeasure(new MaxValue());
 
-        ScalarMetric scalarMetric = new ScalarMetric();
-        collector.addMetric(scalarMetric);
+        collector.addMetric(new ScalarMetric());
         collector.addMetric(new TrimLossMetric());
         collector.addMetric(new PatternReductionMetric());
         collector.addMetric(new UniquePatternsMetric());
@@ -99,15 +101,20 @@ public abstract class DirectoryBatchTester {
     private XmlEnabledCollector createGlobalCollector() {
         XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
+        /*
         collector.addMeasure(new StandardDeviation());
         collector.addMeasure(new MinValue());
         collector.addMeasure(new MaxValue());
+        */
 
-        ScalarMetric scalarMetric = new ScalarMetric(new ScalarMetricParameters());
-        collector.addMetric(scalarMetric);
+        collector.addMetric(new ScalarMetric());
+        collector.addMetric(new TrimLossMetric());
+        collector.addMetric(new PatternReductionMetric());
         collector.addMetric(new ProductDeviationMetric());
         collector.addMetric(new MaxUnderProductionMetric());
+        collector.addMetric(new AverageUnderProductionMetric());
         collector.addMetric(new MaxOverProductionMetric());
+        collector.addMetric(new AverageOverProductionMetric());
 
         return collector;
     }

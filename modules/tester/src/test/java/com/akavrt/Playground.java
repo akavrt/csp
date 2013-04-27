@@ -1,10 +1,13 @@
 package com.akavrt;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -34,4 +37,46 @@ public class Playground {
         assertFalse(hash3content == hash1content);
         assertFalse(hash3content == hash2content);
     }
+
+    @Test
+    public void division() {
+        double size = 0;
+        size += 2;
+        size += 3;
+
+        assertTrue(size / 2 > 2);
+
+        int length = 0;
+        length += 2;
+        length += 3;
+
+        assertTrue(length / 2 == 2);
+    }
+
+    @Test
+    public void increment() {
+        int[] array = new int[] {2, 4, 6, 8};
+        --array[0];
+        array[1]--;
+        ++array[2];
+        array[3]++;
+
+        assertEquals(1, array[0]);
+        assertEquals(3, array[1]);
+        assertEquals(7, array[2]);
+        assertEquals(9, array[3]);
+    }
+
+    @Test
+    public void set() {
+        Set<Integer> set = Sets.newHashSet();
+        set.add(new Integer(2));
+        set.add(new Integer(2));
+        set.add(2);
+        set.add(2);
+        set.add(2);
+
+        assertEquals(1, set.size());
+    }
+
 }

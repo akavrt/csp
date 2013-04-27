@@ -5,12 +5,14 @@ import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
 import com.akavrt.csp.core.xml.CspWriter;
-import com.akavrt.csp.genetic.PatternBasedComponentsFactory;
-import com.akavrt.csp.metrics.ScalarMetric;
-import com.akavrt.csp.metrics.ScalarMetricParameters;
-import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
-import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
-import com.akavrt.csp.solver.genetic.GeneticPhase;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.solver.evo.EvolutionPhase;
+import com.akavrt.csp.solver.evo.EvolutionaryAlgorithm;
+import com.akavrt.csp.solver.evo.es.EvolutionStrategy;
+import com.akavrt.csp.solver.evo.es.EvolutionStrategyParameters;
+import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -55,7 +57,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     private List<Solution> solutions;
     private File problemFile;
     private AsyncSolver solver;
-    private ScalarMetric metric;
+    private PatternBasedComponentsFactory factory;
 
     public MainFrame() {
         prepareFileChooser();
@@ -120,9 +122,17 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     }
 
     private void setupParameters() {
-        presetsPanel.setPatternGeneratorParameters(new PatternGeneratorParameters());
-        presetsPanel.setGeneticAlgorithmParameters(new GeneticAlgorithmParameters());
-        presetsPanel.setObjectiveFunctionParameters(new ScalarMetricParameters());
+        PatternGeneratorParameters patternParams = new PatternGeneratorParameters();
+        patternParams.setGenerationTrialsLimit(5);
+        presetsPanel.setPatternGeneratorParameters(patternParams);
+
+        EvolutionStrategyParameters strategyParams = new EvolutionStrategyParameters();
+        strategyParams.setPopulationSize(50);
+        strategyParams.setOffspringCount(45);
+        strategyParams.setRunSteps(2000);
+        presetsPanel.setEvolutionStrategyParameters(strategyParams);
+
+        presetsPanel.setObjectiveFunctionParameters(new ConstraintAwareMetricParameters());
     }
 
     @Override
@@ -236,7 +246,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             contentPanel.setSelectedIndex(1);
         }
 
-        GeneticAlgorithm algorithm = prepareAlgorithm();
+        EvolutionaryAlgorithm algorithm = prepareAlgorithm();
         SeriesMetricProvider metricProvider = createSeriesMetricProvider();
 
         solver = new AsyncSolver(problem, algorithm, this, metricProvider);
@@ -265,10 +275,10 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         if (presetsPanel.isTextTraceEnabled()) {
             // append population age and evaluated objective
             // function for the best solution found so far
-            if (update.phase != GeneticPhase.INITIALIZATION && update.seriesData != null) {
-                contentPanel.appendText(String.format("Generation %d, best's scalar = %.3f",
+            if (update.phase != EvolutionPhase.INITIALIZATION && update.seriesData != null) {
+                contentPanel.appendText(String.format("Generation #%d, best's objective = %.3f",
                                                       update.seriesData.age,
-                                                      update.seriesData.scalarBest));
+                                                      update.seriesData.tradeoffObjectiveRatio));
             }
         }
     }
@@ -278,6 +288,11 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         toolBar.setProgressBarVisible(false);
         toolBar.setStartActionEnabled(true);
         toolBar.setStopActionEnabled(false);
+
+        // TODO remove
+        if (factory != null) {
+            factory.traceMutation();
+        }
 
         if (obtained == null || obtained.isEmpty()) {
             // notify user with update in text trace
@@ -289,21 +304,16 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
             // print out best solution in text trace
             String caption = "\nBest solution found in run:";
-            String formatted;
-            if (metric != null) {
-                ScalarTracer tracer = new ScalarTracer(metric);
-                String trace = tracer.trace(best);
-                formatted = SolutionFormatter.format(best, caption, trace, true);
-            } else {
-                formatted = SolutionFormatter.format(best, caption, true);
-            }
+            ScalarTracer tracer = new ScalarTracer(new ScalarMetric());
+            String trace = tracer.trace(best);
+            String formatted = SolutionFormatter.format(best, caption, trace, true);
 
             contentPanel.appendText(formatted);
         }
 
     }
 
-    private GeneticAlgorithm prepareAlgorithm() {
+    private EvolutionaryAlgorithm prepareAlgorithm() {
         PatternGeneratorParameters generatorParams = presetsPanel.getPatternGeneratorParameters();
         if (generatorParams == null) {
             generatorParams = new PatternGeneratorParameters();
@@ -311,39 +321,38 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
 
-        ScalarMetricParameters scalarParams = presetsPanel.getObjectiveFunctionParameters();
-        if (scalarParams == null) {
-            scalarParams = new ScalarMetricParameters();
+        ConstraintAwareMetricParameters objectiveParams = presetsPanel.getObjectiveFunctionParameters();
+        if (objectiveParams == null) {
+            objectiveParams = new ConstraintAwareMetricParameters();
+        }
+        ConstraintAwareMetric metric = new ConstraintAwareMetric(objectiveParams);
+
+        EvolutionStrategyParameters strategyParams = presetsPanel.getEvolutionStrategyParameters();
+        if (strategyParams == null) {
+            strategyParams = new EvolutionStrategyParameters();
         }
 
-        metric = new ScalarMetric(scalarParams);
+        factory = new PatternBasedComponentsFactory(generator, new ConstraintAwareMetric());
 
-        GeneticAlgorithmParameters geneticParams = presetsPanel.getGeneticAlgorithmParameters();
-        if (geneticParams == null) {
-            geneticParams = new GeneticAlgorithmParameters();
-        }
-
-        PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
-
-        return new GeneticAlgorithm(factory, metric, geneticParams);
+        return new EvolutionStrategy(factory, metric, strategyParams);
     }
 
     private SeriesMetricProvider createSeriesMetricProvider() {
-        ScalarMetricParameters scalarParams = presetsPanel.getObjectiveFunctionParameters();
-        if (scalarParams == null) {
-            scalarParams = new ScalarMetricParameters();
+        ConstraintAwareMetricParameters params = presetsPanel.getObjectiveFunctionParameters();
+        if (params == null) {
+            params = new ConstraintAwareMetricParameters();
         }
 
-        return new StandardMetricProvider(scalarParams);
+        return new StandardMetricProvider(params);
     }
 
     private SeriesMetricProvider createDetailsMetricProvider() {
-        ScalarMetricParameters scalarParams = presetsPanel.getObjectiveFunctionParameters();
-        if (scalarParams == null) {
-            scalarParams = new ScalarMetricParameters();
+        ConstraintAwareMetricParameters params = presetsPanel.getObjectiveFunctionParameters();
+        if (params == null) {
+            params = new ConstraintAwareMetricParameters();
         }
 
-        return new DetailsMetricProvider(scalarParams);
+        return new DetailsMetricProvider(params);
     }
 
     @Override

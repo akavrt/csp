@@ -11,11 +11,6 @@ public class PatternGeneratorParametersReader extends
         AbstractParametersReader<PatternGeneratorParameters> {
 
     @Override
-    protected String getRootElementName() {
-        return "pattern";
-    }
-
-    @Override
     protected PatternGeneratorParameters createParameterSet() {
         return new PatternGeneratorParameters();
     }

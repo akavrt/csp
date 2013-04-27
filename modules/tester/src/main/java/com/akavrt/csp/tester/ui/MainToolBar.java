@@ -33,7 +33,7 @@ public class MainToolBar extends JToolBar {
     }
 
     private void setupActions() {
-        loadAction = new BaseAction("Load", "Load problem from file", new Integer(KeyEvent.VK_O),
+        loadAction = new BaseAction("Load", "Load problem from file", KeyEvent.VK_O,
                                     KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK)) {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -43,7 +43,7 @@ public class MainToolBar extends JToolBar {
             }
         };
 
-        saveAction = new BaseAction("Save", "Save data to file", new Integer(KeyEvent.VK_S),
+        saveAction = new BaseAction("Save", "Save data to file", KeyEvent.VK_S,
                                     KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK)) {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -53,7 +53,7 @@ public class MainToolBar extends JToolBar {
             }
         };
 
-        clearAction = new BaseAction("Clear", "Stop calculations", new Integer(KeyEvent.VK_L),
+        clearAction = new BaseAction("Clear", "Stop calculations", KeyEvent.VK_L,
                                      KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK)) {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -63,7 +63,7 @@ public class MainToolBar extends JToolBar {
             }
         };
 
-        startAction = new BaseAction("Start", "Start calculations", new Integer(KeyEvent.VK_R),
+        startAction = new BaseAction("Start", "Start calculations", KeyEvent.VK_R,
                                      KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK)) {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -77,7 +77,7 @@ public class MainToolBar extends JToolBar {
             }
         };
 
-        stopAction = new BaseAction("Stop", "Stop calculations", new Integer(KeyEvent.VK_T),
+        stopAction = new BaseAction("Stop", "Stop calculations", KeyEvent.VK_T,
                                     KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK)) {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

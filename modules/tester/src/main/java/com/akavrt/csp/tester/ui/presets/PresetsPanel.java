@@ -1,7 +1,7 @@
 package com.akavrt.csp.tester.ui.presets;
 
-import com.akavrt.csp.metrics.ScalarMetricParameters;
-import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
+import com.akavrt.csp.solver.evo.es.EvolutionStrategyParameters;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.tester.ui.utils.GBC;
 
@@ -16,8 +16,8 @@ import java.awt.*;
 public class PresetsPanel extends JPanel {
     private TracePresetsPanel tracePanel;
     private PatternPresetsPanel patternPanel;
-    private GeneticPresetsPanel geneticPanel;
-    private ObjectivePresetsPanel objectivePanel;
+    private StrategyPresetsPanel strategyPanel;
+    private ConstraintMetricPresetsPanel objectivePanel;
 
     public PresetsPanel() {
         setLayout(new GridBagLayout());
@@ -25,12 +25,12 @@ public class PresetsPanel extends JPanel {
         // graph trace is enabled by default
         tracePanel = new TracePresetsPanel(false, true);
         patternPanel = new PatternPresetsPanel();
-        geneticPanel = new GeneticPresetsPanel();
-        objectivePanel = new ObjectivePresetsPanel();
+        strategyPanel = new StrategyPresetsPanel();
+        objectivePanel = new ConstraintMetricPresetsPanel();
 
         add(tracePanel, new GBC(0, 0).setFill(GBC.HORIZONTAL).setWeight(100, 0));
         add(patternPanel, new GBC(0, 1).setFill(GBC.HORIZONTAL).setWeight(100, 0));
-        add(geneticPanel, new GBC(0, 2).setFill(GBC.HORIZONTAL).setWeight(100, 0));
+        add(strategyPanel, new GBC(0, 2).setFill(GBC.HORIZONTAL).setWeight(100, 0));
         add(objectivePanel, new GBC(0, 3).setFill(GBC.HORIZONTAL).setWeight(100, 0));
         add(new JPanel(), new GBC(0, 4).setFill(GBC.BOTH).setWeight(100, 100));
 
@@ -45,19 +45,19 @@ public class PresetsPanel extends JPanel {
         patternPanel.setParameters(parameters);
     }
 
-    public GeneticAlgorithmParameters getGeneticAlgorithmParameters() {
-        return geneticPanel.getParameters();
+    public EvolutionStrategyParameters getEvolutionStrategyParameters() {
+        return strategyPanel.getParameters();
     }
 
-    public void setGeneticAlgorithmParameters(GeneticAlgorithmParameters parameters) {
-        geneticPanel.setParameters(parameters);
+    public void setEvolutionStrategyParameters(EvolutionStrategyParameters parameters) {
+        strategyPanel.setParameters(parameters);
     }
 
-    public ScalarMetricParameters getObjectiveFunctionParameters() {
+    public ConstraintAwareMetricParameters getObjectiveFunctionParameters() {
         return objectivePanel.getParameters();
     }
 
-    public void setObjectiveFunctionParameters(ScalarMetricParameters parameters) {
+    public void setObjectiveFunctionParameters(ConstraintAwareMetricParameters parameters) {
         objectivePanel.setParameters(parameters);
     }
 

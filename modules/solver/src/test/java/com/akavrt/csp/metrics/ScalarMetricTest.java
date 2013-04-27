@@ -4,6 +4,8 @@ import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.core.Solution;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetricParameters;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

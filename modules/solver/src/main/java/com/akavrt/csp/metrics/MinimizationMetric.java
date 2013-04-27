@@ -33,6 +33,7 @@ public abstract class MinimizationMetric implements Metric {
      *
      * @return A comparator which imposes natural ordering on a collection of cutting plans.
      */
+    @Override
     public Comparator<Plan> getComparator() {
         return new Comparator<Plan>() {
 
@@ -52,6 +53,7 @@ public abstract class MinimizationMetric implements Metric {
      * @return A comparator that imposes the reverse of the natural ordering on a collection of
      *         cutting plans.
      */
+    @Override
     public Comparator<Plan> getReverseComparator() {
         return Collections.reverseOrder(getComparator());
     }
