@@ -18,7 +18,6 @@ import org.jfree.ui.RectangleInsets;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 
 /**
  * User: akavrt
@@ -27,24 +26,20 @@ import java.awt.geom.Ellipse2D;
  */
 public class GraphTracePanel extends JPanel {
     // trim loss
-    private XYSeries trimBestSeries;
-    private XYSeries trimAverageSeries;
-    private XYSeries trimTradeoffSeries;
+    private XYSeries tradeoffSideTrimRatioSeries;
+    private XYSeries tradeoffTotalTrimRatioSeries;
     // pattern reduction
-    private XYSeries patternsBestSeries;
-    private XYSeries patternsAverageSeries;
-    private XYSeries patternsTradeoffUniqueSeries;
-    private XYSeries patternsTradeoffTotalSeries;
+    private XYSeries partialBestPatternsRatioSeries;
+    private XYSeries tradeoffUniquePatternsCountSeries;
+    private XYSeries tradeoffTotalPatternsCountSeries;
     // product deviation
-    private XYSeries productionBestSeries;
-    private XYSeries productionAverageSeries;
-    private XYSeries productionTradeoffSeries;
-    private XYSeries productionTradeoffMaxUnderProdSeries;
-    private XYSeries productionTradeoffMaxOverProdSeries;
+    private XYSeries tradeoffProductionRatioSeries;
+    private XYSeries tradeoffMaxUnderProductionRatioSeries;
+    private XYSeries tradeoffMaxOverProductionRatioSeries;
     // scalar metric (aggregated)
-    private XYSeries scalarBestSeries;
-    private XYSeries comparativeAverageSeries;
-    private XYSeries comparativeBestSeries;
+    private XYSeries tradeoffObjectiveRatioSeries;
+    private XYSeries tradeoffComparativeRatioSeries;
+    private XYSeries averageObjectiveRatioSeries;
 
     public GraphTracePanel() {
         setupViews();
@@ -54,24 +49,20 @@ public class GraphTracePanel extends JPanel {
     }
 
     public void clearSeries() {
-        trimBestSeries.clear();
-        trimAverageSeries.clear();
-        trimTradeoffSeries.clear();
+        tradeoffSideTrimRatioSeries.clear();
+        tradeoffTotalTrimRatioSeries.clear();
 
-        patternsBestSeries.clear();
-        patternsAverageSeries.clear();
-        patternsTradeoffUniqueSeries.clear();
-        patternsTradeoffTotalSeries.clear();
+        partialBestPatternsRatioSeries.clear();
+        tradeoffUniquePatternsCountSeries.clear();
+        tradeoffTotalPatternsCountSeries.clear();
 
-        productionBestSeries.clear();
-        productionAverageSeries.clear();
-        productionTradeoffSeries.clear();
-        productionTradeoffMaxUnderProdSeries.clear();
-        productionTradeoffMaxOverProdSeries.clear();
+        tradeoffProductionRatioSeries.clear();
+        tradeoffMaxUnderProductionRatioSeries.clear();
+        tradeoffMaxOverProductionRatioSeries.clear();
 
-        scalarBestSeries.clear();
-        comparativeAverageSeries.clear();
-        comparativeBestSeries.clear();
+        tradeoffObjectiveRatioSeries.clear();
+        tradeoffComparativeRatioSeries.clear();
+        averageObjectiveRatioSeries.clear();
     }
 
     public void updateSeries(SeriesData data) {
@@ -79,25 +70,22 @@ public class GraphTracePanel extends JPanel {
             return;
         }
 
-        trimBestSeries.add(data.age, 100 * data.trimBest);
-        trimAverageSeries.add(data.age, 100 * data.trimAverage);
-        trimTradeoffSeries.add(data.age, 100 * data.trimTradeoff);
+        tradeoffSideTrimRatioSeries.add(data.age, 100 * data.tradeoffSideTrimRatio);
+        tradeoffTotalTrimRatioSeries.add(data.age, 100 * data.tradeoffTotalTrimRatio);
 
-        patternsBestSeries.add(data.age, data.patternsBest);
-        patternsAverageSeries.add(data.age, data.patternsAverage);
-        patternsTradeoffUniqueSeries.add(data.age, data.patternsTradeoffUnique);
-        patternsTradeoffTotalSeries.add(data.age, data.patternsTradeoffTotal);
+        partialBestPatternsRatioSeries.add(data.age, data.partialBestPatternsRatio);
+        tradeoffUniquePatternsCountSeries.add(data.age, data.tradeoffUniquePatternsCount);
+        tradeoffTotalPatternsCountSeries.add(data.age, data.tradeoffTotalPatternsCount);
 
-        productionBestSeries.add(data.age, 100 * data.productionBest);
-        productionAverageSeries.add(data.age, 100 * data.productionAverage);
-        productionTradeoffSeries.add(data.age, 100 * data.productionTradeoff);
-        productionTradeoffMaxUnderProdSeries.add(data.age,
-                                                 -100 * data.productionTradeoffMaxUnderProd);
-        productionTradeoffMaxOverProdSeries.add(data.age, 100 * data.productionTradeoffMaxOverProd);
+        tradeoffProductionRatioSeries.add(data.age, 100 * data.tradeoffProductionRatio);
+        tradeoffMaxUnderProductionRatioSeries.add(data.age,
+                                                  -100 * data.tradeoffMaxUnderProductionRatio);
+        tradeoffMaxOverProductionRatioSeries.add(data.age,
+                                                 100 * data.tradeoffMaxOverProductionRatio);
 
-        scalarBestSeries.add(data.age, data.scalarBest);
-        comparativeAverageSeries.add(data.age, data.comparativeAverage);
-        comparativeBestSeries.add(data.age, data.comparativeBest);
+        tradeoffObjectiveRatioSeries.add(data.age, data.tradeoffObjectiveRatio);
+        tradeoffComparativeRatioSeries.add(data.age, data.tradeoffComparativeRatio);
+        averageObjectiveRatioSeries.add(data.age, data.averageObjectiveRatio);
     }
 
     private void setupViews() {
@@ -137,42 +125,35 @@ public class GraphTracePanel extends JPanel {
     }
 
     private JFreeChart createTrimChart() {
-        trimBestSeries = new XYSeries("P.LB");
-        trimAverageSeries = new XYSeries("P.AV");
-        trimTradeoffSeries = new XYSeries("B.TL");
+        tradeoffSideTrimRatioSeries = new XYSeries("SIDE");
+        tradeoffTotalTrimRatioSeries = new XYSeries("TOTAL");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
-        dataset.addSeries(trimBestSeries);
-        dataset.addSeries(trimAverageSeries);
-        dataset.addSeries(trimTradeoffSeries);
+        dataset.addSeries(tradeoffSideTrimRatioSeries);
+        dataset.addSeries(tradeoffTotalTrimRatioSeries);
 
         JFreeChart chart = createChart(dataset);
 
         XYPlot plot = (XYPlot) chart.getPlot();
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
-        renderer.setSeriesShape(2, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
-
-        renderer.setSeriesPaint(0, new Color(0, 204, 51)); // best, green
-        renderer.setSeriesPaint(1, Color.orange); // average, yellow
-        renderer.setSeriesPaint(2, Color.red); // tradeoff, red
+        renderer.setSeriesPaint(0, Color.blue); // side trim, blue
+        renderer.setSeriesPaint(1, Color.red); // aggregated trim, red
 
         return chart;
     }
 
     private JFreeChart createPatternsChart() {
-        patternsBestSeries = new XYSeries("P.LB");
-        patternsAverageSeries = new XYSeries("P.AV");
-        patternsTradeoffUniqueSeries = new XYSeries("B.UP");
-        patternsTradeoffTotalSeries = new XYSeries("B.TP");
+        partialBestPatternsRatioSeries = new XYSeries("LB");
+        tradeoffUniquePatternsCountSeries = new XYSeries("UNIQUE");
+        tradeoffTotalPatternsCountSeries = new XYSeries("TOTAL");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
-        dataset.addSeries(patternsBestSeries);
-        dataset.addSeries(patternsAverageSeries);
-        dataset.addSeries(patternsTradeoffUniqueSeries);
-        dataset.addSeries(patternsTradeoffTotalSeries);
+        dataset.addSeries(partialBestPatternsRatioSeries);
+        dataset.addSeries(tradeoffUniquePatternsCountSeries);
+        dataset.addSeries(tradeoffTotalPatternsCountSeries);
 
         JFreeChart chart = createChart(dataset);
 
@@ -182,68 +163,55 @@ public class GraphTracePanel extends JPanel {
 
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
-        renderer.setSeriesShape(2, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
-
-        renderer.setSeriesPaint(0, new Color(0, 204, 51)); // best, green
-        renderer.setSeriesPaint(1, Color.orange); // average, yellow
-        renderer.setSeriesPaint(2, Color.red); // tradeoff (unique patterns count), red
-        renderer.setSeriesPaint(3, Color.blue); // tradeoff (total patterns count), blue
+        renderer.setSeriesPaint(0, new Color(0, 204, 51)); // lower bound, green
+        renderer.setSeriesPaint(1, Color.red); // unique patterns count, red
+        renderer.setSeriesPaint(2, Color.blue); // total patterns count, blue
 
         return chart;
     }
 
     private JFreeChart createProductionChart() {
-        productionBestSeries = new XYSeries("P.LB");
-        productionAverageSeries = new XYSeries("P.AV");
-        productionTradeoffSeries = new XYSeries("B.PD");
-        productionTradeoffMaxOverProdSeries = new XYSeries("B.MOP");
-        productionTradeoffMaxUnderProdSeries = new XYSeries("B.MUP");
+        tradeoffProductionRatioSeries = new XYSeries("AVER");
+        tradeoffMaxUnderProductionRatioSeries = new XYSeries("MAX UP");
+        tradeoffMaxOverProductionRatioSeries = new XYSeries("MAX OP");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
-        dataset.addSeries(productionBestSeries);
-        dataset.addSeries(productionAverageSeries);
-        dataset.addSeries(productionTradeoffSeries);
-        dataset.addSeries(productionTradeoffMaxOverProdSeries);
-        dataset.addSeries(productionTradeoffMaxUnderProdSeries);
+        dataset.addSeries(tradeoffProductionRatioSeries);
+        dataset.addSeries(tradeoffMaxUnderProductionRatioSeries);
+        dataset.addSeries(tradeoffMaxOverProductionRatioSeries);
 
         JFreeChart chart = createChart(dataset);
 
         XYPlot plot = (XYPlot) chart.getPlot();
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
-        renderer.setSeriesShape(2, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
-
-        renderer.setSeriesPaint(0, new Color(0, 204, 51)); // best, green
-        renderer.setSeriesPaint(1, Color.orange); // average, yellow
-        renderer.setSeriesPaint(2, Color.red); // tradeoff, red
-        renderer.setSeriesPaint(3, Color.magenta); // tradeoff (max overproduction), magenta
-        renderer.setSeriesPaint(4, Color.blue); // tradeoff (max underproduction), blue
+        renderer.setSeriesPaint(0, Color.red); // average, red
+        renderer.setSeriesPaint(1, Color.blue); // max underproduction, blue
+        renderer.setSeriesPaint(2, Color.magenta); // max overproduction, magenta
 
         return chart;
     }
 
     private JFreeChart createScalarChart() {
-        scalarBestSeries = new XYSeries("B.SCR");
-        comparativeAverageSeries = new XYSeries("C.AV");
-        comparativeBestSeries = new XYSeries("C.SCR");
+        tradeoffObjectiveRatioSeries = new XYSeries("BEST");
+        averageObjectiveRatioSeries = new XYSeries("AVER");
+        tradeoffComparativeRatioSeries = new XYSeries("COMP");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
 
-        dataset.addSeries(scalarBestSeries);
-        dataset.addSeries(comparativeAverageSeries);
-        dataset.addSeries(comparativeBestSeries);
+        dataset.addSeries(tradeoffObjectiveRatioSeries);
+        dataset.addSeries(averageObjectiveRatioSeries);
+        dataset.addSeries(tradeoffComparativeRatioSeries);
 
         JFreeChart chart = createChart(dataset);
 
         XYPlot plot = (XYPlot) chart.getPlot();
         XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
 
-        renderer.setSeriesShape(1, new Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0));
-
-        renderer.setSeriesPaint(0, new Color(0, 204, 51)); // best, green
-        renderer.setSeriesPaint(1, Color.orange); // comparative average, yellow
-        renderer.setSeriesPaint(2, Color.red); // comparative best, red
+        renderer.setSeriesPaint(0, Color.red); // best, red
+        renderer.setSeriesPaint(1, Color.orange); // average, yellow
+        renderer.setSeriesPaint(2, new Color(0, 204, 51)); // comparative best, green
 
         return chart;
     }

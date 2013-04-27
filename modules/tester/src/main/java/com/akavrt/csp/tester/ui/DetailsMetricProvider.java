@@ -1,7 +1,8 @@
 package com.akavrt.csp.tester.ui;
 
-import com.akavrt.csp.metrics.*;
+import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.complex.*;
+import com.akavrt.csp.metrics.simple.AggregatedTrimLossMetric;
 import com.akavrt.csp.metrics.simple.TrimLossMetric;
 
 /**
@@ -10,23 +11,30 @@ import com.akavrt.csp.metrics.simple.TrimLossMetric;
  * Time: 00:34
  */
 public class DetailsMetricProvider implements SeriesMetricProvider {
-    private final Metric trimMetric;
+    private final Metric sideTrimMetric;
+    private final Metric totalTrimMetric;
     private final Metric patternsMetric;
     private final Metric productMetric;
-    private final Metric scalarMetric;
+    private final Metric objectiveMetric;
     private final Metric comparativeMetric;
 
     public DetailsMetricProvider(ConstraintAwareMetricParameters objectiveParams) {
-        trimMetric = new TrimLossMetric();
+        sideTrimMetric = new TrimLossMetric();
+        totalTrimMetric = new AggregatedTrimLossMetric();
         patternsMetric = new PatternReductionMetric();
         productMetric = new ProductDeviationMetric();
-        scalarMetric = new ConstraintAwareMetric(objectiveParams);
+        objectiveMetric = new ConstraintAwareMetric(objectiveParams);
         comparativeMetric = new ScalarMetric();
     }
 
     @Override
-    public Metric getTrimMetric() {
-        return trimMetric;
+    public Metric getSideTrimMetric() {
+        return sideTrimMetric;
+    }
+
+    @Override
+    public Metric getTotalTrimMetric() {
+        return totalTrimMetric;
     }
 
     @Override
@@ -40,8 +48,8 @@ public class DetailsMetricProvider implements SeriesMetricProvider {
     }
 
     @Override
-    public Metric getScalarMetric() {
-        return scalarMetric;
+    public Metric getObjectiveMetric() {
+        return objectiveMetric;
     }
 
     @Override

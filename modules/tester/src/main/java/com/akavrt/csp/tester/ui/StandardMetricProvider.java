@@ -1,10 +1,11 @@
 package com.akavrt.csp.tester.ui;
 
-import com.akavrt.csp.metrics.*;
+import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
 import com.akavrt.csp.metrics.complex.ProductDeviationMetric;
 import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.metrics.simple.AggregatedTrimLossMetric;
 import com.akavrt.csp.metrics.simple.TrimLossMetric;
 import com.akavrt.csp.metrics.simple.UniquePatternsMetric;
 
@@ -14,23 +15,30 @@ import com.akavrt.csp.metrics.simple.UniquePatternsMetric;
  * Time: 13:58
  */
 public class StandardMetricProvider implements SeriesMetricProvider {
-    private final Metric trimMetric;
+    private final Metric sideTrimMetric;
+    private final Metric totalTrimMetric;
     private final Metric patternsMetric;
     private final Metric productMetric;
-    private final Metric scalarMetric;
+    private final Metric objectiveMetric;
     private final Metric comparativeMetric;
 
     public StandardMetricProvider(ConstraintAwareMetricParameters objectiveParams) {
-        trimMetric = new TrimLossMetric();
+        sideTrimMetric = new TrimLossMetric();
+        totalTrimMetric = new AggregatedTrimLossMetric();
         patternsMetric = new UniquePatternsMetric();
         productMetric = new ProductDeviationMetric();
-        scalarMetric = new ConstraintAwareMetric(objectiveParams);
+        objectiveMetric = new ConstraintAwareMetric(objectiveParams);
         comparativeMetric = new ScalarMetric();
     }
 
     @Override
-    public Metric getTrimMetric() {
-        return trimMetric;
+    public Metric getSideTrimMetric() {
+        return sideTrimMetric;
+    }
+
+    @Override
+    public Metric getTotalTrimMetric() {
+        return totalTrimMetric;
     }
 
     @Override
@@ -44,8 +52,8 @@ public class StandardMetricProvider implements SeriesMetricProvider {
     }
 
     @Override
-    public Metric getScalarMetric() {
-        return scalarMetric;
+    public Metric getObjectiveMetric() {
+        return objectiveMetric;
     }
 
     @Override

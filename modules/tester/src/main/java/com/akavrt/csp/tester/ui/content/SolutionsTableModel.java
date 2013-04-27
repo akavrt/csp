@@ -16,7 +16,7 @@ public class SolutionsTableModel extends AbstractTableModel {
     private static final int SELECTION_INDEX = 0;
     private static final int NUMBER_INDEX = 1;
     private static final int COMPARATIVE_INDEX = 2;
-    private static final int SCALAR_INDEX = 3;
+    private static final int OBJECTIVE_INDEX = 3;
     private static final int FEASIBILITY_INDEX = 4;
     private final String[] columnNames = {"", "#", "3-scalar", "2-scalar", "feasible"};
     private final List<TableRowData> rowData;
@@ -113,8 +113,8 @@ public class SolutionsTableModel extends AbstractTableModel {
                 holder = rowData.get(rowIndex).comparativeRatio;
                 break;
 
-            case SCALAR_INDEX:
-                holder = rowData.get(rowIndex).scalarRatio;
+            case OBJECTIVE_INDEX:
+                holder = rowData.get(rowIndex).objectiveRatio;
                 break;
 
             case FEASIBILITY_INDEX:
@@ -142,20 +142,21 @@ public class SolutionsTableModel extends AbstractTableModel {
 
     public static class TableRowData {
         public final double trimRatio;
+        public final double aggregatedTrimRatio;
         public final double patternsRatio;
         public final int uniquePatterns;
         public final int totalPatterns;
         public final double productionRatio;
         public final double maxUnderProductionRatio;
         public final double maxOverProductionRatio;
-        public final double scalarRatio;
-        public final double aggregatedTrimRatio;
+        public final double objectiveRatio;
         public final double comparativeRatio;
         public final boolean isFeasible;
         private boolean isSelected;
 
         public TableRowData(Solution solution, SeriesMetricProvider metricProvider) {
-            trimRatio = metricProvider.getTrimMetric().evaluate(solution);
+            trimRatio = metricProvider.getSideTrimMetric().evaluate(solution);
+            aggregatedTrimRatio = metricProvider.getTotalTrimMetric().evaluate(solution);
 
             patternsRatio = metricProvider.getPatternsMetric().evaluate(solution);
             uniquePatterns = solution.getMetricProvider().getUniquePatternsCount();
@@ -165,8 +166,7 @@ public class SolutionsTableModel extends AbstractTableModel {
             maxUnderProductionRatio = solution.getMetricProvider().getMaximumUnderProductionRatio();
             maxOverProductionRatio = solution.getMetricProvider().getMaximumOverProductionRatio();
 
-            scalarRatio = metricProvider.getScalarMetric().evaluate(solution);
-            aggregatedTrimRatio = solution.getMetricProvider().getAggregatedTrimRatio();
+            objectiveRatio = metricProvider.getObjectiveMetric().evaluate(solution);
             comparativeRatio = metricProvider.getComparativeMetric().evaluate(solution);
 
             isFeasible = solution.isFeasible();

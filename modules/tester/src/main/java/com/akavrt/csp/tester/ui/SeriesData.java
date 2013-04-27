@@ -11,24 +11,20 @@ import com.akavrt.csp.solver.evo.Population;
 public class SeriesData {
     public int age;
     // trim loss
-    public double trimBest;
-    public double trimAverage;
-    public double trimTradeoff;
+    public double tradeoffSideTrimRatio;
+    public double tradeoffTotalTrimRatio;
     // pattern reduction
-    public double patternsBest;
-    public double patternsAverage;
-    public double patternsTradeoffUnique;
-    public double patternsTradeoffTotal;
+    public double partialBestPatternsRatio;
+    public double tradeoffUniquePatternsCount;
+    public double tradeoffTotalPatternsCount;
     // product deviation
-    public double productionBest;
-    public double productionAverage;
-    public double productionTradeoff;
-    public double productionTradeoffMaxUnderProd;
-    public double productionTradeoffMaxOverProd;
-    // scalar
-    public double scalarBest;
-    public double comparativeBest;
-    public double comparativeAverage;
+    public double tradeoffProductionRatio;
+    public double tradeoffMaxUnderProductionRatio;
+    public double tradeoffMaxOverProductionRatio;
+    // objectives
+    public double averageObjectiveRatio;
+    public double tradeoffObjectiveRatio;
+    public double tradeoffComparativeRatio;
 
     public SeriesData(Population population, SeriesMetricProvider provider) {
         process(population, provider);
@@ -41,61 +37,37 @@ public class SeriesData {
 
         age = population.getAge();
 
-        int i = 0;
-        Chromosome bestScalar = null;
-        Chromosome bestComparative = null;
-        Chromosome bestTrim = null;
+        Chromosome best = null;
         Chromosome bestPatterns = null;
-        Chromosome bestProduct = null;
         for (Chromosome chromosome : population.getChromosomes()) {
-            trimAverage += provider.getTrimMetric().evaluate(chromosome);
-            if (i == 0 || provider.getTrimMetric().compare(chromosome, bestTrim) > 0) {
-                bestTrim = chromosome;
-            }
-
-            patternsAverage += provider.getPatternsMetric().evaluate(chromosome);
-            if (i == 0 || provider.getPatternsMetric().compare(chromosome, bestPatterns) > 0) {
+            if (bestPatterns == null
+                    || provider.getPatternsMetric().compare(chromosome, bestPatterns) > 0) {
                 bestPatterns = chromosome;
             }
 
-            productionAverage += provider.getProductMetric().evaluate(chromosome);
-            if (i == 0 || provider.getProductMetric().compare(chromosome, bestProduct) > 0) {
-                bestProduct = chromosome;
+            averageObjectiveRatio += provider.getObjectiveMetric().evaluate(chromosome);
+            if (best == null || provider.getObjectiveMetric().compare(chromosome, best) > 0) {
+                best = chromosome;
             }
-
-            if (i == 0 || provider.getScalarMetric().compare(chromosome, bestScalar) > 0) {
-                bestScalar = chromosome;
-            }
-
-            comparativeAverage += provider.getComparativeMetric().evaluate(chromosome);
-            if (i == 0 || provider.getComparativeMetric().compare(chromosome,
-                                                                  bestComparative) > 0) {
-                bestComparative = chromosome;
-            }
-
-            i++;
         }
 
-        trimBest = provider.getTrimMetric().evaluate(bestTrim);
-        trimAverage /= population.getChromosomes().size();
-        trimTradeoff = provider.getTrimMetric().evaluate(bestScalar);
 
-        patternsBest = provider.getPatternsMetric().evaluate(bestPatterns);
-        patternsAverage /= population.getChromosomes().size();
-        patternsTradeoffUnique = bestScalar.getMetricProvider().getUniquePatternsCount();
-        patternsTradeoffTotal = bestScalar.getMetricProvider().getActivePatternsCount();
+        tradeoffSideTrimRatio = provider.getSideTrimMetric().evaluate(best);
+        tradeoffTotalTrimRatio = provider.getTotalTrimMetric().evaluate(best);
 
-        productionBest = provider.getProductMetric().evaluate(bestProduct);
-        productionAverage /= population.getChromosomes().size();
-        productionTradeoff = provider.getProductMetric().evaluate(bestScalar);
-        productionTradeoffMaxUnderProd = bestScalar.getMetricProvider()
+        partialBestPatternsRatio = provider.getPatternsMetric().evaluate(bestPatterns);
+        tradeoffUniquePatternsCount = best.getMetricProvider().getUniquePatternsCount();
+        tradeoffTotalPatternsCount = best.getMetricProvider().getActivePatternsCount();
+
+        tradeoffProductionRatio = provider.getProductMetric().evaluate(best);
+        tradeoffMaxUnderProductionRatio = best.getMetricProvider()
                                                    .getMaximumUnderProductionRatio();
-        productionTradeoffMaxOverProd = bestScalar.getMetricProvider()
+        tradeoffMaxOverProductionRatio = best.getMetricProvider()
                                                   .getMaximumOverProductionRatio();
 
-        scalarBest = provider.getScalarMetric().evaluate(bestScalar);
-        comparativeBest = provider.getComparativeMetric().evaluate(bestComparative);
-        comparativeAverage /= population.getChromosomes().size();
+        averageObjectiveRatio /= population.getChromosomes().size();
+        tradeoffObjectiveRatio = provider.getObjectiveMetric().evaluate(best);
+        tradeoffComparativeRatio = provider.getComparativeMetric().evaluate(best);
     }
 
 }

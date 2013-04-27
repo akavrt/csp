@@ -8,9 +8,10 @@ import com.akavrt.csp.metrics.Metric;
  * Time: 12:33
  */
 public interface SeriesMetricProvider {
-    Metric getTrimMetric();
+    Metric getSideTrimMetric();
+    Metric getTotalTrimMetric();
     Metric getPatternsMetric();
     Metric getProductMetric();
-    Metric getScalarMetric();
+    Metric getObjectiveMetric();
     Metric getComparativeMetric();
 }

@@ -276,9 +276,9 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             // append population age and evaluated objective
             // function for the best solution found so far
             if (update.phase != EvolutionPhase.INITIALIZATION && update.seriesData != null) {
-                contentPanel.appendText(String.format("Generation %d, best's scalar = %.3f",
+                contentPanel.appendText(String.format("Generation #%d, best's objective = %.3f",
                                                       update.seriesData.age,
-                                                      update.seriesData.scalarBest));
+                                                      update.seriesData.tradeoffObjectiveRatio));
             }
         }
     }
