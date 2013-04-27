@@ -1,6 +1,8 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Order;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public abstract class PatternBasedMutation extends GroupBasedMutation {
     }
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         generator.initialize(context.getProblem());
     }
 

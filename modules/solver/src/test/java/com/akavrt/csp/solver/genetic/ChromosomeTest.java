@@ -3,6 +3,8 @@ package com.akavrt.csp.solver.genetic;
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.Gene;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.junit.Before;

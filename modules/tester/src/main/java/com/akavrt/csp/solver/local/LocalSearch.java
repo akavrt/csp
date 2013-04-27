@@ -7,10 +7,9 @@ import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
-import com.akavrt.csp.solver.genetic.GeneticOperator;
-import com.akavrt.csp.solver.genetic.GroupReplacementOperator;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.utils.ParameterSet;
 import com.google.common.collect.Lists;
@@ -31,7 +30,7 @@ public class LocalSearch implements Algorithm {
     private static final String SHORT_METHOD_NAME = "LS-SHP";
     private final Algorithm constructiveProcedure;
     private final Metric objectiveFunction;
-    private final GeneticOperator searchStep;
+    private final EvolutionaryOperator searchStep;
 
     public LocalSearch(Algorithm constructiveProcedure, PatternGenerator generator,
                        Metric objectiveFunction) {
@@ -74,7 +73,7 @@ public class LocalSearch implements Algorithm {
         return Lists.newArrayList(solution);
     }
 
-    private Solution search(GeneticExecutionContext context) {
+    private Solution search(EvolutionaryExecutionContext context) {
         Solution result = null;
         List<Solution> solutions = constructiveProcedure.execute(context);
 
@@ -120,7 +119,7 @@ public class LocalSearch implements Algorithm {
         return metadata;
     }
 
-    private static class GeneticContext implements GeneticExecutionContext {
+    private static class GeneticContext implements EvolutionaryExecutionContext {
         private final ExecutionContext parentContext;
 
         public GeneticContext(ExecutionContext parentContext) {

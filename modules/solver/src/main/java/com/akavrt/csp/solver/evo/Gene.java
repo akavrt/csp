@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Pattern;
@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <p>Genetic algorithm uses pretty straightforward representation scheme: genes corresponds to
- * cutting patterns with rolls attached to them (see Pattern), while chromosomes corresponds to
- * cutting plans (see Solution) - i.e. no additional coding is used.</p>
+ * <p>All implemented evolutionary algorithms are based on a pretty straightforward representation
+ * scheme: genes corresponds to cutting patterns with rolls attached to them (see Pattern), while
+ * chromosomes corresponds to cutting plans (see Solution) - i.e. no additional coding is used.</p>
  *
  * <p>The main benefit from introduction of a separate Gene class (Pattern can be used to represent
  * genes with some minor changes) is substantial speed up when doing different checks and metric
@@ -132,7 +132,7 @@ public class Gene {
      * @param context Context provides access to the problem definition.
      * @return The total width of the orders being cut from the roll according to the pattern.
      */
-    public double getWidth(GeneticExecutionContext context) {
+    public double getWidth(EvolutionaryExecutionContext context) {
         if (pattern == null) {
             return 0;
         }
@@ -152,7 +152,7 @@ public class Gene {
      * @param context Context provides access to the problem definition.
      * @return The unused width of the roll.
      */
-    public double getTrimWidth(GeneticExecutionContext context) {
+    public double getTrimWidth(EvolutionaryExecutionContext context) {
         if (roll == null || pattern == null) {
             return 0;
         }
@@ -167,7 +167,7 @@ public class Gene {
      * @param context Context provides access to the problem definition.
      * @return The unused area of the roll.
      */
-    public double getTrimArea(GeneticExecutionContext context) {
+    public double getTrimArea(EvolutionaryExecutionContext context) {
         if (roll == null || pattern == null) {
             return 0;
         }
@@ -212,7 +212,7 @@ public class Gene {
      * @param context Context provides access to the problem definition.
      * @return true if pattern is valid, false otherwise.
      */
-    public boolean isFeasible(GeneticExecutionContext context) {
+    public boolean isFeasible(EvolutionaryExecutionContext context) {
         int allowedCutsNumber = context.getProblem().getAllowedCutsNumber();
         boolean isCutsValid = allowedCutsNumber == 0 || getTotalNumberOfCuts() <= allowedCutsNumber;
 

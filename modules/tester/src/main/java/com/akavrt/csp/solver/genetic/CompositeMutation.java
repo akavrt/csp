@@ -1,6 +1,9 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.metrics.Metric;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
@@ -14,9 +17,9 @@ import java.util.Random;
  * Date: 16.04.13
  * Time: 23:56
  */
-public class CompositeMutation implements GeneticOperator {
+public class CompositeMutation implements EvolutionaryOperator {
     private static final Logger LOGGER = LogManager.getLogger(CompositeMutation.class);
-    private final List<GeneticOperator> operators;
+    private final List<EvolutionaryOperator> operators;
     private final List<Integer> successCounter;
     private final List<Integer> executionCounter;
     private final Random rGen;
@@ -40,15 +43,15 @@ public class CompositeMutation implements GeneticOperator {
         rGen = new Random();
     }
 
-    private void addOperator(GeneticOperator operator) {
+    private void addOperator(EvolutionaryOperator operator) {
         operators.add(operator);
         successCounter.add(0);
         executionCounter.add(0);
     }
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
-        for (GeneticOperator operator : operators) {
+    public void initialize(EvolutionaryExecutionContext context) {
+        for (EvolutionaryOperator operator : operators) {
             operator.initialize(context);
         }
     }

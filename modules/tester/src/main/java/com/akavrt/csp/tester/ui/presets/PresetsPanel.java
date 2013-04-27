@@ -1,7 +1,7 @@
 package com.akavrt.csp.tester.ui.presets;
 
 import com.akavrt.csp.metrics.ScalarMetricParameters;
-import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
+import com.akavrt.csp.solver.evo.ga.GeneticAlgorithmParameters;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.tester.ui.utils.GBC;
 

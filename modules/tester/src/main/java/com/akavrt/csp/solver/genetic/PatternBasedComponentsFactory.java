@@ -1,8 +1,9 @@
 package com.akavrt.csp.solver.genetic;
 
-import com.akavrt.csp.metrics.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
+import com.akavrt.csp.solver.evo.ga.GeneticComponentsFactory;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
 
@@ -26,12 +27,12 @@ public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
     }
 
     @Override
-    public GeneticOperator createCrossover() {
+    public EvolutionaryOperator createCrossover() {
         return new Crossover();
     }
 
     @Override
-    public GeneticOperator createMutation() {
+    public EvolutionaryOperator createMutation() {
         mutation = new CompositeMutation(patternGenerator, objectiveFunction);
         return mutation;
     }
@@ -39,11 +40,6 @@ public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
     @Override
     public Algorithm createInitializationProcedure() {
         return new SimplifiedProcedure(patternGenerator);
-    }
-
-    @Override
-    public GeneticOperator createLocalSearch() {
-        return new LocalSearchOperator(patternGenerator, new ConstraintAwareMetric());
     }
 
     public void traceMutation() {

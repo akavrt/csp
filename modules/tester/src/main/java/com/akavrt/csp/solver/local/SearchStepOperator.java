@@ -4,6 +4,9 @@ import com.akavrt.csp.core.*;
 import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.Gene;
 import com.akavrt.csp.solver.genetic.*;
 import com.google.common.collect.Lists;
 
@@ -24,7 +27,7 @@ public class SearchStepOperator extends GroupBasedMutation {
     }
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         // nothing to initialize
     }
 

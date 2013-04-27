@@ -10,11 +10,6 @@ import com.akavrt.csp.metrics.ScalarMetricParameters;
 public class ScalarMetricParametersReader extends AbstractParametersReader<ScalarMetricParameters> {
 
     @Override
-    protected String getRootElementName() {
-        return "scalar";
-    }
-
-    @Override
     protected ScalarMetricParameters createParameterSet() {
         return new ScalarMetricParameters();
     }

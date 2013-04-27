@@ -1,6 +1,8 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.Gene;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -76,7 +78,7 @@ public class GeneGroup {
         return minWidth;
     }
 
-    public double getPatternWidth(GeneticExecutionContext context) {
+    public double getPatternWidth(EvolutionaryExecutionContext context) {
         return genes.isEmpty() ? 0 : getGene(0).getWidth(context);
     }
 

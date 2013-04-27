@@ -1,6 +1,9 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.Gene;
 
 import java.util.List;
 
@@ -12,7 +15,7 @@ import java.util.List;
 public class ReplaceRollMutation extends GroupBasedMutation {
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         // nothing to initialize
     }
 

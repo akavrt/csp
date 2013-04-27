@@ -1,7 +1,6 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo.ga;
 
-import com.akavrt.csp.utils.BaseParameters;
-import com.akavrt.csp.utils.Utils;
+import com.akavrt.csp.solver.evo.EvolutionaryAlgorithmParameters;
 import com.akavrt.csp.xml.XmlUtils;
 import org.jdom2.Element;
 
@@ -13,23 +12,11 @@ import org.jdom2.Element;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class GeneticAlgorithmParameters extends BaseParameters {
-    private static final int DEFAULT_POPULATION_SIZE = 30;
+public class GeneticAlgorithmParameters extends EvolutionaryAlgorithmParameters {
     private static final int DEFAULT_EXCHANGE_SIZE = 20;
-    private static final int DEFAULT_RUN_STEPS = 1000;
     private static final double DEFAULT_CROSSOVER_RATE = 0.5;
-    private int populationSize = DEFAULT_POPULATION_SIZE;
     private int exchangeSize = DEFAULT_EXCHANGE_SIZE;
-    private int runSteps = DEFAULT_RUN_STEPS;
     private double crossoverRate = DEFAULT_CROSSOVER_RATE;
-
-    public int getPopulationSize() {
-        return populationSize;
-    }
-
-    public void setPopulationSize(int populationSize) {
-        this.populationSize = populationSize;
-    }
 
     public int getExchangeSize() {
         return exchangeSize;
@@ -37,14 +24,6 @@ public class GeneticAlgorithmParameters extends BaseParameters {
 
     public void setExchangeSize(int exchangeSize) {
         this.exchangeSize = exchangeSize;
-    }
-
-    public int getRunSteps() {
-        return runSteps;
-    }
-
-    public void setRunSteps(int runSteps) {
-        this.runSteps = runSteps;
     }
 
     public double getCrossoverRate() {
@@ -60,26 +39,11 @@ public class GeneticAlgorithmParameters extends BaseParameters {
      */
     @Override
     public Element save() {
-        Element paramsElm = new Element(XmlTags.GENETIC);
-
-        // optional description
-        if (!Utils.isEmpty(getDescription())) {
-            Element descriptionElm = new Element(XmlTags.DESCRIPTION);
-            descriptionElm.setText(getDescription());
-            paramsElm.addContent(descriptionElm);
-        }
-
-        Element populationSizeElm = new Element(XmlTags.POPULATION_SIZE);
-        populationSizeElm.setText(Integer.toString(getPopulationSize()));
-        paramsElm.addContent(populationSizeElm);
+        Element paramsElm = super.save();
 
         Element exchangeSizeElm = new Element(XmlTags.EXCHANGE_SIZE);
         exchangeSizeElm.setText(Integer.toString(getExchangeSize()));
         paramsElm.addContent(exchangeSizeElm);
-
-        Element runStepsElm = new Element(XmlTags.RUN_STEPS);
-        runStepsElm.setText(Integer.toString(getRunSteps()));
-        paramsElm.addContent(runStepsElm);
 
         Element crossoverRateElm = new Element(XmlTags.CROSSOVER_RATE);
         crossoverRateElm.setText(XmlUtils.formatDouble(getCrossoverRate()));
@@ -93,34 +57,29 @@ public class GeneticAlgorithmParameters extends BaseParameters {
      */
     @Override
     public void load(Element rootElm) {
-        String description = rootElm.getChildText(XmlTags.DESCRIPTION);
-        if (!Utils.isEmpty(description)) {
-            setDescription(description);
-        }
-
-        int populationSize = XmlUtils.getIntegerFromText(rootElm, XmlTags.POPULATION_SIZE,
-                                                         DEFAULT_POPULATION_SIZE);
-        setPopulationSize(populationSize);
+        super.load(rootElm);
 
         int exchangeSize = XmlUtils.getIntegerFromText(rootElm, XmlTags.EXCHANGE_SIZE,
                                                        DEFAULT_EXCHANGE_SIZE);
         setExchangeSize(exchangeSize);
-
-        int runSteps = XmlUtils.getIntegerFromText(rootElm, XmlTags.RUN_STEPS, DEFAULT_RUN_STEPS);
-        setRunSteps(runSteps);
 
         double crossoverRate = XmlUtils.getDoubleFromText(rootElm, XmlTags.CROSSOVER_RATE,
                                                           DEFAULT_CROSSOVER_RATE);
         setCrossoverRate(crossoverRate);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getRootElementName() {
+        return XmlTags.GENETIC;
+    }
+
     private interface XmlTags {
         String GENETIC = "genetic";
-        String POPULATION_SIZE = "population-size";
         String EXCHANGE_SIZE = "exchange-size";
-        String RUN_STEPS = "generations";
         String CROSSOVER_RATE = "crossover-rate";
-        String DESCRIPTION = "description";
     }
 
 }

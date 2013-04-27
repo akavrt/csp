@@ -1,7 +1,7 @@
 package com.akavrt.csp.solver.genetic.backup;
 
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.Gene;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.Gene;
 import com.akavrt.csp.solver.genetic.GeneGroup;
 import com.akavrt.csp.solver.genetic.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;

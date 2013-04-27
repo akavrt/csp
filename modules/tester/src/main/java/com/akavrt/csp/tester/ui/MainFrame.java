@@ -5,13 +5,15 @@ import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
 import com.akavrt.csp.core.xml.CspWriter;
-import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.metrics.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.ScalarMetric;
 import com.akavrt.csp.metrics.ScalarMetricParameters;
-import com.akavrt.csp.solver.genetic.GeneticAlgorithm;
-import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
-import com.akavrt.csp.solver.genetic.GeneticPhase;
+import com.akavrt.csp.solver.evo.EvolutionPhase;
+import com.akavrt.csp.solver.evo.EvolutionaryAlgorithm;
+import com.akavrt.csp.solver.evo.es.EvolutionStrategy;
+import com.akavrt.csp.solver.evo.es.EvolutionStrategyParameters;
+import com.akavrt.csp.solver.evo.ga.GeneticAlgorithmParameters;
+import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -247,7 +249,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             contentPanel.setSelectedIndex(1);
         }
 
-        GeneticAlgorithm algorithm = prepareAlgorithm();
+        EvolutionaryAlgorithm algorithm = prepareAlgorithm();
         SeriesMetricProvider metricProvider = createSeriesMetricProvider();
 
         solver = new AsyncSolver(problem, algorithm, this, metricProvider);
@@ -276,7 +278,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         if (presetsPanel.isTextTraceEnabled()) {
             // append population age and evaluated objective
             // function for the best solution found so far
-            if (update.phase != GeneticPhase.INITIALIZATION && update.seriesData != null) {
+            if (update.phase != EvolutionPhase.INITIALIZATION && update.seriesData != null) {
                 contentPanel.appendText(String.format("Generation %d, best's scalar = %.3f",
                                                       update.seriesData.age,
                                                       update.seriesData.scalarBest));
@@ -319,7 +321,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
     }
 
-    private GeneticAlgorithm prepareAlgorithm() {
+    private EvolutionaryAlgorithm prepareAlgorithm() {
         PatternGeneratorParameters generatorParams = presetsPanel.getPatternGeneratorParameters();
         if (generatorParams == null) {
             generatorParams = new PatternGeneratorParameters();
@@ -342,7 +344,9 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         factory = new PatternBasedComponentsFactory(generator, new ConstraintAwareMetric());
 
 //        return new GeneticAlgorithm(factory, metric, geneticParams);
-        return new GeneticAlgorithm(factory, new ConstraintAwareMetric(), geneticParams);
+//        return new GeneticAlgorithm(factory, new ConstraintAwareMetric(), geneticParams);
+        EvolutionStrategyParameters strategyParams = convertAlgorithmParameters(geneticParams);
+        return new EvolutionStrategy(factory, new ConstraintAwareMetric(), strategyParams);
     }
 
     private SeriesMetricProvider createSeriesMetricProvider() {
@@ -394,4 +398,13 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         }
     }
 
+    private EvolutionStrategyParameters convertAlgorithmParameters(GeneticAlgorithmParameters in) {
+        EvolutionStrategyParameters out = new EvolutionStrategyParameters();
+        out.setPopulationSize(in.getPopulationSize());
+        out.setRunSteps(in.getRunSteps());
+        out.setOffspringCount(in.getExchangeSize());
+        out.setTourSize(2);
+
+        return out;
+    }
 }

@@ -2,6 +2,10 @@ package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
+import com.akavrt.csp.solver.evo.Gene;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -17,7 +21,7 @@ import java.util.Set;
  * Date: 29.03.13
  * Time: 02:10
  */
-public class Mutation implements GeneticOperator {
+public class Mutation implements EvolutionaryOperator {
     private static final Logger LOGGER = LogManager.getLogger(Mutation.class);
     private final PatternGenerator generator;
     private final Random rGen;
@@ -28,7 +32,7 @@ public class Mutation implements GeneticOperator {
     }
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         LOGGER.debug("MT: initializing pattern generator, allowed number of cuts is {}",
                      context.getProblem().getAllowedCutsNumber());
         generator.initialize(context.getProblem());

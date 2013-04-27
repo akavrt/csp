@@ -1,6 +1,7 @@
 package com.akavrt.csp.utils;
 
 import com.akavrt.csp.xml.XmlCompatible;
+import org.jdom2.Element;
 
 /**
  * <p>All classes representing parameter sets should implement this interface and thus provide easy
@@ -25,4 +26,13 @@ public interface ParameterSet extends XmlCompatible {
      * @param description Textual description of the parameter set.
      */
     void setDescription(String description);
+
+    /**
+     * <p>Retrieve internal state from XML. Corresponding XML element containing exported state
+     * must be an immediate child of the given element provided as a parameter.</p>
+     *
+     * <p>Name of the child element defined by the ParameterSet itself.</p>
+     */
+    void loadFromChildElement(Element element);
+
 }

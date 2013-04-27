@@ -1,9 +1,11 @@
 package com.akavrt;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -64,4 +66,17 @@ public class Playground {
         assertEquals(7, array[2]);
         assertEquals(9, array[3]);
     }
+
+    @Test
+    public void set() {
+        Set<Integer> set = Sets.newHashSet();
+        set.add(new Integer(2));
+        set.add(new Integer(2));
+        set.add(2);
+        set.add(2);
+        set.add(2);
+
+        assertEquals(1, set.size());
+    }
+
 }

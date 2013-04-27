@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo;
 
 import com.akavrt.csp.solver.ExecutionContext;
 
@@ -10,12 +10,12 @@ import com.akavrt.csp.solver.ExecutionContext;
  * <p>For convenience purposes here we are adding a couple of getter methods to replace calls like
  * ExecutionContext.getProblem().getOrder(index).getWidth() or
  * ExecutionContext.getProblem().getOrders().size() with
- * GeneticExecutionContext.getOrderWidth(index) and GeneticExecutionContext.getOrdersSize(),
- * respectively.</p>
+ * EvolutionaryExecutionContext.getOrderWidth(index) and
+ * EvolutionaryExecutionContext.getOrdersSize(), respectively.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public interface GeneticExecutionContext extends ExecutionContext {
+public interface EvolutionaryExecutionContext extends ExecutionContext {
     /**
      * <p>Returns width of the order accessed using its position in the list.</p>
      *

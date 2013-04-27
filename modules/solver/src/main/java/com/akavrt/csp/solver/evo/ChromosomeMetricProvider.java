@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo;
 
 import com.akavrt.csp.metrics.MetricProvider;
 import com.google.common.collect.Maps;
@@ -16,7 +16,7 @@ import java.util.Set;
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class ChromosomeMetricProvider implements MetricProvider {
-    private final GeneticExecutionContext context;
+    private final EvolutionaryExecutionContext context;
     private final Chromosome chromosome;
     private double cachedTrimArea;
     private double cachedTrimRatio;
@@ -37,7 +37,7 @@ public class ChromosomeMetricProvider implements MetricProvider {
      *                   orders is required to evaluate a number of basic metrics).
      * @param chromosome The chromosome to be evaluated using predefined set of basic metrics.
      */
-    public ChromosomeMetricProvider(GeneticExecutionContext context, Chromosome chromosome) {
+    public ChromosomeMetricProvider(EvolutionaryExecutionContext context, Chromosome chromosome) {
         this.context = context;
         this.chromosome = chromosome;
 

@@ -122,7 +122,7 @@ public class SolutionsTableModel extends AbstractTableModel {
                 break;
         }
 
-        return (holder);
+        return holder;
     }
 
     public Class<?> getColumnClass(int columnIndex) {

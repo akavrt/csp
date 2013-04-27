@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo;
 
 
 /**
@@ -6,13 +6,13 @@ package com.akavrt.csp.solver.genetic;
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public enum GeneticPhase {
+public enum EvolutionPhase {
     INITIALIZATION("initialization", "Initializing"),
     GENERATION("generation", "Solving");
     private final String name;
     private final String description;
 
-    GeneticPhase(String name, String description) {
+    EvolutionPhase(String name, String description) {
         this.name = name;
         this.description = description;
     }

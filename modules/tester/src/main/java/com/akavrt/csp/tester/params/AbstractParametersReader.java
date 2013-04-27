@@ -20,8 +20,6 @@ public abstract class AbstractParametersReader<T extends ParameterSet> implement
         ParameterSetReader<T> {
     private static final Logger LOGGER = LogManager.getLogger(AbstractParametersReader.class);
 
-    protected abstract String getRootElementName();
-
     protected abstract T createParameterSet();
 
     @Override
@@ -32,14 +30,9 @@ public abstract class AbstractParametersReader<T extends ParameterSet> implement
             Document document = sax.build(file);
             if (document.hasRootElement()) {
                 Element root = document.getRootElement();
-                Element paramsElm = root.getChild(getRootElementName());
 
-                if (paramsElm != null) {
-                    params = createParameterSet();
-                    params.load(paramsElm);
-                } else {
-                    LOGGER.warn("<{}> element wasn't found.", getRootElementName());
-                }
+                params = createParameterSet();
+                params.loadFromChildElement(root);
             }
         } catch (JDOMException e) {
             LOGGER.catching(e);

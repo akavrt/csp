@@ -1,6 +1,9 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
+import com.akavrt.csp.solver.evo.Gene;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -15,7 +18,7 @@ import java.util.Set;
  * Date: 22.04.13
  * Time: 15:16
  */
-public abstract class GroupBasedMutation implements GeneticOperator {
+public abstract class GroupBasedMutation implements EvolutionaryOperator {
     protected final Random rGen;
 
     public GroupBasedMutation() {

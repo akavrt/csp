@@ -1,7 +1,7 @@
 package com.akavrt.csp.tester.ui;
 
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.Population;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.Population;
 
 /**
  * User: akavrt

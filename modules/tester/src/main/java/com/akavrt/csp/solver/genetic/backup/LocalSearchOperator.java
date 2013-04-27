@@ -1,6 +1,10 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.genetic.backup;
 
 import com.akavrt.csp.metrics.Metric;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
+import com.akavrt.csp.solver.local.GroupReplacementOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,10 +14,10 @@ import org.apache.logging.log4j.Logger;
  * Date: 25.04.13
  * Time: 00:42
  */
-public class LocalSearchOperator implements GeneticOperator {
+public class LocalSearchOperator implements EvolutionaryOperator {
     private static final Logger LOGGER = LogManager.getLogger(LocalSearchOperator.class);
     private final Metric objectiveFunction;
-    private final GeneticOperator searchStep;
+    private final EvolutionaryOperator searchStep;
 
     public LocalSearchOperator(PatternGenerator generator, Metric objectiveFunction) {
         this.objectiveFunction = objectiveFunction;
@@ -22,14 +26,14 @@ public class LocalSearchOperator implements GeneticOperator {
     }
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         searchStep.initialize(context);
     }
 
     @Override
     public Chromosome apply(Chromosome... chromosomes) {
         Chromosome best = new Chromosome(chromosomes[0]);
-        GeneticExecutionContext context = best.getContext();
+        EvolutionaryExecutionContext context = best.getContext();
 
         int step = 0;
         int stuck = 0;

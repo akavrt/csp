@@ -65,7 +65,7 @@ public class ScalarMetricParameters extends BaseParameters {
      */
     @Override
     public Element save() {
-        Element scalarElm = new Element(XmlTags.SCALAR);
+        Element scalarElm = new Element(getRootElementName());
 
         // optional description
         if (!Utils.isEmpty(getDescription())) {
@@ -110,6 +110,14 @@ public class ScalarMetricParameters extends BaseParameters {
         double productWeight = XmlUtils.getDoubleFromText(rootElm, XmlTags.PRODUCT_WEIGHT,
                                                           DEFAULT_PRODUCTION_FACTOR);
         setProductionFactor(productWeight);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getRootElementName() {
+        return XmlTags.SCALAR;
     }
 
     private interface XmlTags {

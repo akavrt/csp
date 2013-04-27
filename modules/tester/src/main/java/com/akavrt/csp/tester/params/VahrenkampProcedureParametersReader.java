@@ -11,11 +11,6 @@ public class VahrenkampProcedureParametersReader extends
         AbstractParametersReader<VahrenkampProcedureParameters> {
 
     @Override
-    protected String getRootElementName() {
-        return "sequential";
-    }
-
-    @Override
     protected VahrenkampProcedureParameters createParameterSet() {
         return new VahrenkampProcedureParameters();
     }

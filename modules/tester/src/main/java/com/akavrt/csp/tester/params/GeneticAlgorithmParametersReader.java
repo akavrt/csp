@@ -1,6 +1,6 @@
 package com.akavrt.csp.tester.params;
 
-import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
+import com.akavrt.csp.solver.evo.ga.GeneticAlgorithmParameters;
 
 /**
  * User: akavrt
@@ -9,11 +9,6 @@ import com.akavrt.csp.solver.genetic.GeneticAlgorithmParameters;
  */
 public class GeneticAlgorithmParametersReader extends
         AbstractParametersReader<GeneticAlgorithmParameters> {
-
-    @Override
-    protected String getRootElementName() {
-        return "genetic";
-    }
 
     @Override
     protected GeneticAlgorithmParameters createParameterSet() {

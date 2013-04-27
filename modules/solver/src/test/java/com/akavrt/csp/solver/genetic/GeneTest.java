@@ -1,6 +1,7 @@
 package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Roll;
+import com.akavrt.csp.solver.evo.Gene;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -11,11 +11,6 @@ public class ConstraintAwareMetricParametersReader extends
         AbstractParametersReader<ConstraintAwareMetricParameters> {
 
     @Override
-    protected String getRootElementName() {
-        return "constraint-scalar";
-    }
-
-    @Override
     protected ConstraintAwareMetricParameters createParameterSet() {
         return new ConstraintAwareMetricParameters();
     }

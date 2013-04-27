@@ -79,14 +79,22 @@ public class ConstraintAwareMetricParameters extends BaseParameters {
             setDescription(description);
         }
 
-        double aggegatedTrimWeight = XmlUtils.getDoubleFromText(rootElm,
-                                                                XmlTags.AGGREGATED_TRIM_WEIGHT,
-                                                                DEFAULT_AGGREGATED_TRIM_FACTOR);
-        setAggregatedTrimFactor(aggegatedTrimWeight);
+        double aggregatedTrimWeight = XmlUtils.getDoubleFromText(rootElm,
+                                                                 XmlTags.AGGREGATED_TRIM_WEIGHT,
+                                                                 DEFAULT_AGGREGATED_TRIM_FACTOR);
+        setAggregatedTrimFactor(aggregatedTrimWeight);
 
         double patternWeight = XmlUtils.getDoubleFromText(rootElm, XmlTags.PATTERN_WEIGHT,
                                                           DEFAULT_PATTERNS_FACTOR);
         setPatternsFactor(patternWeight);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getRootElementName() {
+        return XmlTags.CONSTRAINT_SCALAR;
     }
 
     private interface XmlTags {

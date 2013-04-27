@@ -133,7 +133,7 @@ public class SequentialProcedureParameters extends BaseParameters {
      */
     @Override
     public Element save() {
-        Element paramsElm = new Element(XmlTags.PARAMETERS);
+        Element paramsElm = new Element(getRootElementName());
 
         // optional description
         if (!Utils.isEmpty(getDescription())) {
@@ -210,8 +210,16 @@ public class SequentialProcedureParameters extends BaseParameters {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getRootElementName() {
+        return XmlTags.SEQUENTIAL;
+    }
+
     private interface XmlTags {
-        String PARAMETERS = "sequential";
+        String SEQUENTIAL = "sequential";
         String TRIM_RATIO = "trim-ratio";
         String PATTERN_USAGE = "pattern-usage";
         String RELAX_STEP = "relax-step";

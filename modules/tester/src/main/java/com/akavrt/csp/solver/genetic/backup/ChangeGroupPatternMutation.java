@@ -1,5 +1,8 @@
 package com.akavrt.csp.solver.genetic.backup;
 
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.Gene;
 import com.akavrt.csp.solver.genetic.*;
 
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.List;
 public class ChangeGroupPatternMutation extends GroupBasedMutation {
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         // nothing to initialize
     }
 
@@ -49,7 +52,7 @@ public class ChangeGroupPatternMutation extends GroupBasedMutation {
                         cuts += quantity;
                     }
 
-                    GeneticExecutionContext context = mutated.getContext();
+                    EvolutionaryExecutionContext context = mutated.getContext();
 
                     double minRollWidth = selectedGroup.getMinRollWidth();
                     double patternWidth = selectedGroup.getPatternWidth(context);

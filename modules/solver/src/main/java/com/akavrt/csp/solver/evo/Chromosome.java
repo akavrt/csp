@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo;
 
 import com.akavrt.csp.core.Pattern;
 import com.akavrt.csp.core.Plan;
@@ -13,18 +13,18 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * <p>Genetic algorithm uses pretty straightforward representation scheme: genes corresponds to
- * cutting patterns with rolls attached to them (see Pattern), while chromosomes corresponds to
- * cutting plans (see Solution) - i.e. no additional coding is used.</p>
+ * <p>All implemented evolutionary algorithms are based on a pretty straightforward representation
+ * scheme: genes corresponds to cutting patterns with rolls attached to them (see Pattern), while
+ * chromosomes corresponds to cutting plans (see Solution) - i.e. no additional coding is used.</p>
  *
- * <p>Chromosome mimics Pattern and internally stores cutting plan as an ordered list of cutting
+ * <p>Chromosome mimics Solution and internally stores cutting plan as an ordered list of cutting
  * patterns (chain of genes in this case).</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
 public class Chromosome implements Plan {
     private final List<Gene> genes;
-    private final GeneticExecutionContext context;
+    private final EvolutionaryExecutionContext context;
     private final ChromosomeMetricProvider metricProvider;
     private int cachedHashCode;
     private boolean useCachedHashCode;
@@ -34,7 +34,7 @@ public class Chromosome implements Plan {
      *
      * @param context Context provides access to the problem definition.
      */
-    public Chromosome(GeneticExecutionContext context) {
+    public Chromosome(EvolutionaryExecutionContext context) {
         this(context, null);
     }
 
@@ -44,7 +44,7 @@ public class Chromosome implements Plan {
      * @param context  Context provides access to the problem definition.
      * @param solution Solution to be converted into chromosome.
      */
-    public Chromosome(GeneticExecutionContext context, Solution solution) {
+    public Chromosome(EvolutionaryExecutionContext context, Solution solution) {
         this.context = context;
 
         metricProvider = new ChromosomeMetricProvider(context, this);
@@ -99,7 +99,7 @@ public class Chromosome implements Plan {
      *
      * @return Associated context.
      */
-    public GeneticExecutionContext getContext() {
+    public EvolutionaryExecutionContext getContext() {
         return context;
     }
 

@@ -239,7 +239,7 @@ public class Pattern {
      * @return The content-based hash code for array of multipliers.
      */
     public int getCutsHashCode() {
-        int multipliers[] = new int[cuts.size()];
+        int[] multipliers = new int[cuts.size()];
         int i = 0;
         for (MultiCut cut : cuts.values()) {
             multipliers[i++] = cut.getQuantity();

@@ -1,5 +1,9 @@
 package com.akavrt.csp.solver.genetic;
 
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
+import com.akavrt.csp.solver.evo.Gene;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +18,7 @@ import java.util.Set;
  * Date: 29.03.13
  * Time: 02:10
  */
-public class Crossover implements GeneticOperator {
+public class Crossover implements EvolutionaryOperator {
     private static final Logger LOGGER = LogManager.getLogger(Crossover.class);
     private final Random rGen;
 
@@ -23,7 +27,7 @@ public class Crossover implements GeneticOperator {
     }
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         // should be used to initialize pattern generator or
         // anything else which depends on problem definition
     }

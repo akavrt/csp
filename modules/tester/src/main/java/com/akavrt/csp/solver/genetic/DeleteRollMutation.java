@@ -1,8 +1,8 @@
 package com.akavrt.csp.solver.genetic;
 
-import com.akavrt.csp.solver.genetic.Chromosome;
-import com.akavrt.csp.solver.genetic.GeneticExecutionContext;
-import com.akavrt.csp.solver.genetic.GeneticOperator;
+import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
+import com.akavrt.csp.solver.evo.EvolutionaryOperator;
 
 import java.util.Random;
 
@@ -11,7 +11,7 @@ import java.util.Random;
  * Date: 17.04.13
  * Time: 00:37
  */
-public class DeleteRollMutation implements GeneticOperator {
+public class DeleteRollMutation implements EvolutionaryOperator {
     protected final Random rGen;
 
     public DeleteRollMutation() {
@@ -19,7 +19,7 @@ public class DeleteRollMutation implements GeneticOperator {
     }
 
     @Override
-    public void initialize(GeneticExecutionContext context) {
+    public void initialize(EvolutionaryExecutionContext context) {
         // nothing to initialize
     }
 

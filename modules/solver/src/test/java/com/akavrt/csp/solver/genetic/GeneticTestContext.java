@@ -2,13 +2,14 @@ package com.akavrt.csp.solver.genetic;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Problem;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
 
 /**
  * User: akavrt
  * Date: 31.03.13
  * Time: 14:59
  */
-public class GeneticTestContext implements GeneticExecutionContext {
+public class GeneticTestContext implements EvolutionaryExecutionContext {
     private final Problem problem;
     private final double[] orderWidth;
     private final double[] orderLength;
