@@ -1,6 +1,6 @@
 package com.akavrt.csp.tester.params;
 
-import com.akavrt.csp.metrics.ScalarMetricParameters;
+import com.akavrt.csp.metrics.complex.ScalarMetricParameters;
 
 /**
  * User: akavrt

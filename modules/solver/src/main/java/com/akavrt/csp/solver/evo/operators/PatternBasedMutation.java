@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo.operators;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.solver.evo.Chromosome;

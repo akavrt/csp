@@ -1,6 +1,7 @@
-package com.akavrt.csp.metrics;
+package com.akavrt.csp.metrics.complex;
 
 import com.akavrt.csp.core.Plan;
+import com.akavrt.csp.metrics.MinimizationMetric;
 
 /**
  * <p>This metric corresponds to the pattern reduction objective.</p>

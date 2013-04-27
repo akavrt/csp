@@ -1,5 +1,9 @@
 package com.akavrt.csp.tester;
 
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetricParameters;
 import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;

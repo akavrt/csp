@@ -1,6 +1,6 @@
 package com.akavrt.csp.tester.params;
 
-import com.akavrt.csp.metrics.ConstraintAwareMetricParameters;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
 
 /**
  * User: akavrt

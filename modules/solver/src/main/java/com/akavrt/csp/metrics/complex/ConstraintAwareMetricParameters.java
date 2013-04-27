@@ -1,4 +1,4 @@
-package com.akavrt.csp.metrics;
+package com.akavrt.csp.metrics.complex;
 
 import com.akavrt.csp.utils.BaseParameters;
 import com.akavrt.csp.utils.Utils;

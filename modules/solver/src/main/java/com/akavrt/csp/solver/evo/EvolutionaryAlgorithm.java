@@ -1,6 +1,5 @@
 package com.akavrt.csp.solver.evo;
 
-import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.solver.Algorithm;
@@ -110,39 +109,6 @@ public abstract class EvolutionaryAlgorithm implements Algorithm {
         metadata.setParameters(getParameters());
 
         return metadata;
-    }
-
-    private static class EvolutionaryContext implements EvolutionaryExecutionContext {
-        private final ExecutionContext parentContext;
-
-        public EvolutionaryContext(ExecutionContext parentContext) {
-            this.parentContext = parentContext;
-        }
-
-        @Override
-        public double getOrderWidth(int index) {
-            return parentContext.getProblem().getOrders().get(index).getWidth();
-        }
-
-        @Override
-        public double getOrderLength(int index) {
-            return parentContext.getProblem().getOrders().get(index).getLength();
-        }
-
-        @Override
-        public int getOrdersSize() {
-            return parentContext.getProblem().getOrders().size();
-        }
-
-        @Override
-        public Problem getProblem() {
-            return parentContext.getProblem();
-        }
-
-        @Override
-        public boolean isCancelled() {
-            return parentContext.isCancelled();
-        }
     }
 
 }

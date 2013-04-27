@@ -1,10 +1,10 @@
 package com.akavrt.csp.tester.tracer;
 
 import com.akavrt.csp.core.Solution;
-import com.akavrt.csp.metrics.PatternReductionMetric;
-import com.akavrt.csp.metrics.ProductDeviationMetric;
-import com.akavrt.csp.metrics.ScalarMetric;
-import com.akavrt.csp.metrics.TrimLossMetric;
+import com.akavrt.csp.metrics.complex.PatternReductionMetric;
+import com.akavrt.csp.metrics.complex.ProductDeviationMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.metrics.simple.TrimLossMetric;
 
 /**
  * User: akavrt

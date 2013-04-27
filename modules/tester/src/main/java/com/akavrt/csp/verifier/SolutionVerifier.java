@@ -4,7 +4,7 @@ import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
-import com.akavrt.csp.metrics.ScalarMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
 import com.akavrt.csp.utils.SolutionFormatter;
 import org.apache.logging.log4j.LogManager;

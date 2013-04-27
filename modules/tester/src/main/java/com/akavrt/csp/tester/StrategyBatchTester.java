@@ -1,7 +1,7 @@
 package com.akavrt.csp.tester;
 
-import com.akavrt.csp.metrics.ConstraintAwareMetric;
-import com.akavrt.csp.metrics.ConstraintAwareMetricParameters;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
 import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.evo.es.EvolutionStrategy;

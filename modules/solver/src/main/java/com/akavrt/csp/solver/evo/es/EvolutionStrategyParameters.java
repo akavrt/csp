@@ -10,7 +10,7 @@ import org.jdom2.Element;
  * Time: 15:21
  */
 public class EvolutionStrategyParameters extends EvolutionaryAlgorithmParameters {
-    private static final int DEFAULT_OFFSPRING_COUNT = 60;
+    private static final int DEFAULT_OFFSPRING_COUNT = 20;
     private static final int DEFAULT_TOUR_SIZE = 2;
     private int offspringCount = DEFAULT_OFFSPRING_COUNT;
     private int tourSize = DEFAULT_TOUR_SIZE;

@@ -4,7 +4,7 @@ import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.metrics.Metric;
-import com.akavrt.csp.metrics.ScalarMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
 import com.akavrt.csp.solver.evo.Chromosome;

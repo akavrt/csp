@@ -1,6 +1,12 @@
 package com.akavrt.csp.tester.ui;
 
 import com.akavrt.csp.metrics.*;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
+import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
+import com.akavrt.csp.metrics.complex.ProductDeviationMetric;
+import com.akavrt.csp.metrics.complex.ScalarMetric;
+import com.akavrt.csp.metrics.simple.TrimLossMetric;
+import com.akavrt.csp.metrics.simple.UniquePatternsMetric;
 
 /**
  * User: akavrt
@@ -14,12 +20,12 @@ public class StandardMetricProvider implements SeriesMetricProvider {
     private final Metric scalarMetric;
     private final Metric comparativeMetric;
 
-    public StandardMetricProvider(ScalarMetricParameters scalarParams) {
+    public StandardMetricProvider(ConstraintAwareMetricParameters objectiveParams) {
         trimMetric = new TrimLossMetric();
         patternsMetric = new UniquePatternsMetric();
         productMetric = new ProductDeviationMetric();
-        scalarMetric = new ConstraintAwareMetric();
-        comparativeMetric = new ScalarMetric(scalarParams);
+        scalarMetric = new ConstraintAwareMetric(objectiveParams);
+        comparativeMetric = new ScalarMetric();
     }
 
     @Override

@@ -1,6 +1,8 @@
-package com.akavrt.csp.metrics;
+package com.akavrt.csp.metrics.complex;
 
 import com.akavrt.csp.core.Plan;
+import com.akavrt.csp.metrics.MinimizationMetric;
+import com.akavrt.csp.metrics.simple.TrimLossMetric;
 
 /**
  * <p>Implementation of the objective function used in a previous version. Based on a linear

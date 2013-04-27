@@ -1,9 +1,11 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo.operators;
 
 import com.akavrt.csp.core.Order;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.Gene;
+import com.akavrt.csp.solver.evo.operators.GeneGroup;
+import com.akavrt.csp.solver.evo.operators.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 

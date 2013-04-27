@@ -1,25 +1,26 @@
-package com.akavrt.csp.metrics;
+package com.akavrt.csp.metrics.simple;
 
 import com.akavrt.csp.core.Plan;
+import com.akavrt.csp.metrics.MinimizationMetric;
 
 /**
  * <p>This metric corresponds to the pattern reduction objective.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */
-public class ActivePatternsMetric extends MinimizationMetric{
+public class UniquePatternsMetric extends MinimizationMetric {
 
     /**
-     * <p>Number of active patterns used in a given solution.</p>
+     * <p>Number of unique patterns used in a given solution.</p>
      *
      * <p>Acts as a mere wrapper.</p>
      *
      * @param plan The evaluated solution.
-     * @return Number of active patterns.
+     * @return Number of unique patterns.
      */
     @Override
     public double evaluate(Plan plan) {
-        return plan.getMetricProvider().getActivePatternsCount();
+        return plan.getMetricProvider().getUniquePatternsCount();
     }
 
     /**
@@ -27,7 +28,7 @@ public class ActivePatternsMetric extends MinimizationMetric{
      */
     @Override
     public String abbreviation() {
-        return "AP";
+        return "UP";
     }
 
     /**
@@ -35,7 +36,7 @@ public class ActivePatternsMetric extends MinimizationMetric{
      */
     @Override
     public String name() {
-        return "Active patterns count";
+        return "Unique patterns count";
     }
 
 }

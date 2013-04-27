@@ -1,24 +1,26 @@
-package com.akavrt.csp.metrics;
+package com.akavrt.csp.metrics.simple;
 
 import com.akavrt.csp.core.Plan;
+import com.akavrt.csp.metrics.MinimizationMetric;
 
 /**
- * <p>This metric corresponds to the trim loss minimization objective.</p>
- *
- * @author Victor Balabanov <akavrt@gmail.com>
+ * User: akavrt
+ * Date: 27.04.13
+ * Time: 14:44
  */
-public class TrimLossMetric extends MinimizationMetric {
+public class AggregatedTrimLossMetric extends MinimizationMetric {
     /**
-     * <p>Calculate trim loss ratio.</p>
+     * <p>Calculate aggregated trim loss ratio. Excessive amount of produced strip is treated as
+     * trim.</p>
      *
      * <p>Evaluated value may vary from 0 to 1. The less is better.<p/>
      *
      * @param plan The evaluated solution.
-     * @return Trim loss fractional ratio.
+     * @return Aggregated trim loss fractional ratio.
      */
     @Override
     public double evaluate(Plan plan) {
-        return plan.getMetricProvider().getTrimRatio();
+        return plan.getMetricProvider().getAggregatedTrimRatio();
     }
 
     /**

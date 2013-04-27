@@ -1,17 +1,18 @@
-package com.akavrt.csp.metrics;
+package com.akavrt.csp.metrics.simple;
 
 import com.akavrt.csp.core.Plan;
+import com.akavrt.csp.metrics.MinimizationMetric;
 
 /**
  * User: akavrt
  * Date: 08.04.13
- * Time: 20:55
+ * Time: 19:47
  */
-public class MaxOverProductionMetric extends MinimizationMetric {
+public class AverageOverProductionMetric extends MinimizationMetric {
 
     @Override
     public double evaluate(Plan plan) {
-        return plan.getMetricProvider().getMaximumOverProductionRatio();
+        return plan.getMetricProvider().getAverageOverProductionRatio();
     }
 
     /**
@@ -19,7 +20,7 @@ public class MaxOverProductionMetric extends MinimizationMetric {
      */
     @Override
     public String abbreviation() {
-        return "MaxOvPD";
+        return "OvPD";
     }
 
     /**
@@ -27,7 +28,7 @@ public class MaxOverProductionMetric extends MinimizationMetric {
      */
     @Override
     public String name() {
-        return "Maximum over production ratio";
+        return "Average over production ratio";
     }
 
 }
