@@ -1,8 +1,8 @@
 package com.akavrt.csp.tester;
 
+import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
-import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.evo.es.EvolutionStrategy;
 import com.akavrt.csp.solver.evo.es.EvolutionStrategyParameters;
@@ -154,4 +154,5 @@ public class StrategyBatchTester extends DirectoryBatchTester {
     protected Logger getLogger() {
         return LOGGER;
     }
+
 }

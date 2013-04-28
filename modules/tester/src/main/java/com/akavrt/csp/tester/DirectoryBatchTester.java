@@ -30,13 +30,14 @@ public abstract class DirectoryBatchTester {
     private final String targetDirectory;
     private final int numberOfRuns;
 
-    protected abstract Algorithm createAlgorithm();
-    protected abstract Logger getLogger();
-
     public DirectoryBatchTester(String directory, int numberOfRuns) {
         this.targetDirectory = directory;
         this.numberOfRuns = numberOfRuns;
     }
+
+    protected abstract Algorithm createAlgorithm();
+
+    protected abstract Logger getLogger();
 
     public void process() {
         if (Utils.isEmpty(targetDirectory)) {
@@ -111,6 +112,8 @@ public abstract class DirectoryBatchTester {
         collector.addMetric(new TrimLossMetric());
         collector.addMetric(new PatternReductionMetric());
         collector.addMetric(new ProductDeviationMetric());
+        collector.addMetric(new UniquePatternsMetric());
+        collector.addMetric(new ActivePatternsMetric());
         collector.addMetric(new MaxUnderProductionMetric());
         collector.addMetric(new AverageUnderProductionMetric());
         collector.addMetric(new MaxOverProductionMetric());
@@ -118,4 +121,5 @@ public abstract class DirectoryBatchTester {
 
         return collector;
     }
+
 }

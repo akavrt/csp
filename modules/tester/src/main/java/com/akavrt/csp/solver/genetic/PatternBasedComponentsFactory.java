@@ -4,7 +4,7 @@ import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.evo.EvolutionaryOperator;
 import com.akavrt.csp.solver.evo.ga.GeneticComponentsFactory;
-import com.akavrt.csp.solver.evo.operators.CompositeMutation;
+import com.akavrt.csp.solver.evo.operators.*;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.sequential.SimplifiedProcedure;
 
@@ -34,7 +34,15 @@ public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
 
     @Override
     public EvolutionaryOperator createMutation() {
-        mutation = new CompositeMutation(patternGenerator, objectiveFunction);
+        mutation = new CompositeMutation(objectiveFunction);
+
+        mutation.addOperator(new AdaptGroupPatternMutation(patternGenerator));
+        mutation.addOperator(new MergeTwoGroupsMutation(patternGenerator));
+        mutation.addOperator(new ReplaceGroupMutation(patternGenerator));
+        mutation.addOperator(new AddRollMutation(patternGenerator));
+        mutation.addOperator(new ReplaceRollMutation());
+        mutation.addOperator(new DeleteRollMutation());
+
         return mutation;
     }
 

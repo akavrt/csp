@@ -4,8 +4,6 @@ import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
 import com.akavrt.csp.solver.evo.Gene;
-import com.akavrt.csp.solver.evo.operators.GeneGroup;
-import com.akavrt.csp.solver.evo.operators.GroupBasedMutation;
 
 import java.util.List;
 

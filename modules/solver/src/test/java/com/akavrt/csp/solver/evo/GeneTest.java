@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo;
 
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.evo.Gene;

@@ -1,6 +1,5 @@
 package com.akavrt.csp.solver.local;
 
-import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.metadata.SolutionMetadata;
 import com.akavrt.csp.metrics.Metric;
@@ -8,6 +7,7 @@ import com.akavrt.csp.metrics.complex.ScalarMetric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.ExecutionContext;
 import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryContext;
 import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
 import com.akavrt.csp.solver.evo.EvolutionaryOperator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
@@ -67,7 +67,7 @@ public class LocalSearch implements Algorithm {
             return null;
         }
 
-        GeneticContext geneticContext = new GeneticContext(context);
+        EvolutionaryContext geneticContext = new EvolutionaryContext(context);
         Solution solution = search(geneticContext);
 
         return Lists.newArrayList(solution);
@@ -117,39 +117,6 @@ public class LocalSearch implements Algorithm {
         metadata.setParameters(getParameters());
 
         return metadata;
-    }
-
-    private static class GeneticContext implements EvolutionaryExecutionContext {
-        private final ExecutionContext parentContext;
-
-        public GeneticContext(ExecutionContext parentContext) {
-            this.parentContext = parentContext;
-        }
-
-        @Override
-        public double getOrderWidth(int index) {
-            return parentContext.getProblem().getOrders().get(index).getWidth();
-        }
-
-        @Override
-        public double getOrderLength(int index) {
-            return parentContext.getProblem().getOrders().get(index).getLength();
-        }
-
-        @Override
-        public int getOrdersSize() {
-            return parentContext.getProblem().getOrders().size();
-        }
-
-        @Override
-        public Problem getProblem() {
-            return parentContext.getProblem();
-        }
-
-        @Override
-        public boolean isCancelled() {
-            return parentContext.isCancelled();
-        }
     }
 
 }

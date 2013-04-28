@@ -1,14 +1,12 @@
 package com.akavrt.csp.tester;
 
+import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
-import com.akavrt.csp.metrics.complex.ScalarMetric;
-import com.akavrt.csp.metrics.complex.ScalarMetricParameters;
-import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
-import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.evo.ga.GeneticAlgorithm;
 import com.akavrt.csp.solver.evo.ga.GeneticAlgorithmParameters;
+import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -30,7 +28,6 @@ public class GeneticBatchTester extends DirectoryBatchTester {
     private GeneticAlgorithmParameters geneticParameters;
     private PatternGeneratorParameters patternParameters;
     private ConstraintAwareMetricParameters constrainedMetricParameters;
-    private ScalarMetricParameters scalarMetricParameters;
 
 public GeneticBatchTester(String directory, int numberOfRuns) {
         super(directory, numberOfRuns);
@@ -91,13 +88,11 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
             LOGGER.info("Can't find parameters of pattern generator procedure, the default set of parameters will be used.");
         }
 
-//        ScalarMetricParameters metricParameters = null;
         ConstraintAwareMetricParameters metricParameters = null;
         try {
             String path = args[4];
             File file = new File(path);
             if (file.exists() && file.isFile()) {
-//                metricParameters = new ScalarMetricParametersReader().read(file);
                 metricParameters = new ConstraintAwareMetricParametersReader().read(file);
             }
         } catch (Exception e) {
@@ -120,10 +115,6 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
         this.patternParameters = params;
     }
 
-    public void setScalarMetricParameters(ScalarMetricParameters params) {
-        this.scalarMetricParameters = params;
-    }
-
     public void setConstrainedMetricParameters(ConstraintAwareMetricParameters params) {
         this.constrainedMetricParameters = params;
     }
@@ -134,14 +125,6 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
         }
 
         return new ConstrainedPatternGenerator(patternParameters);
-    }
-
-    private Metric createScalarObjectiveFunction() {
-        if (scalarMetricParameters == null) {
-            scalarMetricParameters = new ScalarMetricParameters();
-        }
-
-        return new ScalarMetric(scalarMetricParameters);
     }
 
     private Metric createConstrainedObjectiveFunction() {
@@ -171,4 +154,5 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
     protected Logger getLogger() {
         return LOGGER;
     }
+
 }
