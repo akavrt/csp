@@ -10,16 +10,17 @@ import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
+import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.complex.PatternReductionMetric;
 import com.akavrt.csp.metrics.complex.ProductDeviationMetric;
 import com.akavrt.csp.metrics.complex.ScalarMetric;
 import com.akavrt.csp.metrics.simple.*;
-import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
-import com.akavrt.csp.metrics.*;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.MultistartSolver;
+import com.akavrt.csp.solver.evo.ga.BaseGeneticComponentsFactory;
 import com.akavrt.csp.solver.evo.ga.GeneticAlgorithm;
 import com.akavrt.csp.solver.evo.ga.GeneticAlgorithmParameters;
+import com.akavrt.csp.solver.evo.ga.GeneticComponentsFactory;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -125,7 +126,7 @@ public class GeneticTester {
     }
 
     private static Algorithm createAlgorithm(PatternGenerator generator, Metric metric) {
-        PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
+        GeneticComponentsFactory factory = new BaseGeneticComponentsFactory(generator);
 
         GeneticAlgorithmParameters params = new GeneticAlgorithmParameters();
         params.setPopulationSize(30);

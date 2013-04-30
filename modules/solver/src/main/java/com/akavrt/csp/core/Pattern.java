@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 /**
- * <p>A cutting pattern is modeled as a simple array of integer multiplies. Number of elements in
+ * <p>A cutting pattern is modeled as a gene array of integer multiplies. Number of elements in
  * this array equals to the number of orders in problem under consideration. Value of the
  * specific multiplier means how many times corresponding order is being cut from the roll when
  * this pattern is being applied to it.</p>

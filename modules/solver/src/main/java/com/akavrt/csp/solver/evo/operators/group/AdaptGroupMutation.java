@@ -1,7 +1,9 @@
-package com.akavrt.csp.solver.evo.operators;
+package com.akavrt.csp.solver.evo.operators.group;
 
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.Gene;
+import com.akavrt.csp.solver.evo.operators.GeneGroup;
+import com.akavrt.csp.solver.evo.operators.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 
 import java.util.List;

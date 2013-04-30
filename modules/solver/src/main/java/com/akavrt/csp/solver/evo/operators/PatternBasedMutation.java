@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 16.04.13
  * Time: 19:10
  */
-public abstract class PatternBasedMutation extends GroupBasedMutation {
+public abstract class PatternBasedMutation extends Mutation {
     protected final PatternGenerator generator;
 
     public PatternBasedMutation(PatternGenerator generator) {

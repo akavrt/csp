@@ -38,7 +38,7 @@ public class MainToolBar extends JToolBar {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (listener != null) {
-                    listener.loadProblem();
+                    listener.loadData();
                 }
             }
         };
@@ -145,14 +145,14 @@ public class MainToolBar extends JToolBar {
         progressBar.setVisible(visible);
     }
 
-    public void onGeneticProgressChanged(GeneticProgressUpdate update) {
+    public void onEvolutionProgressChanged(EvolutionProgressUpdate update) {
         progressBar.setValue(update.progress);
         progressBar.setString(String.format("%s %d%%",
                                             update.phase.getDescription(), update.progress));
     }
 
     public interface OnActionPerformedListener {
-        void loadProblem();
+        void loadData();
 
         void saveData();
 

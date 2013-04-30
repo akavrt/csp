@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * <p>Implementation of Population with simple diversity management used in evolution strategy.</p>
+ * <p>Implementation of Population with gene diversity management used in evolution strategy.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */

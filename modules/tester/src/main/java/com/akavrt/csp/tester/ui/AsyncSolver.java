@@ -18,7 +18,7 @@ import java.util.List;
  * Date: 10.04.13
  * Time: 15:05
  */
-public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpdate> implements
+public class AsyncSolver extends SwingWorker<List<Solution>, EvolutionProgressUpdate> implements
         ExecutionContext, EvolutionProgressChangeListener {
     private final static Logger LOGGER = LogManager.getLogger(AsyncSolver.class);
     private final Problem problem;
@@ -47,10 +47,10 @@ public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpda
     }
 
     @Override
-    protected void process(List<GeneticProgressUpdate> updates) {
+    protected void process(List<EvolutionProgressUpdate> updates) {
         if (listener != null && !isCancelled() && updates.size() > 0) {
-            GeneticProgressUpdate lastUpdate = updates.get(updates.size() - 1);
-            listener.onGeneticProgressChanged(lastUpdate);
+            EvolutionProgressUpdate lastUpdate = updates.get(updates.size() - 1);
+            listener.onEvolutionProgressChanged(lastUpdate);
         }
     }
 
@@ -72,18 +72,18 @@ public class AsyncSolver extends SwingWorker<List<Solution>, GeneticProgressUpda
 
     @Override
     public void onInitializationProgressChanged(int progress) {
-        publish(new GeneticProgressUpdate(progress, EvolutionPhase.INITIALIZATION));
+        publish(new EvolutionProgressUpdate(progress, EvolutionPhase.INITIALIZATION));
     }
 
     @Override
     public void onGenerationProgressChanged(int progress, Population population) {
         // calculate data for graph trace
         SeriesData seriesData = new SeriesData(population, metricProvider);
-        publish(new GeneticProgressUpdate(progress, EvolutionPhase.GENERATION, seriesData));
+        publish(new EvolutionProgressUpdate(progress, EvolutionPhase.GENERATION, seriesData));
     }
 
     public interface OnProblemSolvedListener {
-        void onGeneticProgressChanged(GeneticProgressUpdate update);
+        void onEvolutionProgressChanged(EvolutionProgressUpdate update);
 
         void onProblemSolved(List<Solution> solutions);
     }

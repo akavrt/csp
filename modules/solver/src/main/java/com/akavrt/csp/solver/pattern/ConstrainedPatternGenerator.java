@@ -135,7 +135,7 @@ public class ConstrainedPatternGenerator implements PatternGenerator {
             return null;
         }
 
-        // check whether simple greedy placement is possible
+        // check whether gene greedy placement is possible
         double totalWidth = 0;
         for (int i = 0; i < widths.length; i++) {
             totalWidth += widths[i] * demand[i];

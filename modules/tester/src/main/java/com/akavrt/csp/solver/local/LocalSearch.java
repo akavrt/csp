@@ -37,7 +37,7 @@ public class LocalSearch implements Algorithm {
         this.constructiveProcedure = constructiveProcedure;
         this.objectiveFunction = objectiveFunction;
 
-        searchStep = new GroupReplacementOperator(generator, objectiveFunction);
+        searchStep = new SearchStepOperator(generator, objectiveFunction);
     }
 
     /**

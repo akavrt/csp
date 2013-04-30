@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.evo.operators;
 
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
@@ -73,7 +73,7 @@ public class Crossover implements EvolutionaryOperator {
         while (currentRatio <= previousRatio && pool.size() > 0);
 
         if (currentRatio > previousRatio && child.size() > 1) {
-            // TODO in future we should apply a simple heuristic rule to refine child here
+            // TODO in future we should apply a gene heuristic rule to refine child here
             // remove last gene
             child.removeGene(child.size() - 1);
         }

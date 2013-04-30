@@ -1,14 +1,13 @@
 package com.akavrt.csp.solver.local;
 
-import com.akavrt.csp.core.*;
+import com.akavrt.csp.core.Order;
+import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.metrics.Metric;
-import com.akavrt.csp.solver.Algorithm;
-import com.akavrt.csp.solver.ExecutionContext;
 import com.akavrt.csp.solver.evo.Chromosome;
-import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
 import com.akavrt.csp.solver.evo.Gene;
 import com.akavrt.csp.solver.evo.operators.GeneGroup;
-import com.akavrt.csp.solver.evo.operators.GroupBasedMutation;
+import com.akavrt.csp.solver.evo.operators.PatternBasedMutation;
+import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -16,20 +15,14 @@ import java.util.List;
 /**
  * User: akavrt
  * Date: 24.04.13
- * Time: 15:57
+ * Time: 17:28
  */
-public class SearchStepOperator extends GroupBasedMutation {
-    private final Algorithm sequentialProcedure;
+public class SearchStepOperator extends PatternBasedMutation {
     private final Metric objectiveFunction;
 
-    public SearchStepOperator(Algorithm sequentialProcedure, Metric objectiveFunction) {
-        this.sequentialProcedure = sequentialProcedure;
+    public SearchStepOperator(PatternGenerator generator, Metric objectiveFunction) {
+        super(generator);
         this.objectiveFunction = objectiveFunction;
-    }
-
-    @Override
-    public void initialize(EvolutionaryExecutionContext context) {
-        // nothing to initialize
     }
 
     @Override
@@ -40,6 +33,8 @@ public class SearchStepOperator extends GroupBasedMutation {
         // remove each group and repair solution using sequential procedure
         // (neighbourhood is defined on groups)
         if (original.size() > 0) {
+            double toleranceRatio = getWidthToleranceRatio(original);
+
             List<GeneGroup> groups = groupGenes(original);
 
             List<Chromosome> neighbours = Lists.newArrayList();
@@ -53,11 +48,26 @@ public class SearchStepOperator extends GroupBasedMutation {
                     neighbour.removeGene(indexToRemove);
                 }
 
-                Solution partial = getPartialSolution(neighbour);
-                if (partial != null) {
-                    for (Pattern pattern : partial.getPatterns()) {
-                        Gene gene = new Gene(pattern);
-                        neighbour.addGene(gene);
+                List<Roll> replacement = searchForGroup(neighbour, toleranceRatio);
+                if (replacement != null && replacement.size() > 0) {
+                    double groupTotalLength = 0;
+                    double groupMinWidth = 0;
+
+                    for (int i = 0; i < replacement.size(); i++) {
+                        groupTotalLength += replacement.get(i).getLength();
+
+                        if (i == 0 || replacement.get(i).getWidth() < groupMinWidth) {
+                            groupMinWidth = replacement.get(i).getWidth();
+                        }
+                    }
+
+                    int[] demand = calcDemand(groupTotalLength, neighbour);
+                    int[] pattern = generator.generate(groupMinWidth, demand, toleranceRatio);
+                    if (pattern != null) {
+                        for (Roll roll : replacement) {
+                            Gene gene = new Gene(pattern.clone(), roll);
+                            neighbour.addGene(gene);
+                        }
                     }
                 }
 
@@ -77,45 +87,70 @@ public class SearchStepOperator extends GroupBasedMutation {
         return result != null ? result : original;
     }
 
-    private Solution getPartialSolution(final Chromosome chromosome) {
-        final Problem residual = formulateResidualProblem(chromosome);
+    private double getResidualDemandArea(Chromosome chromosome) {
+        List<Order> orders = chromosome.getContext().getProblem().getOrders();
 
-        ExecutionContext localContext = new ExecutionContext() {
-            @Override
-            public Problem getProblem() {
-                return residual;
-            }
-
-            @Override
-            public boolean isCancelled() {
-                return chromosome.getContext().isCancelled();
-            }
-        };
-
-        List<Solution> solutions = sequentialProcedure.execute(localContext);
-
-        return solutions != null && solutions.size() > 0 ? solutions.get(0) : null;
-    }
-
-    private Problem formulateResidualProblem(Chromosome chromosome) {
-        List<Roll> spareRolls = getSpareRolls(chromosome);
-
-        List<Order> originalOrders = chromosome.getContext().getProblem().getOrders();
-        List<Order> residualOrders = Lists.newArrayList();
-
-        for (int i = 0; i < originalOrders.size(); i++) {
-            Order original = originalOrders.get(i);
+        double area = 0;
+        for (int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
 
             double produced = chromosome.getProductionLengthForOrder(i);
-            double required = original.getLength();
-            double unfulfilled = required > produced ? required - produced : 0;
+            double required = order.getLength();
 
-            Order residual = new Order(original.getId(), unfulfilled, original.getWidth());
-            residualOrders.add(residual);
+            if (produced < required) {
+                area += (required - produced) * order.getWidth();
+            }
         }
 
-        int allowedCutsNumber = chromosome.getContext().getProblem().getAllowedCutsNumber();
-
-        return new Problem(residualOrders, spareRolls, allowedCutsNumber);
+        return area;
     }
+
+    private List<Roll> searchForGroup(Chromosome chromosome, double toleranceRatio) {
+        List<Roll> group = null;
+
+        double residualDemandArea = getResidualDemandArea(chromosome);
+        if (residualDemandArea > 0) {
+            List<Roll> spareRolls = getSpareRolls(chromosome);
+            group = searchForGroup(residualDemandArea, spareRolls, toleranceRatio);
+        }
+
+        return group;
+    }
+
+    private List<Roll> searchForGroup(double targetGroupArea, List<Roll> rolls,
+                                      double toleranceRatio) {
+        List<Roll> bestGroup = null;
+
+        double bestGroupArea = 0;
+        for (int i = 0; i < rolls.size(); i++) {
+            double anchorWidth = rolls.get(i).getWidth();
+
+            List<Roll> currentGroup = Lists.newArrayList();
+            double currentGroupArea = 0;
+
+            // TODO collect all rolls suited for inclusion to the current group,
+            // TODO then solve knapsack problem to get best match in terms of area
+            int j = 0;
+            while (j < rolls.size() && currentGroupArea < targetGroupArea) {
+                Roll roll = rolls.get(j);
+
+                double delta = 1 - anchorWidth / roll.getWidth();
+                if (delta >= 0 && delta <= toleranceRatio) {
+                    currentGroup.add(roll);
+                    currentGroupArea += roll.getArea();
+                }
+
+                j++;
+            }
+
+            if (currentGroupArea >= targetGroupArea
+                    && (bestGroup == null || currentGroupArea < bestGroupArea)) {
+                bestGroup = currentGroup;
+                bestGroupArea = currentGroupArea;
+            }
+        }
+
+        return bestGroup;
+    }
+
 }

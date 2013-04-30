@@ -4,9 +4,10 @@ import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
 import com.akavrt.csp.solver.Algorithm;
+import com.akavrt.csp.solver.evo.EvolutionaryComponentsFactory;
+import com.akavrt.csp.solver.evo.es.BaseStrategyComponentsFactory;
 import com.akavrt.csp.solver.evo.es.EvolutionStrategy;
 import com.akavrt.csp.solver.evo.es.EvolutionStrategyParameters;
-import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -138,9 +139,7 @@ public class StrategyBatchTester extends DirectoryBatchTester {
     @Override
     protected Algorithm createAlgorithm() {
         PatternGenerator generator = createPatternGenerator();
-
-        PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
-
+        EvolutionaryComponentsFactory factory = new BaseStrategyComponentsFactory(generator);
         Metric objectiveFunction = createConstrainedObjectiveFunction();
 
         if (strategyParameters == null) {

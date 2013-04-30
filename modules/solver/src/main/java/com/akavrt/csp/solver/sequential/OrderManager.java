@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * <p>Problem provides immutable list of orders. Given that order of elements in that list is fixed
  * and can't be changed during execution of the optimization routine, we can use simplified
- * definition of the cutting pattern represented as a simple array of integer multipliers. Value
+ * definition of the cutting pattern represented as a gene array of integer multipliers. Value
  * of each multiplier equals to the number of times corresponding order must be cut from the
  * roll.</p>
  *

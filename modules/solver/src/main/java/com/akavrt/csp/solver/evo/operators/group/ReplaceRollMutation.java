@@ -1,8 +1,10 @@
-package com.akavrt.csp.solver.evo.operators;
+package com.akavrt.csp.solver.evo.operators.group;
 
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.Gene;
+import com.akavrt.csp.solver.evo.operators.GeneGroup;
+import com.akavrt.csp.solver.evo.operators.Mutation;
 
 import java.util.List;
 
@@ -11,7 +13,7 @@ import java.util.List;
  * Date: 17.04.13
  * Time: 00:36
  */
-public class ReplaceRollMutation extends GroupBasedMutation {
+public class ReplaceRollMutation extends Mutation {
 
     @Override
     public Chromosome apply(Chromosome... chromosomes) {

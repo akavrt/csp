@@ -1,10 +1,6 @@
 package com.akavrt.csp.tester.ui;
 
-import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.Solution;
-import com.akavrt.csp.core.xml.CspParseException;
-import com.akavrt.csp.core.xml.CspReader;
-import com.akavrt.csp.core.xml.CspWriter;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
 import com.akavrt.csp.metrics.complex.ScalarMetric;
@@ -12,30 +8,20 @@ import com.akavrt.csp.solver.evo.EvolutionPhase;
 import com.akavrt.csp.solver.evo.EvolutionaryAlgorithm;
 import com.akavrt.csp.solver.evo.es.EvolutionStrategy;
 import com.akavrt.csp.solver.evo.es.EvolutionStrategyParameters;
-import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
 import com.akavrt.csp.tester.tracer.ScalarTracer;
+import com.akavrt.csp.tester.tracer.TraceableStrategyComponentsFactory;
 import com.akavrt.csp.tester.ui.content.ContentPanel;
 import com.akavrt.csp.tester.ui.presets.PresetsPanel;
 import com.akavrt.csp.tester.ui.utils.GBC;
-import com.akavrt.csp.tester.utils.Utils;
-import com.akavrt.csp.utils.ProblemFormatter;
 import com.akavrt.csp.utils.SolutionFormatter;
-import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jdom2.Document;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.List;
 
 /**
@@ -45,19 +31,20 @@ import java.util.List;
  */
 public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedListener,
         AsyncSolver.OnProblemSolvedListener, ContentPanel.OnSolutionsSelectedListener {
-    private static final Logger LOGGER = LogManager.getLogger(MainFrame.class);
     private static final double SCREEN_DIV = 2;
     private static final String APP_NAME = "csp";
     private static final String APP_NAME_TEMPLATE = APP_NAME + " - %s";
+    private static final String DEFAULT_CURRENT_DIRECTORY_PATH = "/Users/akavrt/Sandbox/csp";
+    private final DataManager dataManager;
+    // views
     private JFileChooser chooser;
     private MainToolBar toolBar;
     private PresetsPanel presetsPanel;
     private ContentPanel contentPanel;
-    private Problem problem;
-    private List<Solution> solutions;
+    // core
     private File problemFile;
     private AsyncSolver solver;
-    private PatternBasedComponentsFactory factory;
+    private TraceableStrategyComponentsFactory factory;
 
     public MainFrame() {
         prepareFileChooser();
@@ -65,6 +52,8 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         setupFrame();
         setupViews();
         setupParameters();
+
+        dataManager = new DataManager(this);
 
         pack();
         setVisible(true);
@@ -92,7 +81,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     }
 
     private void setupFrame() {
-        setTitle(APP_NAME);
+        resetTitle();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // calc window size and position
@@ -135,10 +124,22 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         presetsPanel.setObjectiveFunctionParameters(new ConstraintAwareMetricParameters());
     }
 
+    public ContentPanel getContentPanel() {
+        return contentPanel;
+    }
+
+    public void resetTitle() {
+        setTitle(APP_NAME);
+    }
+
+    public void setProblemTitle(String problemName) {
+        setTitle(String.format(APP_NAME_TEMPLATE, problemName));
+    }
+
     @Override
-    public void loadProblem() {
-        chooser.setCurrentDirectory(new File("/Users/akavrt/Sandbox/csp"));
-        //        chooser.setCurrentDirectory(new File("."));
+    public void loadData() {
+        File currentDirectory = new File(DEFAULT_CURRENT_DIRECTORY_PATH);
+        chooser.setCurrentDirectory(currentDirectory.exists() ? currentDirectory : new File("."));
         chooser.setSelectedFile(new File(""));
         chooser.setMultiSelectionEnabled(false);
 
@@ -154,44 +155,12 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         problemFile = chooser.getSelectedFile();
 
-        CspReader reader = new CspReader();
-        try {
-            reader.read(problemFile);
-        } catch (CspParseException e) {
-            LOGGER.catching(e);
-        }
-
-        problem = reader.getProblem();
-        solutions = reader.getSolutions();
-
-        if (problem == null || reader.getDocument() == null) {
-            setTitle(APP_NAME);
-            contentPanel.appendText("\nProblem wasn't loaded.");
-            contentPanel.setXml("");
-        } else {
-            String problemName = Utils.extractProblemName(problem, problemFile.getPath());
-            setTitle(String.format(APP_NAME_TEMPLATE, problemName));
-
-            try {
-                XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-                StringWriter writer = new StringWriter();
-                outputter.output(reader.getDocument(), writer);
-
-                contentPanel.setXml(writer.toString());
-            } catch (IOException e) {
-                LOGGER.catching(e);
-            }
-
-            contentPanel.appendText(String.format("\nLoaded problem %s from '%s' file.",
-                                                  problemName, problemFile.getPath()));
-            String formattedProblem = ProblemFormatter.format(problem);
-            contentPanel.appendText(formattedProblem);
-        }
+        dataManager.loadData(problemFile);
     }
 
     @Override
     public void saveData() {
-        if (problem == null) {
+        if (!dataManager.isDataLoaded()) {
             JOptionPane.showMessageDialog(this, "Nothing to save.", "Warning",
                                           JOptionPane.WARNING_MESSAGE);
             return;
@@ -213,14 +182,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         }
 
         File file = chooser.getSelectedFile();
-        try {
-            CspWriter writer = new CspWriter();
-            writer.setProblem(problem);
-            writer.setSolutions(solutions);
-            writer.write(file, true);
-        } catch (IOException e) {
-            LOGGER.catching(e);
-        }
+        dataManager.saveData(file);
     }
 
     @Override
@@ -231,13 +193,13 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
     @Override
     public boolean startCalculations() {
-        if (problem == null) {
+        if (!dataManager.isDataLoaded()) {
             JOptionPane.showMessageDialog(this, "Nothing to solve.", "Warning",
                                           JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
-        contentPanel.appendText("\nExecuting genetic algorithm.\n");
+        contentPanel.appendText("\nExecuting evolution strategy.\n");
         contentPanel.clearSeries();
         contentPanel.clearAnalyzerData();
 
@@ -249,7 +211,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
         EvolutionaryAlgorithm algorithm = prepareAlgorithm();
         SeriesMetricProvider metricProvider = createSeriesMetricProvider();
 
-        solver = new AsyncSolver(problem, algorithm, this, metricProvider);
+        solver = new AsyncSolver(dataManager.getProblem(), algorithm, this, metricProvider);
         solver.execute();
 
         return true;
@@ -265,8 +227,8 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
     }
 
     @Override
-    public void onGeneticProgressChanged(GeneticProgressUpdate update) {
-        toolBar.onGeneticProgressChanged(update);
+    public void onEvolutionProgressChanged(EvolutionProgressUpdate update) {
+        toolBar.onEvolutionProgressChanged(update);
 
         if (presetsPanel.isGraphTraceEnabled()) {
             contentPanel.updateSeries(update.seriesData);
@@ -298,7 +260,8 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             // notify user with update in text trace
             contentPanel.appendText("\nNo solution was found in run.");
         } else if (obtained.get(0) != null) {
-            contentPanel.setAnalyzerData(problem, obtained, createDetailsMetricProvider());
+            contentPanel.setAnalyzerData(dataManager.getProblem(), obtained,
+                                         createDetailsMetricProvider());
 
             Solution best = obtained.get(0);
 
@@ -321,10 +284,12 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
         PatternGenerator generator = new ConstrainedPatternGenerator(generatorParams);
 
-        ConstraintAwareMetricParameters objectiveParams = presetsPanel.getObjectiveFunctionParameters();
+        ConstraintAwareMetricParameters objectiveParams = presetsPanel
+                .getObjectiveFunctionParameters();
         if (objectiveParams == null) {
             objectiveParams = new ConstraintAwareMetricParameters();
         }
+
         ConstraintAwareMetric metric = new ConstraintAwareMetric(objectiveParams);
 
         EvolutionStrategyParameters strategyParams = presetsPanel.getEvolutionStrategyParameters();
@@ -332,7 +297,7 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
             strategyParams = new EvolutionStrategyParameters();
         }
 
-        factory = new PatternBasedComponentsFactory(generator, new ConstraintAwareMetric());
+        factory = new TraceableStrategyComponentsFactory(generator, new ConstraintAwareMetric());
 
         return new EvolutionStrategy(factory, metric, strategyParams);
     }
@@ -357,33 +322,13 @@ public class MainFrame extends JFrame implements MainToolBar.OnActionPerformedLi
 
     @Override
     public void onSolutionsSelected(List<Solution> selection) {
-        if (problem == null || selection == null || selection.isEmpty()) {
+        if (!dataManager.isDataLoaded() || selection == null || selection.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nothing to export.", "Selection is empty",
                                           JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        if (solutions == null) {
-            solutions = Lists.newArrayList();
-        }
-
-        solutions.addAll(selection);
-
-        try {
-            CspWriter writer = new CspWriter();
-            writer.setProblem(problem);
-            writer.setSolutions(solutions);
-
-            Document doc = new Document(writer.convert());
-
-            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-            StringWriter stringWriter = new StringWriter();
-            outputter.output(doc, stringWriter);
-
-            contentPanel.setXml(stringWriter.toString());
-        } catch (Exception e) {
-            LOGGER.catching(e);
-        }
+        dataManager.handleSelection(selection);
     }
 
 }

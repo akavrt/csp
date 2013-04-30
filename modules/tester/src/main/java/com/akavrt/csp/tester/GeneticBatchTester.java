@@ -4,9 +4,10 @@ import com.akavrt.csp.metrics.Metric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
 import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
 import com.akavrt.csp.solver.Algorithm;
+import com.akavrt.csp.solver.evo.ga.BaseGeneticComponentsFactory;
 import com.akavrt.csp.solver.evo.ga.GeneticAlgorithm;
 import com.akavrt.csp.solver.evo.ga.GeneticAlgorithmParameters;
-import com.akavrt.csp.solver.genetic.PatternBasedComponentsFactory;
+import com.akavrt.csp.solver.evo.ga.GeneticComponentsFactory;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
@@ -138,9 +139,7 @@ public GeneticBatchTester(String directory, int numberOfRuns) {
     @Override
     protected Algorithm createAlgorithm() {
         PatternGenerator generator = createPatternGenerator();
-
-        PatternBasedComponentsFactory factory = new PatternBasedComponentsFactory(generator);
-
+        GeneticComponentsFactory factory = new BaseGeneticComponentsFactory(generator);
         Metric objectiveFunction = createConstrainedObjectiveFunction();
 
         if (geneticParameters == null) {

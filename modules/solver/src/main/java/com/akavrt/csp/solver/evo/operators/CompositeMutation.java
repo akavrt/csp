@@ -78,9 +78,11 @@ public class CompositeMutation implements EvolutionaryOperator {
 
     public void traceResults() {
         for (int i = 0; i < operators.size(); i++) {
-            String rate = String.format("%.2f%%", 100 * successCounter.get(i) / (double) executionCounter.get(i));
-            LOGGER.info("Mutation operator #{}: {} successful executions from {} total, success rate is {}",
-                        i + 1, successCounter.get(i), executionCounter.get(i), rate);
+            String rate = String.format("%.2f%%", 100 * successCounter.get(i)
+                    / (double) executionCounter.get(i));
+            LOGGER.info("#{} {} : {} successful from {} executions, success rate is {}",
+                        i + 1, operators.get(i).getClass().getSimpleName(),
+                        successCounter.get(i), executionCounter.get(i), rate);
         }
     }
 }

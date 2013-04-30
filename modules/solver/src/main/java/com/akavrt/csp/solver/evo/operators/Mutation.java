@@ -16,13 +16,13 @@ import java.util.Set;
 
 /**
  * User: akavrt
- * Date: 22.04.13
- * Time: 15:16
+ * Date: 30.04.13
+ * Time: 13:24
  */
-public abstract class GroupBasedMutation implements EvolutionaryOperator {
+public abstract class Mutation implements EvolutionaryOperator {
     protected final Random rGen;
 
-    public GroupBasedMutation() {
+    public Mutation() {
         rGen = new Random();
     }
 
@@ -31,22 +31,28 @@ public abstract class GroupBasedMutation implements EvolutionaryOperator {
         // nothing to initialize
     }
 
-    protected List<GeneGroup> groupGenes(Chromosome chromosome) {
-        Map<Integer, GeneGroup> groups = Maps.newHashMap();
-        for (int i = 0; i < chromosome.size(); i++) {
-            Gene gene = chromosome.getGene(i);
-            int patternHash = gene.getPatternHashCode();
+    protected List<Roll> getSpareRolls(Chromosome chromosome) {
+        // mutable list of rolls
+        List<Roll> rolls = Lists.newArrayList(chromosome.getContext().getProblem().getRolls());
 
-            GeneGroup group = groups.get(patternHash);
-            if (group == null) {
-                group = new GeneGroup();
-                groups.put(patternHash, group);
+        Set<Integer> usedRollIds = Sets.newHashSet();
+        for (Gene gene : chromosome.getGenes()) {
+            if (gene.getRoll() != null) {
+                usedRollIds.add(gene.getRoll().getInternalId());
             }
-
-            group.addGene(i, gene);
         }
 
-        return Lists.newArrayList(groups.values());
+        int i = 0;
+        while (i < rolls.size()) {
+            int id = rolls.get(i).getInternalId();
+            if (usedRollIds.contains(id)) {
+                rolls.remove(i);
+            } else {
+                i++;
+            }
+        }
+
+        return rolls;
     }
 
     protected Roll pickRoll(Chromosome chromosome) {
@@ -76,28 +82,22 @@ public abstract class GroupBasedMutation implements EvolutionaryOperator {
         return picked;
     }
 
-    protected List<Roll> getSpareRolls(Chromosome chromosome) {
-        // mutable list of rolls
-        List<Roll> rolls = Lists.newArrayList(chromosome.getContext().getProblem().getRolls());
+    protected List<GeneGroup> groupGenes(Chromosome chromosome) {
+        Map<Integer, GeneGroup> groups = Maps.newHashMap();
+        for (int i = 0; i < chromosome.size(); i++) {
+            Gene gene = chromosome.getGene(i);
+            int patternHash = gene.getPatternHashCode();
 
-        Set<Integer> usedRollIds = Sets.newHashSet();
-        for (Gene gene : chromosome.getGenes()) {
-            if (gene.getRoll() != null) {
-                usedRollIds.add(gene.getRoll().getInternalId());
+            GeneGroup group = groups.get(patternHash);
+            if (group == null) {
+                group = new GeneGroup();
+                groups.put(patternHash, group);
             }
+
+            group.addGene(i, gene);
         }
 
-        int i = 0;
-        while (i < rolls.size()) {
-            int id = rolls.get(i).getInternalId();
-            if (usedRollIds.contains(id)) {
-                rolls.remove(i);
-            } else {
-                i++;
-            }
-        }
-
-        return rolls;
+        return Lists.newArrayList(groups.values());
     }
 
     protected double getWidthToleranceRatio(Chromosome chromosome) {
@@ -106,4 +106,3 @@ public abstract class GroupBasedMutation implements EvolutionaryOperator {
     }
 
 }
-
