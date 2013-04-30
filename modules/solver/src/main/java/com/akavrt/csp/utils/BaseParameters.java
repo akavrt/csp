@@ -6,7 +6,7 @@ import org.jdom2.Element;
 
 /**
  * <p>Utility class which should be used as base class for classes representing parameter sets with
- * description defined as a gene textual field.</p>
+ * description defined as a simple textual field.</p>
  *
  * @author Victor Balabanov <akavrt@gmail.com>
  */

@@ -21,7 +21,7 @@ public interface Algorithm {
     String name();
 
     /**
-     * <p>The main instruction defined as gene as 'run the algorithm once and return the list of
+     * <p>The main instruction defined as simple as 'run the algorithm once and return the list of
      * solutions obtained'. If specific method produces single solution, there will be only one
      * item in the resulting list.</p>
      *

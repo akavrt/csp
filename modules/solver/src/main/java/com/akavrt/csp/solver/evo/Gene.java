@@ -22,7 +22,7 @@ import java.util.List;
  *
  * <p>Current representation of a cutting pattern employed in Gene is based on a fixed order of
  * elements within list of orders provided by the problem. Exactly as in classical ILP formal model
- * of CSP we can use gene arrays of fixed length containing integer values to represent cutting
+ * of CSP we can use simple arrays of fixed length containing integer values to represent cutting
  * patterns in a consistent way. This eliminates the need to deal with unique order ids and makes
  * enumeration of cuts associated with different orders a whole lot easier.</p>
  *

@@ -42,7 +42,7 @@ public class ScalarMetric extends MinimizationMetric {
     }
 
     /**
-     * <p>Using gene objective function of the following form:</p>
+     * <p>Using simple objective function of the following form:</p>
      *
      * <p>Z = C1 * trimLossRatio + C2 * patternsRatio + C3 * productDeviationRation,</p>
      *

@@ -306,7 +306,7 @@ public class Chromosome implements Plan {
      * any number of permutations to the chain of genes stored within original chromosome will have
      * same hash code.</p>
      *
-     * <p>To speed up calculation of hash code gene caching is used: fresh hash code value is
+     * <p>To speed up calculation of hash code simple caching is used: fresh hash code value is
      * calculated only if there is no cached value or chromosome structure has been changed since
      * last calculation.</p>
      *

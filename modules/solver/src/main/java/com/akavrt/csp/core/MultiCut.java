@@ -1,7 +1,7 @@
 package com.akavrt.csp.core;
 
 /**
- * <p>This gene class is used to model multiple cuts of the same width existed within single
+ * <p>This simple class is used to model multiple cuts of the same width existed within single
  * pattern.</p>
  *
  * <p>MultiCut contains reference to associated order, so the width of the cut is always known.</p>
