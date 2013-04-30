@@ -24,12 +24,12 @@ public abstract class PatternBasedMutation extends GroupBasedMutation {
         generator.initialize(context.getProblem());
     }
 
-    protected int[] calcDemand(double stockLength, Chromosome prototype) {
-        List<Order> orders = prototype.getContext().getProblem().getOrders();
+    protected int[] calcDemand(double stockLength, Chromosome chromosome) {
+        List<Order> orders = chromosome.getContext().getProblem().getOrders();
 
         int[] demand = new int[orders.size()];
         for (int i = 0; i < orders.size(); i++) {
-            double produced = prototype.getProductionLengthForOrder(i);
+            double produced = chromosome.getProductionLengthForOrder(i);
             double orderLength = orders.get(i).getLength();
 
             if (orderLength > produced) {

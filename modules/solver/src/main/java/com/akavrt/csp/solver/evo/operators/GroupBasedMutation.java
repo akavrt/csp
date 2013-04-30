@@ -2,6 +2,7 @@ package com.akavrt.csp.solver.evo.operators;
 
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.evo.Chromosome;
+import com.akavrt.csp.solver.evo.EvolutionaryExecutionContext;
 import com.akavrt.csp.solver.evo.EvolutionaryOperator;
 import com.akavrt.csp.solver.evo.Gene;
 import com.google.common.collect.Lists;
@@ -23,6 +24,11 @@ public abstract class GroupBasedMutation implements EvolutionaryOperator {
 
     public GroupBasedMutation() {
         rGen = new Random();
+    }
+
+    @Override
+    public void initialize(EvolutionaryExecutionContext context) {
+        // nothing to initialize
     }
 
     protected List<GeneGroup> groupGenes(Chromosome chromosome) {
@@ -98,5 +104,6 @@ public abstract class GroupBasedMutation implements EvolutionaryOperator {
         double trimRatio = chromosome.getMetricProvider().getTrimRatio();
         return Math.min(1.1 * trimRatio, 1);
     }
+
 }
 

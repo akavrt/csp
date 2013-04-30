@@ -2,8 +2,6 @@ package com.akavrt.csp.solver.evo.operators;
 
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.Gene;
-import com.akavrt.csp.solver.evo.operators.GeneGroup;
-import com.akavrt.csp.solver.evo.operators.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 
 import java.util.List;
@@ -13,9 +11,9 @@ import java.util.List;
  * Date: 17.04.13
  * Time: 00:33
  */
-public class AdaptGroupPatternMutation extends PatternBasedMutation {
+public class AdaptGroupMutation extends PatternBasedMutation {
 
-    public AdaptGroupPatternMutation(PatternGenerator generator) {
+    public AdaptGroupMutation(PatternGenerator generator) {
         super(generator);
     }
 

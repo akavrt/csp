@@ -3,8 +3,6 @@ package com.akavrt.csp.solver.evo.operators;
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.Gene;
-import com.akavrt.csp.solver.evo.operators.GeneGroup;
-import com.akavrt.csp.solver.evo.operators.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 
 import java.util.List;
@@ -26,18 +24,45 @@ public class AddRollMutation extends PatternBasedMutation {
 
         if (mutated.size() > 0) {
             // add roll to one of the existing groups,
-            // reuse corresponding pattern
+            // formulate residual demands (without group that was updated)
+            // and generate new pattern for updated group
+            double toleranceRatio = getWidthToleranceRatio(mutated);
+
             List<GeneGroup> groups = groupGenes(mutated);
             int groupIndex = rGen.nextInt(groups.size());
             GeneGroup selectedGroup = groups.get(groupIndex);
 
             double patternWidth = selectedGroup.getPatternWidth(mutated.getContext());
             Roll roll = pickRoll(patternWidth, mutated);
-            if (roll != null && selectedGroup.getPattern() != null) {
-                int[] pattern = selectedGroup.getPattern().clone();
+            if (roll != null) {
+                // remove group's genes from chromosome
+                for (int i = selectedGroup.size() - 1; i >= 0; i--) {
+                    int indexToRemove = selectedGroup.getGeneIndex(i);
+                    mutated.removeGene(indexToRemove);
+                }
 
-                Gene gene = new Gene(pattern, roll);
-                mutated.addGene(gene);
+                // reformulate residual demands
+                double updatedGroupLength = selectedGroup.getTotalLength() + roll.getLength();
+                int[] demand = calcDemand(updatedGroupLength, mutated);
+
+                // generate new pattern
+                double updatedGroupMinWidth = Math.min(selectedGroup.getMinRollWidth(),
+                                                       roll.getWidth());
+                int[] pattern = generator.generate(updatedGroupMinWidth, demand, toleranceRatio);
+                if (pattern != null) {
+                    // insert group's genes with new pattern
+                    for (int i = 0; i < selectedGroup.size(); i++) {
+                        Gene previous = selectedGroup.getGene(i);
+                        Gene replacement = new Gene(pattern.clone(), previous.getRoll());
+
+                        int indexToAdd = selectedGroup.getGeneIndex(i);
+                        mutated.addGene(indexToAdd, replacement);
+                    }
+
+                    // gene with new roll
+                    Gene gene = new Gene(pattern.clone(), roll);
+                    mutated.addGene(gene);
+                }
             }
         } else {
             // pick any available roll and generate new pattern

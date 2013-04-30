@@ -36,12 +36,12 @@ public class PatternBasedComponentsFactory implements GeneticComponentsFactory {
     public EvolutionaryOperator createMutation() {
         mutation = new CompositeMutation(objectiveFunction);
 
-        mutation.addOperator(new AdaptGroupPatternMutation(patternGenerator));
-        mutation.addOperator(new MergeTwoGroupsMutation(patternGenerator));
-        mutation.addOperator(new ReplaceGroupMutation(patternGenerator));
         mutation.addOperator(new AddRollMutation(patternGenerator));
         mutation.addOperator(new ReplaceRollMutation());
-        mutation.addOperator(new DeleteRollMutation());
+        mutation.addOperator(new DeleteRollMutation(patternGenerator));
+        mutation.addOperator(new AdaptGroupMutation(patternGenerator));
+        mutation.addOperator(new ReplaceGroupMutation(patternGenerator));
+        mutation.addOperator(new MergeTwoGroupsMutation(patternGenerator));
 
         return mutation;
     }

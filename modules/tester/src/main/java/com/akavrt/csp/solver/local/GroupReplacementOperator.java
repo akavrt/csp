@@ -87,7 +87,6 @@ public class GroupReplacementOperator extends PatternBasedMutation {
         return result != null ? result : original;
     }
 
-
     private double getResidualDemandArea(Chromosome chromosome) {
         List<Order> orders = chromosome.getContext().getProblem().getOrders();
 

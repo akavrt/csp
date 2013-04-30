@@ -2,8 +2,6 @@ package com.akavrt.csp.solver.evo.operators;
 
 import com.akavrt.csp.solver.evo.Chromosome;
 import com.akavrt.csp.solver.evo.Gene;
-import com.akavrt.csp.solver.evo.operators.GeneGroup;
-import com.akavrt.csp.solver.evo.operators.PatternBasedMutation;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.google.common.collect.Lists;
 
@@ -40,20 +38,30 @@ public class MergeTwoGroupsMutation extends PatternBasedMutation {
             List<GeneGroup> candidateGroups = Lists.newArrayList();
             for (GeneGroup group : groups) {
                 double groupWidth = group.getMinRollWidth();
-                if (groupWidth >= targetWidth && groupWidth <= targetWidth * (1 + toleranceRatio)) {
+
+                // TODO lower and upper bounds are parameter methods
+                double lowerBound = targetWidth * (1 - toleranceRatio);
+                double upperBound = targetWidth * (1 + toleranceRatio);
+                if (groupWidth >= lowerBound && groupWidth <= upperBound) {
                     candidateGroups.add(group);
                 }
             }
 
             if (candidateGroups.size() > 0) {
+                // TODO we need more sophisticated approach to select right group?
                 groupIndex = rGen.nextInt(candidateGroups.size());
                 GeneGroup secondGroup = candidateGroups.get(groupIndex);
 
                 removeGenes(firstGroup, secondGroup, mutated);
 
-                double totalLength = firstGroup.getTotalLength() + secondGroup.getTotalLength();
-                int[] demand = calcDemand(totalLength, mutated);
-                int[] pattern = generator.generate(targetWidth, demand, toleranceRatio);
+                // formulate residual demands
+                double newGroupLength = firstGroup.getTotalLength() + secondGroup.getTotalLength();
+                int[] demand = calcDemand(newGroupLength, mutated);
+
+                // generate new pattern
+                double newGroupMinWidth = Math.min(firstGroup.getMinRollWidth(),
+                                                   secondGroup.getMinRollWidth());
+                int[] pattern = generator.generate(newGroupMinWidth, demand, toleranceRatio);
                 if (pattern != null) {
                     addGenes(firstGroup, secondGroup, pattern, mutated);
                 }

@@ -78,6 +78,20 @@ public class GeneGroup {
         return minWidth;
     }
 
+    public double getMaxRollWidth() {
+        double maxWidth = 0;
+        boolean unset = true;
+        for (Gene gene : genes) {
+            Roll roll = gene.getRoll();
+            if (roll != null && (unset || roll.getWidth() > maxWidth)) {
+                maxWidth = roll.getWidth();
+                unset = false;
+            }
+        }
+
+        return maxWidth;
+    }
+
     public double getPatternWidth(EvolutionaryExecutionContext context) {
         return genes.isEmpty() ? 0 : getGene(0).getWidth(context);
     }

@@ -1,4 +1,4 @@
-package com.akavrt.csp.solver.genetic;
+package com.akavrt.csp.solver.genetic.backup;
 
 import com.akavrt.csp.core.Roll;
 import com.akavrt.csp.solver.evo.Chromosome;
@@ -11,9 +11,9 @@ import com.akavrt.csp.solver.pattern.PatternGenerator;
  * Date: 28.04.13
  * Time: 00:58
  */
-public class AddRollMutationX extends PatternBasedMutation {
+public class RemoveAddRollMutation extends PatternBasedMutation {
 
-    public AddRollMutationX(PatternGenerator generator) {
+    public RemoveAddRollMutation(PatternGenerator generator) {
         super(generator);
     }
 
