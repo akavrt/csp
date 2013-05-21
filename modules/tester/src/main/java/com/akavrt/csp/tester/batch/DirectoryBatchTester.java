@@ -1,4 +1,4 @@
-package com.akavrt.csp.tester;
+package com.akavrt.csp.tester.batch;
 
 import com.akavrt.csp.analyzer.Average;
 import com.akavrt.csp.analyzer.MaxValue;
@@ -25,8 +25,8 @@ import java.io.FileFilter;
  * Time: 23:25
  */
 public abstract class DirectoryBatchTester {
-    protected static final String PROBLEM_FILE_EXTENSION = "xml";
-    protected static final int DEFAULT_NUMBER_OF_RUNS = 10;
+    public static final String PROBLEM_FILE_EXTENSION = "xml";
+    public static final int DEFAULT_NUMBER_OF_RUNS = 10;
     private final String targetDirectory;
     private final int numberOfRuns;
 
@@ -102,14 +102,29 @@ public abstract class DirectoryBatchTester {
     private XmlEnabledCollector createGlobalCollector() {
         XmlEnabledCollector collector = new XmlEnabledCollector();
         collector.addMeasure(new Average());
+
         /*
         collector.addMeasure(new StandardDeviation());
         collector.addMeasure(new MinValue());
         collector.addMeasure(new MaxValue());
         */
 
+        /*
         collector.addMetric(new ScalarMetric());
         collector.addMetric(new TrimLossMetric());
+        collector.addMetric(new PatternReductionMetric());
+        collector.addMetric(new ProductDeviationMetric());
+        collector.addMetric(new UniquePatternsMetric());
+        collector.addMetric(new ActivePatternsMetric());
+        collector.addMetric(new MaxUnderProductionMetric());
+        collector.addMetric(new AverageUnderProductionMetric());
+        collector.addMetric(new MaxOverProductionMetric());
+        collector.addMetric(new AverageOverProductionMetric());
+        */
+
+        collector.addMetric(new ScalarMetric());
+        collector.addMetric(new TrimLossMetric());
+        collector.addMetric(new AggregatedTrimLossMetric());
         collector.addMetric(new PatternReductionMetric());
         collector.addMetric(new ProductDeviationMetric());
         collector.addMetric(new UniquePatternsMetric());

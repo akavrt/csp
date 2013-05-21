@@ -36,7 +36,7 @@ public class AggregatedTrimLossMetric extends MinimizationMetric {
      */
     @Override
     public String name() {
-        return "Trim loss fractional ratio";
+        return "Aggregated trim loss fractional ratio";
     }
 
 }

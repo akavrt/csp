@@ -5,22 +5,17 @@ import com.akavrt.csp.analyzer.SimpleCollector;
 import com.akavrt.csp.core.Problem;
 import com.akavrt.csp.core.xml.CspParseException;
 import com.akavrt.csp.core.xml.CspReader;
-import com.akavrt.csp.metrics.Metric;
-import com.akavrt.csp.metrics.complex.ConstraintAwareMetric;
-import com.akavrt.csp.metrics.complex.ConstraintAwareMetricParameters;
 import com.akavrt.csp.metrics.complex.PatternReductionMetric;
 import com.akavrt.csp.metrics.simple.AggregatedTrimLossMetric;
 import com.akavrt.csp.metrics.simple.TrimLossMetric;
 import com.akavrt.csp.metrics.simple.UniquePatternsMetric;
 import com.akavrt.csp.solver.Algorithm;
 import com.akavrt.csp.solver.MultistartSolver;
-import com.akavrt.csp.solver.evo.EvolutionaryComponentsFactory;
-import com.akavrt.csp.solver.evo.es.BaseStrategyComponentsFactory;
-import com.akavrt.csp.solver.evo.es.EvolutionStrategy;
-import com.akavrt.csp.solver.evo.es.EvolutionStrategyParameters;
 import com.akavrt.csp.solver.pattern.ConstrainedPatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGenerator;
 import com.akavrt.csp.solver.pattern.PatternGeneratorParameters;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedure;
+import com.akavrt.csp.solver.sequential.VahrenkampProcedureParameters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,8 +61,12 @@ public class TradeoffAnalyzer {
         double aggregatedTrimFactor = 0;
         int i = 0;
         while (aggregatedTrimFactor <= 1.01) {
+            /*
             LOGGER.info("#{}: C_1 = {}, C_2 = {}", ++i, String.format("%.2f", aggregatedTrimFactor),
                         String.format("%.2f", 1 - aggregatedTrimFactor));
+            */
+
+            LOGGER.info("#{}: goalmix = {}", ++i, String.format("%.2f", 1 - aggregatedTrimFactor));
 
             collector.clear();
 
@@ -96,6 +95,7 @@ public class TradeoffAnalyzer {
         problem = reader.getProblem();
     }
 
+    /*
     private Algorithm createAlgorithm(double aggregatedTrimFactor) {
         PatternGeneratorParameters patternParameters = new PatternGeneratorParameters();
         patternParameters.setGenerationTrialsLimit(5);
@@ -114,6 +114,18 @@ public class TradeoffAnalyzer {
         strategyParameters.setRunSteps(2000);
 
         return new EvolutionStrategy(factory, objectiveFunction, strategyParameters);
+    }
+    */
+
+    private Algorithm createAlgorithm(double aggregatedTrimFactor) {
+        PatternGeneratorParameters patternParameters = new PatternGeneratorParameters();
+        patternParameters.setGenerationTrialsLimit(5);
+        PatternGenerator generator = new ConstrainedPatternGenerator(patternParameters);
+
+        VahrenkampProcedureParameters shpParameters = new VahrenkampProcedureParameters();
+        shpParameters.setGoalmix(1 - aggregatedTrimFactor);
+
+        return new VahrenkampProcedure(generator, shpParameters);
     }
 
 }

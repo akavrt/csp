@@ -124,14 +124,25 @@ public class VahrenkampProcedure extends SequentialProcedure {
                 double draw = rGen.nextDouble();
                 if (draw > params.getGoalmix()) {
                     // relax pattern usage
+                    /*
                     if (patternUsage > 1) {
                         patternUsage -= params.getPatternUsageRelaxStep();
                         LOGGER.debug("  RELAX  #PU_AL to %d", patternUsage);
                     } else {
                         LOGGER.debug("  [SKIP] RELAX for #PU_AL: %d", patternUsage);
                     }
+                    */
+                    if (patternUsage > 1) {
+                        patternUsage -= params.getPatternUsageRelaxStep();
+                        LOGGER.debug("  RELAX  #PU_AL to %d", patternUsage);
+                    } else if (allowedTrimRatio < 1) {
+                        // this should prevent endless looping
+                        allowedTrimRatio += params.getTrimRatioRelaxStep();
+                        LOGGER.debug("  [FORCE] RELAX  #TRIM_AL to %.2f", allowedTrimRatio);
+                    }
                 } else {
                     // relax trim
+                    /*
                     if (allowedTrimRatio < params.getTrimRatioUpperBound()) {
                         allowedTrimRatio += params.getTrimRatioRelaxStep();
                         LOGGER.debug("  RELAX  #TRIM_AL to %.2f", allowedTrimRatio);
@@ -140,6 +151,16 @@ public class VahrenkampProcedure extends SequentialProcedure {
                         allowedTrimRatio += params.getTrimRatioRelaxStep();
                         LOGGER.debug("  [FORCE] RELAX  #TRIM_AL to %.2f", allowedTrimRatio);
                     }
+                    */
+                    if (allowedTrimRatio < params.getTrimRatioUpperBound()) {
+                        allowedTrimRatio += params.getTrimRatioRelaxStep();
+                        LOGGER.debug("  RELAX  #TRIM_AL to %.2f", allowedTrimRatio);
+                    } else if (patternUsage > 1) {
+                        // this should prevent endless looping
+                        patternUsage -= params.getPatternUsageRelaxStep();
+                        LOGGER.debug("  [FORCE] RELAX  #PU_AL to %d", patternUsage);
+                    }
+
                 }
             }
         }
