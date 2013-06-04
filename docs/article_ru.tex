@@ -21,6 +21,8 @@
 \captionsetup{tablename=\hfillТаблица,labelfont={bf}}
 \usepackage{cite}
 \usepackage{hyperref}
+\usepackage{abstract}
+\usepackage{titling}
 \sloppy
 
 \clubpenalty=9999
@@ -39,18 +41,53 @@
     \caption{#1}
 }
 
-\title{Эволюционный алгоритм решения задачи \\
+\begin{document}
+\title{An evolutionary algorithm\\
+for optimization of roll cutting}
+
+\author{Victor~Balabanov\thanks{E-mail: \href{mailto:akavrt@gmail.com}
+{\nolinkurl{akavrt@gmail.com}}}, 
+Yuri Skobtsov\\ [1.0ex]
+\normalsize\textit{Donetsk National Technical University}
+}
+
+\date{Preprint: \today}
+
+\selectlanguage{english}
+
+\begin{titlepage}
+\clearpage\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+This paper is concerned with multiobjective problem of optimal roll cutting. 
+Important technological limitations imposed on planning process by cutting 
+equipment are taken into account with refined formal model. The proposed 
+solution method is based on evolutionary computations. The choice of coding 
+scheme used to represent solutions in evolutionary algorithm is influenced 
+by the combinatorial structure of the original cutting stock problem. 
+Combinatorial approach is augmented with adaptive pattern generation in 
+implementation of evolutionary operators. A new suite of test problems is 
+proposed and used to evaluate performance of the method in computational 
+experiments. The results show that the proposed approach is feasible and 
+could be adapted to solve cutting stock problems of similar structure.
+\smallskip
+
+\noindent\textit{Keywords:} cutting stock problem, roll materials, 
+multiobjective model, combinatorial optimization, evolutionary algorithm.
+\end{abstract}   
+\end{titlepage}
+
+\title{Эволюционный алгоритм решения задачи\\
 рационального раскроя рулонного материала}
 
-\author{В.~Н.~Балабанов\thanks{E-mail: \texttt{akavrt@gmail.com}}, 
-Ю.~А.~Скобцов \\ [1.0ex]
+\author{В.~Н.~Балабанов\footnotemark[1], Ю.~А.~Скобцов\\ [1.0ex]
 \normalsize\textit{Донецкий национальный технический университет}
 }
 
 \date{Препринт: \today}
 
-\begin{document}
-
+\selectlanguage{russian}
 \maketitle
 
 \begin{abstract}
@@ -72,6 +109,7 @@
 рулонные материалы, многокритериальная модель, комбинаторная оптимизация, 
 эволюционный алгоритм.
 \end{abstract}    
+
 
 \section{Введение}
 
