@@ -62,7 +62,7 @@ public class MutableOrder {
      *         abstract units.
      */
     public double getUnfulfilledLength() {
-        return isFulfilled() ? 0 : order.getLength() - producedLength;
+        return isFulfilled() ? 0 : (order.getLength() - producedLength);
     }
 
     /**

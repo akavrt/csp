@@ -1,5 +1,5 @@
 EA-based solver for 1.5D MSSCSP
-===
+===============================
 
 Yet another try to implement decent solver for roll slitting problem based on hybrid evolutionary algorithm.
 

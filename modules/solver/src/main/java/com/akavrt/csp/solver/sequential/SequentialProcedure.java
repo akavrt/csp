@@ -112,7 +112,7 @@ public abstract class SequentialProcedure implements Algorithm {
      *
      * @param allowedTrimRatio Fractional ratio defining maximum trim loss level allowed for
      *                         pattern not to be rejected.
-     * @return Maximum possible patter usage level.
+     * @return Maximum possible pattern usage level.
      */
     protected int evaluatePatternUsage(double allowedTrimRatio) {
         // find roll with minimal area
