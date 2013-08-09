@@ -21,4 +21,5 @@ public class EvolutionProgressUpdate {
         this.phase = phase;
         this.seriesData = seriesData;
     }
+
 }
